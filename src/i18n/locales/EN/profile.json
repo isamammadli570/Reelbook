@@ -1,0 +1,36 @@
+{
+    "title": "Profile",
+    "defaultName": "Film lover",
+    "addBio": "Add a line about yourself.",
+    "edit": "Edit profile",
+    "stats": {
+        "movies": "Movies",
+        "series": "Series",
+        "episodes": "Episodes",
+        "hours": "Hours"
+    },
+    "favorites": "Favourite four",
+    "favoritesEmpty": "Tap the heart on a movie or series page and your favourites show up here.",
+    "tabs": {
+        "diary": "Diary",
+        "favorites": "Favourites",
+        "watchlist": "Watchlist"
+    },
+    "diaryEmpty": {
+        "title": "Your diary is empty",
+        "description": "Log a movie or mark an episode and it shows up here."
+    },
+    "favoritesTabEmpty": "No favourites yet.",
+    "watchlistEmpty": "Your watchlist is empty.",
+    "language": "Language",
+    "editDialog": {
+        "title": "Edit profile",
+        "name": "Name",
+        "namePlaceholder": "Isa",
+        "bio": "About",
+        "bioPlaceholder": "Series at night, movies at the weekend.",
+        "save": "Save",
+        "cancel": "Cancel",
+        "tooLong": "Up to {{max}} characters."
+    }
+}

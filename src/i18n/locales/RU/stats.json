@@ -1,0 +1,33 @@
+{
+    "title": "Статистика",
+    "yourYear": "{{year}} · твой год",
+    "allTime": "Всё время",
+    "hours_one": "{{count}} час",
+    "hours_few": "{{count}} часа",
+    "hours_many": "{{count}} часов",
+    "hours_other": "{{count}} часа",
+    "screenTime": "перед экраном",
+    "days": "Это примерно {{days}} дн.",
+    "period": {
+        "year": "Этот год",
+        "all": "Всё время"
+    },
+    "monthly": "Часы по месяцам",
+    "mostActive": "Самый активный: {{month}}",
+    "tiles": {
+        "movies": "Фильмы",
+        "episodes": "Эпизоды",
+        "series": "Сериалы",
+        "averageRating": "Средняя оценка"
+    },
+    "genres": "Любимые жанры",
+    "highlights": "Главное",
+    "topSeries": "Самый просматриваемый сериал",
+    "topSeriesValue": "{{episodes}} эп. · {{hours}} ч",
+    "marathon": "Самый долгий марафон",
+    "marathonValue": "{{episodes}} эп. за день · {{date}}",
+    "empty": {
+        "title": "Статистики пока нет",
+        "description": "Отмечай фильмы и эпизоды — здесь появятся часы, жанры и марафоны."
+    }
+}

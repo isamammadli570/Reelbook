@@ -1,0 +1,70 @@
+{
+    "back": "Back",
+    "tmdb": "TMDB",
+    "runtime": "{{hours}}h {{minutes}}m",
+    "minutes": "{{count}} min",
+    "stats": {
+        "runtime": "Runtime",
+        "year": "Year",
+        "seasons": "Seasons",
+        "episodes": "Episodes",
+        "episodeRuntime": "Per episode"
+    },
+    "overview": "About",
+    "noOverview": "No description yet.",
+    "readMore": "Read more",
+    "readLess": "Show less",
+    "cast": "Cast",
+    "similarMovies": "Similar movies",
+    "similarSeries": "Similar series",
+    "directedBy": "Directed by {{names}}",
+    "createdBy": "Created by {{names}}",
+    "episodes": "Episodes",
+    "season": "Season {{number}}",
+    "specials": "Specials",
+    "episodeCode": "S{{season}} · E{{episode}}",
+    "noEpisodes": "This season's episodes haven't been announced yet.",
+    "dateUnknown": "Date unknown",
+    "nextEpisode": "Next episode: {{date}}",
+    "status": {
+        "returning": "Returning",
+        "ended": "Ended",
+        "canceled": "Canceled",
+        "inProduction": "In production",
+        "planned": "Planned",
+        "pilot": "Pilot"
+    },
+    "actions": {
+        "logWatch": "Log a watch",
+        "logAgain": "Watched again",
+        "watchlistAdd": "Add to watchlist",
+        "watchlistRemove": "Remove from watchlist",
+        "favoriteAdd": "Add to favourites",
+        "favoriteRemove": "Remove from favourites",
+        "follow": "Start watching",
+        "following": "Watching"
+    },
+    "rating": {
+        "label": "Your rating",
+        "hint": "Tap to rate",
+        "stars_one": "{{count}} star",
+        "stars_other": "{{count}} stars"
+    },
+    "diary": {
+        "title": "Your diary",
+        "delete": "Delete entry",
+        "firstTime": "First time",
+        "rewatch": "Rewatch"
+    },
+    "progress": {
+        "title": "Your progress",
+        "value": "{{watched}} / {{aired}} episodes · {{percent}}%"
+    },
+    "episodeActions": {
+        "mark": "Mark {{code}} as watched",
+        "unmark": "Unmark {{code}}",
+        "markSeason": "Watched the season",
+        "unmarkSeason": "Unmark the season",
+        "notAired": "Not aired yet"
+    }
+}

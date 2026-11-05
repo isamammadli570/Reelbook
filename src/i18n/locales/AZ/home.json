@@ -1,0 +1,24 @@
+{
+    "greeting": {
+        "morning": "Sabahın xeyir",
+        "afternoon": "Günortan xeyir",
+        "evening": "Axşamın xeyir"
+    },
+    "title": "Bu gecə nə",
+    "titleAccent": "izləyirik?",
+    "trending": "Bu həftə trenddə",
+    "watchlist": "Watchlist-in",
+    "watchlistEmpty": {
+        "title": "Watchlist boşdur",
+        "description": "Bəyəndiyin film və serialları əlavə et, burada görünəcək."
+    },
+    "upNext": {
+        "badge": "Növbəti epizod",
+        "markWatched": "İzlədim",
+        "details": "Detallar",
+        "continue": "Davam et",
+        "next": "{{code}} növbəti"
+    },
+    "watchlistCount_one": "{{count}} başlıq",
+    "watchlistCount_other": "{{count}} başlıq"
+}

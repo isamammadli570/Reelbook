@@ -1,0 +1,31 @@
+{
+    "title": "Statistika",
+    "yourYear": "{{year}} · sənin ilin",
+    "allTime": "Bütün vaxt",
+    "hours_one": "{{count}} saat",
+    "hours_other": "{{count}} saat",
+    "screenTime": "ekran qarşısında",
+    "days": "Bu, təxminən {{days}} gündür.",
+    "period": {
+        "year": "Bu il",
+        "all": "Bütün vaxt"
+    },
+    "monthly": "Aylar üzrə saat",
+    "mostActive": "Ən aktiv: {{month}}",
+    "tiles": {
+        "movies": "Film",
+        "episodes": "Epizod",
+        "series": "Serial",
+        "averageRating": "Orta reytinqin"
+    },
+    "genres": "Sevdiyin janrlar",
+    "highlights": "Seçilənlər",
+    "topSeries": "Ən çox izlənən serial",
+    "topSeriesValue": "{{episodes}} epizod · {{hours}} saat",
+    "marathon": "Ən uzun marafon",
+    "marathonValue": "Bir gündə {{episodes}} epizod · {{date}}",
+    "empty": {
+        "title": "Statistika hələ boşdur",
+        "description": "Film və epizodları işarələdikcə saatların, janrların və marafonların burada görünəcək."
+    }
+}

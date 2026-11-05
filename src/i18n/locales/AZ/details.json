@@ -1,0 +1,70 @@
+{
+    "back": "Geri",
+    "tmdb": "TMDB",
+    "runtime": "{{hours}} s {{minutes}} dəq",
+    "minutes": "{{count}} dəq",
+    "stats": {
+        "runtime": "Müddət",
+        "year": "İl",
+        "seasons": "Sezon",
+        "episodes": "Epizod",
+        "episodeRuntime": "Epizod müddəti"
+    },
+    "overview": "Haqqında",
+    "noOverview": "Təsvir hələ əlavə olunmayıb.",
+    "readMore": "Daha çox",
+    "readLess": "Daha az",
+    "cast": "Aktyorlar",
+    "similarMovies": "Bənzər filmlər",
+    "similarSeries": "Bənzər seriallar",
+    "directedBy": "Rejissor: {{names}}",
+    "createdBy": "Müəllif: {{names}}",
+    "episodes": "Epizodlar",
+    "season": "Sezon {{number}}",
+    "specials": "Xüsusi",
+    "episodeCode": "S{{season}} · E{{episode}}",
+    "noEpisodes": "Bu sezonun epizodları hələ açıqlanmayıb.",
+    "dateUnknown": "Tarix bilinmir",
+    "nextEpisode": "Növbəti epizod: {{date}}",
+    "status": {
+        "returning": "Davam edir",
+        "ended": "Bitib",
+        "canceled": "Dayandırılıb",
+        "inProduction": "Çəkilir",
+        "planned": "Planlaşdırılır",
+        "pilot": "Pilot"
+    },
+    "actions": {
+        "logWatch": "Gündəliyə yaz",
+        "logAgain": "Yenidən izlədim",
+        "watchlistAdd": "Watchlist-ə əlavə et",
+        "watchlistRemove": "Watchlist-dən çıxar",
+        "favoriteAdd": "Sevimlilərə əlavə et",
+        "favoriteRemove": "Sevimlilərdən çıxar",
+        "follow": "İzləməyə başla",
+        "following": "İzləyirəm"
+    },
+    "rating": {
+        "label": "Sənin reytinqin",
+        "hint": "Toxunaraq qiymətləndir",
+        "stars_one": "{{count}} ulduz",
+        "stars_other": "{{count}} ulduz"
+    },
+    "diary": {
+        "title": "Sənin gündəliyin",
+        "delete": "Qeydi sil",
+        "firstTime": "İlk dəfə",
+        "rewatch": "Yenidən izləmə"
+    },
+    "progress": {
+        "title": "Sənin irəliləyişin",
+        "value": "{{watched}} / {{aired}} epizod · {{percent}}%"
+    },
+    "episodeActions": {
+        "mark": "{{code}} izlədim kimi işarələ",
+        "unmark": "{{code}} işarəsini götür",
+        "markSeason": "Sezonu izlədim",
+        "unmarkSeason": "Sezon işarəsini götür",
+        "notAired": "Hələ yayımlanmayıb"
+    }
+}

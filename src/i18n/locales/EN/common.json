@@ -1,0 +1,82 @@
+{
+    "nav": {
+        "home": "Home",
+        "discover": "Discover",
+        "calendar": "Calendar",
+        "stats": "Stats",
+        "profile": "Profile"
+    },
+    "mediaFilter": {
+        "all": "All",
+        "movie": "Movies",
+        "tv": "Series"
+    },
+    "mediaType": {
+        "movie": "Movie",
+        "tv": "Series"
+    },
+    "actions": {
+        "retry": "Try again",
+        "seeAll": "See all"
+    },
+    "apiErrors": {
+        "generic": "Something went wrong. Try again.",
+        "network": "No internet connection.",
+        "unauthorized": "The TMDB key is invalid.",
+        "notFound": "Not found.",
+        "server": "TMDB isn't responding right now."
+    },
+    "errors": {
+        "load": "Couldn't load data"
+    },
+    "comingSoon": {
+        "title": "Coming soon",
+        "description": "This section arrives in the next stage."
+    },
+    "missingToken": {
+        "title": "A TMDB key is needed",
+        "description": "Add EXPO_PUBLIC_TMDB_TOKEN to .env.local and restart the app."
+    },
+    "months": [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December"
+    ],
+    "monthsShort": [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec"
+    ],
+    "monthsOf": [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December"
+    ]
+}

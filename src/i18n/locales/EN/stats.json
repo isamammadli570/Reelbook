@@ -1,0 +1,31 @@
+{
+    "title": "Stats",
+    "yourYear": "{{year}} · your year",
+    "allTime": "All time",
+    "hours_one": "{{count}} hour",
+    "hours_other": "{{count}} hours",
+    "screenTime": "in front of the screen",
+    "days": "That’s about {{days}} days.",
+    "period": {
+        "year": "This year",
+        "all": "All time"
+    },
+    "monthly": "Hours by month",
+    "mostActive": "Busiest: {{month}}",
+    "tiles": {
+        "movies": "Movies",
+        "episodes": "Episodes",
+        "series": "Series",
+        "averageRating": "Average rating"
+    },
+    "genres": "Your genres",
+    "highlights": "Highlights",
+    "topSeries": "Most watched series",
+    "topSeriesValue": "{{episodes}} episodes · {{hours}} hours",
+    "marathon": "Longest marathon",
+    "marathonValue": "{{episodes}} episodes in a day · {{date}}",
+    "empty": {
+        "title": "No stats yet",
+        "description": "As you log movies and episodes, your hours, genres and marathons show up here."
+    }
+}

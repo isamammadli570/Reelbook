@@ -1,0 +1,72 @@
+{
+    "back": "Назад",
+    "tmdb": "TMDB",
+    "runtime": "{{hours}} ч {{minutes}} мин",
+    "minutes": "{{count}} мин",
+    "stats": {
+        "runtime": "Длительность",
+        "year": "Год",
+        "seasons": "Сезоны",
+        "episodes": "Эпизоды",
+        "episodeRuntime": "Эпизод"
+    },
+    "overview": "Описание",
+    "noOverview": "Описание пока не добавлено.",
+    "readMore": "Подробнее",
+    "readLess": "Свернуть",
+    "cast": "В ролях",
+    "similarMovies": "Похожие фильмы",
+    "similarSeries": "Похожие сериалы",
+    "directedBy": "Режиссёр: {{names}}",
+    "createdBy": "Создатель: {{names}}",
+    "episodes": "Эпизоды",
+    "season": "Сезон {{number}}",
+    "specials": "Спецвыпуски",
+    "episodeCode": "S{{season}} · E{{episode}}",
+    "noEpisodes": "Эпизоды этого сезона ещё не объявлены.",
+    "dateUnknown": "Дата неизвестна",
+    "nextEpisode": "Следующий эпизод: {{date}}",
+    "status": {
+        "returning": "Продолжается",
+        "ended": "Завершён",
+        "canceled": "Закрыт",
+        "inProduction": "В производстве",
+        "planned": "Запланирован",
+        "pilot": "Пилот"
+    },
+    "actions": {
+        "logWatch": "Отметить просмотр",
+        "logAgain": "Посмотрел снова",
+        "watchlistAdd": "Добавить в список",
+        "watchlistRemove": "Убрать из списка",
+        "favoriteAdd": "В избранное",
+        "favoriteRemove": "Убрать из избранного",
+        "follow": "Начать смотреть",
+        "following": "Смотрю"
+    },
+    "rating": {
+        "label": "Твоя оценка",
+        "hint": "Нажми, чтобы оценить",
+        "stars_one": "{{count}} звезда",
+        "stars_few": "{{count}} звезды",
+        "stars_many": "{{count}} звёзд",
+        "stars_other": "{{count}} звезды"
+    },
+    "diary": {
+        "title": "Твой дневник",
+        "delete": "Удалить запись",
+        "firstTime": "Впервые",
+        "rewatch": "Пересмотр"
+    },
+    "progress": {
+        "title": "Твой прогресс",
+        "value": "{{watched}} / {{aired}} эпизодов · {{percent}}%"
+    },
+    "episodeActions": {
+        "mark": "Отметить {{code}} просмотренным",
+        "unmark": "Снять отметку {{code}}",
+        "markSeason": "Сезон просмотрен",
+        "unmarkSeason": "Снять отметку сезона",
+        "notAired": "Ещё не вышел"
+    }
+}

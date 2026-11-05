@@ -1,0 +1,26 @@
+{
+    "greeting": {
+        "morning": "Доброе утро",
+        "afternoon": "Добрый день",
+        "evening": "Добрый вечер"
+    },
+    "title": "Что смотрим",
+    "titleAccent": "сегодня?",
+    "trending": "В тренде на этой неделе",
+    "watchlist": "Твой список",
+    "watchlistEmpty": {
+        "title": "Список пуст",
+        "description": "Добавляй фильмы и сериалы, которые нравятся, — они появятся здесь."
+    },
+    "upNext": {
+        "badge": "Следующий эпизод",
+        "markWatched": "Посмотрел",
+        "details": "Подробнее",
+        "continue": "Продолжить",
+        "next": "Дальше {{code}}"
+    },
+    "watchlistCount_one": "{{count}} название",
+    "watchlistCount_few": "{{count}} названия",
+    "watchlistCount_many": "{{count}} названий",
+    "watchlistCount_other": "{{count}} названия"
+}

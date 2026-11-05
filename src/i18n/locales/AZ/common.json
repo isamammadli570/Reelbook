@@ -1,0 +1,82 @@
+{
+    "nav": {
+        "home": "Ana",
+        "discover": "Kəşf et",
+        "calendar": "Təqvim",
+        "stats": "Statistika",
+        "profile": "Profil"
+    },
+    "mediaFilter": {
+        "all": "Hamısı",
+        "movie": "Filmlər",
+        "tv": "Seriallar"
+    },
+    "mediaType": {
+        "movie": "Film",
+        "tv": "Serial"
+    },
+    "actions": {
+        "retry": "Yenidən cəhd et",
+        "seeAll": "Hamısı"
+    },
+    "apiErrors": {
+        "generic": "Nəsə alınmadı. Yenidən cəhd et.",
+        "network": "İnternet bağlantısı yoxdur.",
+        "unauthorized": "TMDB açarı yanlışdır.",
+        "notFound": "Tapılmadı.",
+        "server": "TMDB hazırda cavab vermir."
+    },
+    "errors": {
+        "load": "Məlumat yüklənmədi"
+    },
+    "comingSoon": {
+        "title": "Tezliklə",
+        "description": "Bu bölmə növbəti mərhələdə hazır olacaq."
+    },
+    "missingToken": {
+        "title": "TMDB açarı lazımdır",
+        "description": ".env.local faylına EXPO_PUBLIC_TMDB_TOKEN əlavə et və tətbiqi yenidən başlat."
+    },
+    "months": [
+        "Yanvar",
+        "Fevral",
+        "Mart",
+        "Aprel",
+        "May",
+        "İyun",
+        "İyul",
+        "Avqust",
+        "Sentyabr",
+        "Oktyabr",
+        "Noyabr",
+        "Dekabr"
+    ],
+    "monthsShort": [
+        "yan",
+        "fev",
+        "mar",
+        "apr",
+        "may",
+        "iyn",
+        "iyl",
+        "avq",
+        "sen",
+        "okt",
+        "noy",
+        "dek"
+    ],
+    "monthsOf": [
+        "yanvar",
+        "fevral",
+        "mart",
+        "aprel",
+        "may",
+        "iyun",
+        "iyul",
+        "avqust",
+        "sentyabr",
+        "oktyabr",
+        "noyabr",
+        "dekabr"
+    ]
+}

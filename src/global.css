@@ -1,0 +1,29 @@
+@import "tailwindcss";
+@import "uniwind";
+
+/* One dark palette: the app is designed dark-first, like a cinema. */
+@theme {
+    --color-background: #0e0e10;
+    --color-surface: #1b1b1f;
+    --color-surface-raised: #26262b;
+    --color-border: #2a2a30;
+    --color-foreground: #f4f2ee;
+    --color-muted-foreground: #a1a1aa;
+    --color-subtle-foreground: #8e8e96;
+
+    --color-brand: #f5a524;
+    --color-brand-ink: #1a1206;
+    --color-brand-soft: #3a2a0a;
+
+    --color-success: #5dcaa5;
+    --color-success-soft: #0b3a30;
+    --color-danger: #f7a1a1;
+    --color-danger-soft: #3a1414;
+
+    /* Native fonts are separate files per weight, so each weight is its own family. */
+    --font-sans: "Inter_400Regular";
+    --font-sans-medium: "Inter_500Medium";
+    --font-sans-semibold: "Inter_600SemiBold";
+    --font-serif: "InstrumentSerif_400Regular";
+    --font-serif-italic: "InstrumentSerif_400Regular_Italic";
+}

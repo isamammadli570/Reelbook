@@ -1,0 +1,36 @@
+{
+    "title": "Profil",
+    "defaultName": "Kinosevər",
+    "addBio": "Özün haqqında bir cümlə əlavə et.",
+    "edit": "Profili redaktə et",
+    "stats": {
+        "movies": "Film",
+        "series": "Serial",
+        "episodes": "Epizod",
+        "hours": "Saat"
+    },
+    "favorites": "Sevimli dördlük",
+    "favoritesEmpty": "Film və ya serial səhifəsində ürəyə toxun, sevimlilərin burada görünəcək.",
+    "tabs": {
+        "diary": "Gündəlik",
+        "favorites": "Sevimlilər",
+        "watchlist": "Watchlist"
+    },
+    "diaryEmpty": {
+        "title": "Gündəlik boşdur",
+        "description": "Filmi gündəliyə yaz və ya epizod işarələ, burada görünəcək."
+    },
+    "favoritesTabEmpty": "Hələ sevimli yoxdur.",
+    "watchlistEmpty": "Watchlist boşdur.",
+    "language": "Dil",
+    "editDialog": {
+        "title": "Profili redaktə et",
+        "name": "Ad",
+        "namePlaceholder": "İsa",
+        "bio": "Haqqında",
+        "bioPlaceholder": "Seriallar gecələr, filmlər həftəsonu.",
+        "save": "Yadda saxla",
+        "cancel": "Ləğv et",
+        "tooLong": "Ən çox {{max}} simvol ola bilər."
+    }
+}

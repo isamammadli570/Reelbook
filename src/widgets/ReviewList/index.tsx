@@ -22,7 +22,7 @@ export const ReviewList = ({items}: ReviewListProps) => {
     return (
         <View className="gap-3">
             {items.map((item) => {
-                const poster = imageUrl(item.posterPath, IMAGE_SIZE.POSTER);
+                const poster = imageUrl(item.posterPath, IMAGE_SIZE.THUMB);
                 const isMovie = item.mediaType === MEDIA_TYPE.MOVIE;
                 return (
                     <PressScale

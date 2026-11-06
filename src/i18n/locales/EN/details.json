@@ -68,7 +68,8 @@
         "unmark": "Unmark {{code}}",
         "markSeason": "Watched the season",
         "unmarkSeason": "Unmark the season",
-        "notAired": "Not aired yet"
+        "notAired": "Not aired yet",
+        "showMore": "Show {{count}} more episodes ({{left}} left)"
     },
     "review": {
         "title": "Your review",

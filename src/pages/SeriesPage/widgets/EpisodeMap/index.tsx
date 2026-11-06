@@ -2,6 +2,7 @@ import {Text, View, useWindowDimensions} from "react-native";
 import {useTranslation} from "react-i18next";
 import {PopOnActivate} from "@/components/motion/PopOnActivate";
 import {PressScale} from "@/components/motion/PressScale";
+import {EntranceContext} from "@/components/motion/EntranceContext";
 import {Reveal} from "@/components/motion/Reveal";
 import {SCREEN_GUTTER} from "@/hooks/usePosterWidth";
 import {cn} from "@/lib/utils";
@@ -10,6 +11,8 @@ import type {Episode} from "@/api/series.api";
 
 const COLUMNS = 10;
 const GAP = 4;
+/** Squares that pop in as the map opens: four rows. Past them a long season just appears, without a hundred animations at once. */
+const ANIMATED_CELLS = COLUMNS * 4;
 
 export type EpisodeCell = {
     episode: Episode;
@@ -38,7 +41,8 @@ export const EpisodeMap = ({cells, onToggle}: EpisodeMapProps) => {
                 const code = t("episodeCode", {season: episode.season_number, episode: episode.episode_number});
                 return (
                     // The entrance sits on a wrapper so that its transform does not overwrite the press scale.
-                    <Reveal key={episode.id} variant="pop" index={index} style={{width: size, height: size}}>
+                    <EntranceContext.Provider key={episode.id} value={index < ANIMATED_CELLS}>
+                    <Reveal variant="pop" index={index} style={{width: size, height: size}}>
                         <PopOnActivate active={isWatched}>
                             <PressScale
                                 role="checkbox"
@@ -58,6 +62,7 @@ export const EpisodeMap = ({cells, onToggle}: EpisodeMapProps) => {
                             </PressScale>
                         </PopOnActivate>
                     </Reveal>
+                    </EntranceContext.Provider>
                 );
             })}
         </View>

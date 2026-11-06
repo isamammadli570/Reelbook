@@ -25,7 +25,7 @@ export const ContinueCard = memo(({item, next}: ContinueCardProps) => {
     const {t} = useTranslation(["home", "details"]);
     const foreground = String(useCSSVariable("--color-foreground"));
     const {mutate: toggleEpisode} = useToggleEpisode();
-    const poster = imageUrl(item.posterPath, IMAGE_SIZE.POSTER);
+    const poster = imageUrl(item.posterPath, IMAGE_SIZE.THUMB);
     const code = t("details:episodeCode", {season: next.season, episode: next.episode});
 
     return (

@@ -18,6 +18,8 @@ export type TimeWindow = (typeof TIME_WINDOW)[keyof typeof TIME_WINDOW];
 
 export const IMAGE_SIZE = {
     POSTER: "w342",
+    /** Posters drawn small (rows, stacks, list thumbnails): a third of the bytes, still sharp at 3×. */
+    THUMB: "w185",
     BACKDROP: "w780",
     PROFILE: "w185",
     LOGO: "w92",

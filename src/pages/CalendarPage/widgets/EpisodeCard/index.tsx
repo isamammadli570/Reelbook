@@ -17,7 +17,7 @@ export const EpisodeCard = ({episode}: EpisodeCardProps) => {
     const {t} = useTranslation("details");
     const formatRuntime = useFormatRuntime();
     const [isHidingSpoilers] = usePreference("hideSpoilers");
-    const poster = imageUrl(episode.posterPath, IMAGE_SIZE.POSTER);
+    const poster = imageUrl(episode.posterPath, IMAGE_SIZE.THUMB);
     const meta = [episode.network, formatRuntime(episode.runtime)].filter(Boolean).join(" · ");
 
     return (

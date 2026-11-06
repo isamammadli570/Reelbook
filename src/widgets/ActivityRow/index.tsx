@@ -25,7 +25,7 @@ type ActivityRowProps = {
 export const ActivityRow = ({event, hasAuthor = true}: ActivityRowProps) => {
     const {t} = useTranslation("social");
     const {shortDate} = useDateFormat();
-    const poster = imageUrl(event.posterPath, IMAGE_SIZE.POSTER);
+    const poster = imageUrl(event.posterPath, IMAGE_SIZE.THUMB);
     const author = event.author;
     const name = author?.name || (author?.username ? `@${author.username}` : t("someone"));
     const ago = relativeTime(event.happenedAt, new Date());

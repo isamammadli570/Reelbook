@@ -5,8 +5,8 @@ import {
     getFollowCounts,
     getFollowList,
     getUserActivityPage,
+    getFollowingIds,
     getUserByUsername,
-    isFollowing,
     searchUsers,
     setFollowing,
 } from "@/api/social.api";
@@ -66,14 +66,25 @@ export const useFollowList = (userId: string | null | undefined, direction: "fol
         staleTime: SOCIAL_STALE_MS,
     });
 
-export const useIsFollowing = (userId: string | null | undefined) => {
+const followingKey = (selfId: string | null) => [QUERY_KEYS.SOCIAL, "followingIds", selfId];
+
+/**
+ * Everyone you follow, asked once. Each follow button and the feed read it from here, so a list of twenty
+ * people costs one request instead of twenty.
+ */
+export const useFollowingIds = () => {
     const selfId = useSelfId();
     return useQuery({
-        queryKey: [QUERY_KEYS.SOCIAL, "isFollowing", selfId, userId],
-        queryFn: () => isFollowing(selfId ?? "", userId ?? ""),
-        enabled: Boolean(selfId && userId && selfId !== userId),
+        queryKey: followingKey(selfId),
+        queryFn: () => getFollowingIds(selfId ?? ""),
+        enabled: Boolean(selfId),
         staleTime: SOCIAL_STALE_MS,
     });
+};
+
+export const useIsFollowing = (userId: string | null | undefined) => {
+    const {data: ids, isLoading} = useFollowingIds();
+    return {data: userId ? Boolean(ids?.includes(userId)) : false, isLoading};
 };
 
 /**
@@ -85,10 +96,12 @@ export const useSetFollowing = () => {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: ({userId, follow}: {userId: string; follow: boolean}) => setFollowing(selfId ?? "", userId, follow),
-        onMutate: ({userId, follow}) => {
-            const key = [QUERY_KEYS.SOCIAL, "isFollowing", selfId, userId];
-            const previous = queryClient.getQueryData<boolean>(key);
-            queryClient.setQueryData(key, follow);
+        onMutate: async ({userId, follow}) => {
+            const key = followingKey(selfId);
+            await queryClient.cancelQueries({queryKey: key});
+            const previous = queryClient.getQueryData<string[]>(key);
+            const without = (previous ?? []).filter((id) => id !== userId);
+            queryClient.setQueryData(key, follow ? [userId, ...without] : without);
             return {key, previous};
         },
         onError: (_error, _variables, context) => {
@@ -102,12 +115,14 @@ export const useSetFollowing = () => {
 /** What the people you follow did, newest first, a page at a time. */
 export const useFeed = () => {
     const selfId = useSelfId();
+    const {data: followingIds} = useFollowingIds();
     return useInfiniteQuery({
-        queryKey: [QUERY_KEYS.SOCIAL, "feed", selfId],
-        queryFn: ({pageParam}) => getFeedPage(selfId ?? "", pageParam),
+        // The ids are part of the key: following someone new starts the feed over with them in it.
+        queryKey: [QUERY_KEYS.SOCIAL, "feed", selfId, followingIds],
+        queryFn: ({pageParam}) => getFeedPage(followingIds ?? [], pageParam),
         initialPageParam: 0,
         getNextPageParam: (lastPage, pages) => (lastPage.length === FEED_PAGE_SIZE ? pages.length : undefined),
-        enabled: Boolean(selfId),
+        enabled: Boolean(selfId && followingIds),
         staleTime: SOCIAL_STALE_MS,
     });
 };

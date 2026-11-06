@@ -111,12 +111,6 @@ export const getFollowList = async (userId: string, direction: "following" | "fo
     return ids.flatMap((id) => profiles.get(id) ?? []);
 };
 
-export const isFollowing = async (selfId: string, userId: string): Promise<boolean> => {
-    const {count, error} = await client().from("follows").select("*", {count: "exact", head: true}).eq("follower_id", selfId).eq("followee_id", userId);
-    if (error) throw error;
-    return (count ?? 0) > 0;
-};
-
 export const setFollowing = async (selfId: string, userId: string, follow: boolean): Promise<void> => {
     const follows = client().from("follows");
     const {error} = follow
@@ -232,9 +226,8 @@ const withAuthors = async (rows: ActivityRow[]): Promise<FeedEvent[]> => {
     return rows.map((row) => fromRow(row, authors.get(row.user_id) ?? null));
 };
 
-/** One page of what the people someone follows did, newest first. */
-export const getFeedPage = async (selfId: string, page: number): Promise<FeedEvent[]> => {
-    const ids = await getFollowingIds(selfId);
+/** One page of what the given people (the ones followed) did, newest first. */
+export const getFeedPage = async (ids: string[], page: number): Promise<FeedEvent[]> => {
     if (!ids.length) return [];
     const from = page * FEED_PAGE_SIZE;
     const {data, error} = await client().from("activity").select("*").in("user_id", ids).order("happened_at", {ascending: false}).range(from, from + FEED_PAGE_SIZE - 1);

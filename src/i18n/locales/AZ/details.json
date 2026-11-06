@@ -68,7 +68,8 @@
         "unmark": "{{code}} işarəsini götür",
         "markSeason": "Sezonu izlədim",
         "unmarkSeason": "Sezon işarəsini götür",
-        "notAired": "Hələ yayımlanmayıb"
+        "notAired": "Hələ yayımlanmayıb",
+        "showMore": "Daha {{count}} epizod göstər ({{left}} qalıb)"
     },
     "review": {
         "title": "Sənin rəyin",

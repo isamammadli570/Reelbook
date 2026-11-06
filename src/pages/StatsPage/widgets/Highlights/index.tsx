@@ -18,7 +18,7 @@ type HighlightCardProps = {
 };
 
 const HighlightCard = ({item, label, value}: HighlightCardProps) => {
-    const poster = imageUrl(item.posterPath, IMAGE_SIZE.POSTER);
+    const poster = imageUrl(item.posterPath, IMAGE_SIZE.THUMB);
 
     return (
         <PressScale scaleTo={0.98} onPress={() => router.push(buildRoute.series(item.id))} className="flex-row items-center gap-3.5 rounded-2xl bg-surface p-2.5">

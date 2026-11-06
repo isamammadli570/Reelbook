@@ -70,7 +70,8 @@
         "unmark": "Снять отметку {{code}}",
         "markSeason": "Сезон просмотрен",
         "unmarkSeason": "Снять отметку сезона",
-        "notAired": "Ещё не вышел"
+        "notAired": "Ещё не вышел",
+        "showMore": "Показать ещё {{count}} ({{left}} осталось)"
     },
     "review": {
         "title": "Твой отзыв",

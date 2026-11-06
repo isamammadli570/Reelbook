@@ -21,6 +21,12 @@ import {cn} from "@/lib/utils";
 import type {LibraryItem, MediaSnapshot} from "@/api/library.api";
 import type {Episode, SeasonSummary} from "@/api/series.api";
 
+/**
+ * Episode rows drawn at first, and added per tap. A long season (anime, daily shows) can hold hundreds, each
+ * with its own still; the square map above still shows every one of them.
+ */
+const EPISODES_PER_PAGE = 20;
+
 type SeasonSectionProps = {
     seriesId: number;
     seasons: SeasonSummary[];
@@ -33,6 +39,11 @@ export const SeasonSection = ({seriesId, seasons, snapshot, item}: SeasonSection
     const {t} = useTranslation("details");
     const ordered = useMemo(() => orderSeasons(seasons), [seasons]);
     const [seasonNumber, setSeasonNumber] = useState(() => defaultSeasonNumber(seasons));
+    const [visibleCount, setVisibleCount] = useState(EPISODES_PER_PAGE);
+    const chooseSeason = (number: number) => {
+        setSeasonNumber(number);
+        setVisibleCount(EPISODES_PER_PAGE);
+    };
     const {data: season, isLoading, isError, error, refetch} = useGetSeason(seriesId, seasonNumber);
     const {mutate: toggleEpisode} = useToggleEpisode();
     const {mutate: setSeasonWatched} = useSetSeasonWatched();
@@ -96,12 +107,19 @@ export const SeasonSection = ({seriesId, seasons, snapshot, item}: SeasonSection
                         <Text className="font-sans-medium text-[13px] text-foreground">{isSeasonWatched ? t("episodeActions.unmarkSeason") : t("episodeActions.markSeason")}</Text>
                     </PressScale>
                 )}
-                {cells.map((cell, index) => (
+                {cells.slice(0, visibleCount).map((cell, index) => (
                     // Rows are keyed by episode, so a newly opened season rises in row after row.
-                    <Reveal key={cell.episode.id} index={index} variant="rise">
+                    <Reveal key={cell.episode.id} index={index % EPISODES_PER_PAGE} variant="rise">
                         <EpisodeRow episode={cell.episode} isWatched={cell.isWatched} isReleased={cell.isReleased} onToggle={toggle} onOpen={setOpenEpisode}/>
                     </Reveal>
                 ))}
+                {cells.length > visibleCount && (
+                    <PressScale onPress={() => setVisibleCount((count) => count + EPISODES_PER_PAGE)} className="h-10 items-center justify-center rounded-xl border border-border">
+                        <Text className="font-sans-medium text-[13px] text-foreground">
+                            {t("episodeActions.showMore", {count: Math.min(EPISODES_PER_PAGE, cells.length - visibleCount), left: cells.length - visibleCount})}
+                        </Text>
+                    </PressScale>
+                )}
             </>
         );
     };
@@ -116,7 +134,7 @@ export const SeasonSection = ({seriesId, seasons, snapshot, item}: SeasonSection
                     return (
                         <PressScale
                             key={summary.id}
-                            onPress={() => setSeasonNumber(summary.season_number)}
+                            onPress={() => chooseSeason(summary.season_number)}
                             onLayout={highlight.measure(index)}
                             aria-selected={isSelected}
                             className={cn("h-9 justify-center rounded-full border px-4", isSelected ? "border-transparent" : "border-border")}

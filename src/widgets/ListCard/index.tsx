@@ -31,7 +31,7 @@ export const ListCard = memo(({list, width, index = 0}: ListCardProps) => {
                 <View className="flex-row" style={{height: posterWidth * 1.5}}>
                     {Array.from({length: STACK_SIZE}, (_, slot) => {
                         const entry = covers[slot];
-                        const poster = imageUrl(entry?.posterPath, IMAGE_SIZE.POSTER);
+                        const poster = imageUrl(entry?.posterPath, IMAGE_SIZE.THUMB);
                         return (
                             <View
                                 key={entry?.key ?? `empty-${slot}`}

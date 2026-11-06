@@ -1,0 +1,35 @@
+{
+    "born": "Born",
+    "birthplace": "Birthplace",
+    "died": "Died",
+    "biography": "Biography",
+    "knownFor": "Known for",
+    "filmography": "Filmography",
+    "episodes_one": "{{count}} episode",
+    "episodes_other": "{{count}} episodes",
+    "showMore": "Show more ({{count}})",
+    "tabs": {
+        "movies": "Movies · {{count}}",
+        "series": "Series · {{count}}"
+    },
+    "stats": {
+        "age": "Age",
+        "lifespan": "Lived",
+        "movies": "Movies",
+        "series": "Series"
+    },
+    "departments": {
+        "acting": "Actor",
+        "directing": "Director",
+        "writing": "Writer",
+        "production": "Producer",
+        "sound": "Sound",
+        "camera": "Camera",
+        "editing": "Editor",
+        "art": "Art",
+        "costume": "Costume & make-up",
+        "visualEffects": "Visual effects",
+        "lighting": "Lighting",
+        "crew": "Crew"
+    }
+}

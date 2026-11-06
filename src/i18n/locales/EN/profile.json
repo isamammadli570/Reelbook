@@ -1,36 +1,100 @@
 {
     "title": "Profile",
     "defaultName": "Film lover",
-    "addBio": "Add a line about yourself.",
-    "edit": "Edit profile",
-    "stats": {
+    "language": "Language",
+    "reviewsEmpty": {
+        "title": "No reviews yet",
+        "description": "Reviews you write on movie and series pages show up here."
+    },
+    "backup": {
+        "title": "Backup",
+        "export": "Export",
+        "import": "Restore",
+        "imported": "Your data has been restored.",
+        "invalid": "This file is not a Reelbook backup, or its version does not match.",
+        "exportFailed": "Couldn’t export the backup.",
+        "importFailed": "Couldn’t restore the backup."
+    },
+    "guestDescription": "Keep your profile, diary, favourites and reviews in an account. Creating one or signing in takes a minute.",
+    "list": {
+        "count": "{{count}} titles",
+        "sort": "Sort",
+        "closeSort": "Close sorting",
+        "groupBy": "Group by",
+        "byStatus": "Watch status",
+        "noGrouping": "None",
+        "notFound": "There is no such list."
+    },
+    "menu": {
+        "open": "Open menu",
+        "close": "Close menu",
+        "edit": "Edit profile",
+        "settings": "Settings",
+        "signOut": "Sign out"
+    },
+    "cards": {
+        "watchTime": "Watch time",
+        "movies": "Movies",
+        "episodes": "Episodes"
+    },
+    "watchTime": {
+        "months": "{{count}}mo",
+        "days": "{{count}}d",
+        "hours": "{{count}}h"
+    },
+    "shelves": {
+        "favorites": "Favourites",
         "movies": "Movies",
         "series": "Series",
-        "episodes": "Episodes",
-        "hours": "Hours"
+        "watchlist": "Watchlist",
+        "reviews": "Reviews"
     },
-    "favorites": "Favourite four",
-    "favoritesEmpty": "Tap the heart on a movie or series page and your favourites show up here.",
-    "tabs": {
-        "diary": "Diary",
-        "favorites": "Favourites",
-        "watchlist": "Watchlist"
+    "empty": {
+        "favorites": "Tap the heart on a movie or series page and it shows up here.",
+        "movies": "Log a movie you watched and it shows up here.",
+        "series": "Mark an episode or start watching a series.",
+        "watchlist": "Bookmark what you want to watch later.",
+        "reviews": "Reviews you write show up here."
     },
-    "diaryEmpty": {
-        "title": "Your diary is empty",
-        "description": "Log a movie or mark an episode and it shows up here."
+    "sort": {
+        "lastWatched": "Last watched",
+        "lastAdded": "Last added",
+        "alphabetical": "Alphabetical",
+        "releaseDate": "Release date"
     },
-    "favoritesTabEmpty": "No favourites yet.",
-    "watchlistEmpty": "Your watchlist is empty.",
-    "language": "Language",
-    "editDialog": {
-        "title": "Edit profile",
+    "status": {
+        "watching": "Watching",
+        "notStarted": "Not started",
+        "completed": "Completed"
+    },
+    "edit": {
+        "cover": "Cover image",
+        "noCover": "No cover",
+        "noCovers": "Add movies or series to your library to pick a cover from their images.",
+        "colors": {
+            "amber": "Amber",
+            "teal": "Teal",
+            "violet": "Violet",
+            "rose": "Rose",
+            "sky": "Sky",
+            "lime": "Lime"
+        },
         "name": "Name",
         "namePlaceholder": "Isa",
+        "username": "Username",
         "bio": "About",
         "bioPlaceholder": "Series at night, movies at the weekend.",
         "save": "Save",
-        "cancel": "Cancel",
-        "tooLong": "Up to {{max}} characters."
+        "tooLong": "Up to {{max}} characters.",
+        "invalidUsername": "3–20 characters: lowercase letters, digits and underscores.",
+        "usernameTaken": "This username is taken.",
+        "usernameCheckFailed": "Couldn’t check the username. Check your connection.",
+        "avatar": "Avatar",
+        "choosePhoto": "Choose photo",
+        "changePhoto": "Change photo",
+        "removePhoto": "Remove photo",
+        "avatarColorHint": "Without a photo, your initial shows on this colour.",
+        "photoFailed": "Couldn't open that photo. Pick another one.",
+        "photoUploadFailed": "Couldn't upload the photo. Check your connection and try again."
     }
 }

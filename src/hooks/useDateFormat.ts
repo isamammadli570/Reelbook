@@ -3,6 +3,7 @@ import {useTranslation} from "react-i18next";
 import {
     formatDayMonth,
     formatDayNumber,
+    formatLongDate,
     formatMonthYear,
     formatShortDate,
     formatShortMonthYear,
@@ -22,6 +23,8 @@ export const useDateFormat = () => {
             monthsShort: asList(t("monthsShort", {returnObjects: true})),
             monthsOf: asList(t("monthsOf", {returnObjects: true})),
         };
+        // Sunday first, matching `Date.getDay()`.
+        const weekdays = asList(t("weekdaysShort", {returnObjects: true}));
         const withDate = (format: (date: Date) => string) => (value: string | null | undefined): string | null => {
             const date = parseDate(value);
             return date ? format(date) : null;
@@ -31,9 +34,11 @@ export const useDateFormat = () => {
             monthName: (month: number): string => names.months[month] ?? "",
             shortDate: withDate((date) => formatShortDate(date, names)),
             dayMonth: withDate((date) => formatDayMonth(date, names)),
+            longDate: withDate((date) => formatLongDate(date, names)),
             monthYear: withDate((date) => formatMonthYear(date, names)),
             shortMonthYear: withDate((date) => formatShortMonthYear(date, names)),
             dayNumber: withDate(formatDayNumber),
+            weekdayShort: (date: Date): string => weekdays[date.getDay()] ?? "",
         };
     }, [t]);
 };

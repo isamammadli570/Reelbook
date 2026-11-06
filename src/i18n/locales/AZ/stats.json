@@ -27,5 +27,6 @@
     "empty": {
         "title": "Statistika hələ boşdur",
         "description": "Film və epizodları işarələdikcə saatların, janrların və marafonların burada görünəcək."
-    }
+    },
+    "guestDescription": "Statistika gündəliyinə görə hesablanır. Davam etmək üçün hesab yarat və ya daxil ol."
 }

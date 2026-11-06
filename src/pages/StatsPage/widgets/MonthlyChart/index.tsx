@@ -1,5 +1,6 @@
 import {Text, View} from "react-native";
 import {useTranslation} from "react-i18next";
+import {Reveal} from "@/components/motion/Reveal";
 import {useDateFormat} from "@/hooks/useDateFormat";
 import {cn} from "@/lib/utils";
 
@@ -11,7 +12,7 @@ type MonthlyChartProps = {
     minutes: number[];
 };
 
-/** Twelve bars of hours watched per month, the busiest month in the brand colour. */
+/** Twelve bars of hours watched per month; they grow in one after another, the busiest month in the brand colour. */
 export const MonthlyChart = ({year, minutes}: MonthlyChartProps) => {
     const {t} = useTranslation("stats");
     const {monthName} = useDateFormat();
@@ -30,7 +31,7 @@ export const MonthlyChart = ({year, minutes}: MonthlyChartProps) => {
                     const isPeak = month === peak;
                     return (
                         <View key={month} className="flex-1 items-center gap-1.5" aria-label={`${monthName(month)} ${year}: ${t("hours", {count: Math.round(value / 60)})}`}>
-                            <View className={cn("w-full rounded-[5px]", isPeak ? "bg-brand" : value > 0 ? "bg-surface-raised" : "bg-background")} style={{height}}/>
+                            <Reveal index={month} variant="rise" className={cn("w-full rounded-[5px]", isPeak ? "bg-brand" : value > 0 ? "bg-surface-raised" : "bg-background")} style={{height}}/>
                             <Text className={cn("font-sans text-[11px]", isPeak ? "text-brand" : "text-muted-foreground")}>{monthName(month).charAt(0)}</Text>
                         </View>
                     );

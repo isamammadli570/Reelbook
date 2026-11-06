@@ -17,7 +17,8 @@
     },
     "actions": {
         "retry": "Try again",
-        "seeAll": "See all"
+        "seeAll": "See all",
+        "close": "Close"
     },
     "apiErrors": {
         "generic": "Something went wrong. Try again.",
@@ -28,10 +29,6 @@
     },
     "errors": {
         "load": "Couldn't load data"
-    },
-    "comingSoon": {
-        "title": "Coming soon",
-        "description": "This section arrives in the next stage."
     },
     "missingToken": {
         "title": "A TMDB key is needed",
@@ -78,5 +75,14 @@
         "October",
         "November",
         "December"
+    ],
+    "weekdaysShort": [
+        "Sun",
+        "Mon",
+        "Tue",
+        "Wed",
+        "Thu",
+        "Fri",
+        "Sat"
     ]
 }

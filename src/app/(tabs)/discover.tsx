@@ -1,7 +1,3 @@
-import {useTranslation} from "react-i18next";
-import {ComingSoonPage} from "@/widgets/ComingSoonPage";
+import {DiscoverPage} from "@/pages/DiscoverPage";
 
-export default function Route() {
-    const {t} = useTranslation();
-    return <ComingSoonPage title={t("nav.discover")}/>;
-}
+export default DiscoverPage;

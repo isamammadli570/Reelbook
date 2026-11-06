@@ -2,6 +2,7 @@ import {View} from "react-native";
 import {useTranslation} from "react-i18next";
 import {Bookmark, Heart, Plus} from "lucide-react-native";
 import {Button} from "@/components/ui/button";
+import {AddToListButton} from "@/widgets/AddToListButton";
 import {useLogWatch, useToggleFavorite, useToggleWatchlist} from "@/hooks/library";
 import {haptics} from "@/lib/haptics";
 import type {LibraryItem, MediaSnapshot} from "@/api/library.api";
@@ -53,6 +54,7 @@ export const MovieActions = ({snapshot, item}: MovieActionsProps) => {
                     toggleWatchlist(snapshot);
                 }}
             />
+            <AddToListButton snapshot={snapshot}/>
         </View>
     );
 };

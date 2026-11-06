@@ -1,0 +1,17 @@
+{
+    "title": "Kəşf et",
+    "searchLabel": "Axtarış",
+    "searchPlaceholder": "Film, serial və ya aktyor",
+    "results": "Nəticələr",
+    "noResults": "Heç nə tapılmadı. Başqa söz yoxla.",
+    "newReleases": "Yeni çıxanlar",
+    "genres": {
+        "drama": "Dram",
+        "comedy": "Komediya",
+        "animation": "Animasiya",
+        "documentary": "Sənədli",
+        "crime": "Kriminal",
+        "scifi": "Sci-fi"
+    },
+    "people": "İnsanlar"
+}

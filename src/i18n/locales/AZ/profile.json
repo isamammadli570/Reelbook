@@ -1,36 +1,100 @@
 {
     "title": "Profil",
     "defaultName": "Kinosevər",
-    "addBio": "Özün haqqında bir cümlə əlavə et.",
-    "edit": "Profili redaktə et",
-    "stats": {
-        "movies": "Film",
-        "series": "Serial",
-        "episodes": "Epizod",
-        "hours": "Saat"
-    },
-    "favorites": "Sevimli dördlük",
-    "favoritesEmpty": "Film və ya serial səhifəsində ürəyə toxun, sevimlilərin burada görünəcək.",
-    "tabs": {
-        "diary": "Gündəlik",
-        "favorites": "Sevimlilər",
-        "watchlist": "Watchlist"
-    },
-    "diaryEmpty": {
-        "title": "Gündəlik boşdur",
-        "description": "Filmi gündəliyə yaz və ya epizod işarələ, burada görünəcək."
-    },
-    "favoritesTabEmpty": "Hələ sevimli yoxdur.",
-    "watchlistEmpty": "Watchlist boşdur.",
     "language": "Dil",
-    "editDialog": {
-        "title": "Profili redaktə et",
+    "reviewsEmpty": {
+        "title": "Hələ rəy yoxdur",
+        "description": "Film və ya serial səhifəsində rəy yazdığın zaman burada görünəcək."
+    },
+    "backup": {
+        "title": "Yedək",
+        "export": "Yedəklə",
+        "import": "Bərpa et",
+        "imported": "Məlumatlar bərpa olundu.",
+        "invalid": "Bu fayl Reelbook yedəyi deyil və ya versiyası uyğun gəlmir.",
+        "exportFailed": "Yedəkləmə alınmadı.",
+        "importFailed": "Bərpa alınmadı."
+    },
+    "guestDescription": "Profilini, gündəliyini, sevimlilərini və rəylərini hesabında saxla. Hesab yaratmaq və ya daxil olmaq bir dəqiqə çəkir.",
+    "list": {
+        "count": "{{count}} başlıq",
+        "sort": "Sırala",
+        "closeSort": "Sıralamanı bağla",
+        "groupBy": "Qruplaşdır",
+        "byStatus": "İzləmə statusu",
+        "noGrouping": "Yoxdur",
+        "notFound": "Belə siyahı yoxdur."
+    },
+    "menu": {
+        "open": "Menyunu aç",
+        "close": "Menyunu bağla",
+        "edit": "Profili redaktə et",
+        "settings": "Ayarlar",
+        "signOut": "Çıxış et"
+    },
+    "cards": {
+        "watchTime": "İzləmə vaxtı",
+        "movies": "Film",
+        "episodes": "Epizod"
+    },
+    "watchTime": {
+        "months": "{{count}} ay",
+        "days": "{{count}} g",
+        "hours": "{{count}} s"
+    },
+    "shelves": {
+        "favorites": "Sevimlilər",
+        "movies": "Filmlər",
+        "series": "Seriallar",
+        "watchlist": "Watchlist",
+        "reviews": "Rəylər"
+    },
+    "empty": {
+        "favorites": "Film və ya serial səhifəsində ürəyə toxun, burada görünəcək.",
+        "movies": "İzlədiyin filmi gündəliyə yaz, burada görünəcək.",
+        "series": "Serialda epizod işarələ və ya izləməyə başla.",
+        "watchlist": "Sonra izləmək istədiklərini əlfəcinlə.",
+        "reviews": "Yazdığın rəylər burada görünəcək."
+    },
+    "sort": {
+        "lastWatched": "Son izlənən",
+        "lastAdded": "Son əlavə edilən",
+        "alphabetical": "Əlifba ilə",
+        "releaseDate": "Buraxılış tarixi"
+    },
+    "status": {
+        "watching": "İzləyirəm",
+        "notStarted": "Başlamamışam",
+        "completed": "Bitirmişəm"
+    },
+    "edit": {
+        "cover": "Örtük şəkli",
+        "noCover": "Örtüksüz",
+        "noCovers": "Kitabxanana film və ya serial əlavə et, onların şəkillərindən örtük seçə biləcəksən.",
+        "colors": {
+            "amber": "Kəhrəba",
+            "teal": "Firuzəyi",
+            "violet": "Bənövşəyi",
+            "rose": "Çəhrayı",
+            "sky": "Səma",
+            "lime": "Yaşıl"
+        },
         "name": "Ad",
         "namePlaceholder": "İsa",
+        "username": "İstifadəçi adı",
         "bio": "Haqqında",
         "bioPlaceholder": "Seriallar gecələr, filmlər həftəsonu.",
         "save": "Yadda saxla",
-        "cancel": "Ləğv et",
-        "tooLong": "Ən çox {{max}} simvol ola bilər."
+        "tooLong": "Ən çox {{max}} simvol ola bilər.",
+        "invalidUsername": "3–20 simvol: kiçik hərf, rəqəm və alt xətt.",
+        "usernameTaken": "Bu istifadəçi adı artıq tutulub.",
+        "usernameCheckFailed": "İstifadəçi adını yoxlamaq alınmadı. İnterneti yoxla.",
+        "avatar": "Avatar",
+        "choosePhoto": "Şəkil seç",
+        "changePhoto": "Şəkli dəyiş",
+        "removePhoto": "Şəkli sil",
+        "avatarColorHint": "Şəkil olmayanda adının ilk hərfi bu rəngdə görünür.",
+        "photoFailed": "Şəkli açmaq alınmadı. Başqasını seç.",
+        "photoUploadFailed": "Şəkli yükləmək alınmadı. İnternetə qoşul və yenidən cəhd et."
     }
 }

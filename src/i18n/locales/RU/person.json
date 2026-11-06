@@ -1,0 +1,37 @@
+{
+    "born": "Родился",
+    "birthplace": "Место рождения",
+    "died": "Умер",
+    "biography": "Биография",
+    "knownFor": "Известен по",
+    "filmography": "Фильмография",
+    "episodes_one": "{{count}} эпизод",
+    "episodes_few": "{{count}} эпизода",
+    "episodes_many": "{{count}} эпизодов",
+    "episodes_other": "{{count}} эпизода",
+    "showMore": "Показать ещё ({{count}})",
+    "tabs": {
+        "movies": "Фильмы · {{count}}",
+        "series": "Сериалы · {{count}}"
+    },
+    "stats": {
+        "age": "Возраст",
+        "lifespan": "Прожил лет",
+        "movies": "Фильмы",
+        "series": "Сериалы"
+    },
+    "departments": {
+        "acting": "Актёр",
+        "directing": "Режиссёр",
+        "writing": "Сценарист",
+        "production": "Продюсер",
+        "sound": "Звук",
+        "camera": "Оператор",
+        "editing": "Монтаж",
+        "art": "Художник",
+        "costume": "Костюм и грим",
+        "visualEffects": "Визуальные эффекты",
+        "lighting": "Свет",
+        "crew": "Съёмочная группа"
+    }
+}

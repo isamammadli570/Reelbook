@@ -1,6 +1,8 @@
-import {Pressable, Text, type PressableProps} from "react-native";
+import {Text, type PressableProps} from "react-native";
 import type {LucideIcon} from "lucide-react-native";
 import {useCSSVariable} from "uniwind";
+import {PopOnActivate} from "@/components/motion/PopOnActivate";
+import {PressScale} from "@/components/motion/PressScale";
 import {cn} from "@/lib/utils";
 
 const VARIANTS = {
@@ -26,12 +28,16 @@ export const Button = ({label, icon: Icon, isIconFilled, variant = "secondary", 
     const iconColor = String(useCSSVariable(styles.iconColor));
 
     return (
-        <Pressable
-            className={cn("h-12 flex-row items-center justify-center gap-2 rounded-2xl active:opacity-80", label ? "px-4" : "w-12", styles.container, className)}
+        <PressScale
+            className={cn("h-12 flex-row items-center justify-center gap-2 rounded-2xl", label ? "px-4" : "w-12", styles.container, className)}
             {...props}
         >
-            {Icon && <Icon size={20} strokeWidth={2} color={iconColor} fill={isIconFilled ? iconColor : "transparent"}/>}
+            {Icon && (
+                <PopOnActivate active={Boolean(isIconFilled)}>
+                    <Icon size={20} strokeWidth={2} color={iconColor} fill={isIconFilled ? iconColor : "transparent"}/>
+                </PopOnActivate>
+            )}
             {label && <Text className={cn("font-sans-semibold text-[15px]", styles.text)}>{label}</Text>}
-        </Pressable>
+        </PressScale>
     );
 };

@@ -12,6 +12,7 @@ import {
     toggleWatchlist,
     updateItem,
     refreshSnapshot,
+    setReview,
 } from "@/helpers/library";
 
 /** What the app remembers about a title even when TMDB is not asked: enough to draw a poster card. */
@@ -39,6 +40,12 @@ export type SeriesSnapshot = {
 
 export type EpisodeRef = {season: number; episode: number};
 
+/** The user's own written thoughts on a title; one per title, edited in place. */
+export type Review = {
+    text: string;
+    updatedAt: string;
+};
+
 /** One viewing of a movie. */
 export type DiaryEntry = {
     id: string;
@@ -58,10 +65,14 @@ export type LibraryItem = MediaSnapshot & {
     diary: DiaryEntry[];
     /** Watched episodes: `episodeKey(season, episode)` → ISO date. */
     episodes: Record<string, string>;
+    /** Optional so entries saved before reviews existed still read correctly. */
+    review?: Review | null;
 };
 
 export type Library = {
     items: Record<string, LibraryItem>;
+    /** When each removed title was last deleted, so the deletion can reach other devices. */
+    removed?: Record<string, string>;
 };
 
 /* ------------------------------ storage ------------------------------ */
@@ -91,7 +102,11 @@ export const toggleFavoriteItem = (snapshot: MediaSnapshot) => modifyLibrary((li
 
 export const toggleFollowingItem = (snapshot: MediaSnapshot) => modifyLibrary((library) => updateItem(library, snapshot, (item) => toggleFollowing(item), now()));
 
-export const rateItem = ({snapshot, rating}: {snapshot: MediaSnapshot; rating: number | null}) =>
+/** An empty text removes the review. */
+export const saveReview = ({snapshot, text}: {snapshot: MediaSnapshot; text: string}) =>
+    modifyLibrary((library) => updateItem(library, snapshot, (item) => setReview(item, text, now()), now()));
+
+export const rateItem =({snapshot, rating}: {snapshot: MediaSnapshot; rating: number | null}) =>
     modifyLibrary((library) => updateItem(library, snapshot, (item) => setRating(item, rating), now()));
 
 export const logWatch = ({snapshot, watchedAt}: {snapshot: MediaSnapshot; watchedAt?: string}) =>
@@ -105,6 +120,9 @@ export const toggleEpisodeWatched = ({snapshot, episode}: {snapshot: MediaSnapsh
 
 export const setSeasonWatched = ({snapshot, season, episodes, isWatched}: {snapshot: MediaSnapshot; season: number; episodes: number[]; isWatched: boolean}) =>
     modifyLibrary((library) => updateItem(library, snapshot, (item) => setEpisodesWatched(item, season, episodes, isWatched, now()), now()));
+
+/** Replaces the whole library, used when a backup is restored. */
+export const replaceLibrary = (library: Library) => modifyLibrary(() => library);
 
 /** Keeps a stored series' season layout current without creating an entry for unseen titles. */
 export const refreshItemSnapshot = (snapshot: MediaSnapshot) => modifyLibrary((library) => refreshSnapshot(library, snapshot));

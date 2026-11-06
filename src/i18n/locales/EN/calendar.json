@@ -1,0 +1,15 @@
+{
+    "title": "Calendar",
+    "thisWeek": "This week: {{count}} episodes",
+    "today": "Today",
+    "tomorrow": "Tomorrow",
+    "noTracked": {
+        "title": "Your calendar is empty",
+        "description": "Tap \"Start watching\" on a series page and its new episodes will show up here."
+    },
+    "noneThisWeek": {
+        "title": "No new episodes this week",
+        "description": "Upcoming dates for the series you follow will show up here."
+    },
+    "guestDescription": "The calendar is built from the series you follow. Create an account or sign in to continue."
+}

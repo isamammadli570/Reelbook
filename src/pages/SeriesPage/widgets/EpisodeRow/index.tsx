@@ -3,6 +3,7 @@ import {Pressable, Text, View} from "react-native";
 import {useTranslation} from "react-i18next";
 import {Check} from "lucide-react-native";
 import {useCSSVariable} from "uniwind";
+import {PopOnActivate} from "@/components/motion/PopOnActivate";
 import {Image} from "@/components/ui/image";
 import {useDateFormat} from "@/hooks/useDateFormat";
 import {useFormatRuntime} from "@/hooks/useFormatRuntime";
@@ -47,7 +48,9 @@ export const EpisodeRow = memo(({episode, isWatched, isReleased, onToggle}: Epis
                     hitSlop={6}
                     className={cn("mr-1 h-10 w-10 items-center justify-center rounded-full", isWatched ? "bg-success" : "border-[1.5px] border-border")}
                 >
-                    <Check size={18} strokeWidth={2.5} color={isWatched ? successInk : foreground}/>
+                    <PopOnActivate active={isWatched}>
+                        <Check size={18} strokeWidth={2.5} color={isWatched ? successInk : foreground}/>
+                    </PopOnActivate>
                 </Pressable>
             )}
         </View>

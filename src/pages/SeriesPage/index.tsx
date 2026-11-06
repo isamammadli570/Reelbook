@@ -11,7 +11,10 @@ import {ExpandableText} from "@/widgets/ExpandableText";
 import {Recommendations} from "@/widgets/Recommendations";
 import {Section} from "@/widgets/Section";
 import {RatingPanel} from "@/widgets/RatingPanel";
+import {ReviewSection} from "@/widgets/ReviewSection";
 import {StatStrip} from "@/widgets/StatStrip";
+import {TrailerButton} from "@/widgets/TrailerButton";
+import {WhereToWatch} from "@/widgets/WhereToWatch";
 import {SeasonSection} from "@/pages/SeriesPage/widgets/SeasonSection";
 import {SeriesActions} from "@/pages/SeriesPage/widgets/SeriesActions";
 import {SeriesProgress} from "@/pages/SeriesPage/widgets/SeriesProgress";
@@ -21,6 +24,7 @@ import {useDateFormat} from "@/hooks/useDateFormat";
 import {useFormatRuntime} from "@/hooks/useFormatRuntime";
 import {formatScore} from "@/helpers/details";
 import {seriesSnapshot} from "@/helpers/library";
+import {translateGenre} from "@/helpers/genres";
 import {mediaYear} from "@/helpers/media";
 import {MEDIA_TYPE, SERIES_STATUS_KEY} from "@/constants/other";
 
@@ -28,7 +32,7 @@ import {MEDIA_TYPE, SERIES_STATUS_KEY} from "@/constants/other";
 export const SeriesPage = () => {
     const {id} = useLocalSearchParams<{id: string}>();
     const seriesId = Number(id);
-    const {t} = useTranslation(["details", "common"]);
+    const {t, i18n} = useTranslation(["details", "common"]);
     const formatRuntime = useFormatRuntime();
     const {shortDate} = useDateFormat();
     const {data: series, isLoading, isError, error, refetch} = useGetSeries(seriesId);
@@ -45,7 +49,7 @@ export const SeriesPage = () => {
     const network = series.networks[0]?.name;
     const nextAirDate = shortDate(series.next_episode_to_air?.air_date);
     const episodeRuntime = series.episode_run_time[0] ?? series.next_episode_to_air?.runtime;
-    const meta = [series.genres.slice(0, 2).map((genre) => genre.name).join(", "), statusKey ? t(`status.${statusKey}`) : null].filter(Boolean).join(" · ");
+    const meta = [series.genres.slice(0, 2).map((genre) => translateGenre(genre.name, i18n.language)).join(", "), statusKey ? t(`status.${statusKey}`) : null].filter(Boolean).join(" · ");
 
     const stats = [
         {value: formatScore(series.vote_average), label: t("tmdb")},
@@ -63,6 +67,7 @@ export const SeriesPage = () => {
                 posterPath={series.poster_path}
                 eyebrow={[t("common:mediaType.tv"), network ?? year].filter(Boolean).join(" · ")}
                 meta={meta}
+                action={<TrailerButton videos={series.videos.results}/>}
             />
             <DetailBody>
                 <StatStrip stats={stats}/>
@@ -73,6 +78,8 @@ export const SeriesPage = () => {
                 <Section title={t("overview")}>
                     <ExpandableText text={series.overview || t("noOverview")}/>
                 </Section>
+                <WhereToWatch results={series["watch/providers"].results}/>
+                <ReviewSection snapshot={snapshot} item={item}/>
                 <SeasonSection seriesId={seriesId} seasons={series.seasons} snapshot={snapshot} item={item}/>
                 {series.credits.cast.length > 0 && (
                     <Section title={t("cast")}>

@@ -7,6 +7,9 @@ import {Inter_400Regular, Inter_500Medium, Inter_600SemiBold} from "@expo-google
 import {InstrumentSerif_400Regular, InstrumentSerif_400Regular_Italic} from "@expo-google-fonts/instrument-serif";
 import {useCSSVariable} from "uniwind";
 import {QueryProvider} from "@/provider/QueryProvider";
+import {RemindersProvider} from "@/provider/RemindersProvider";
+import {SyncProvider} from "@/provider/SyncProvider";
+import {AccountPrompt} from "@/widgets/AccountPrompt";
 
 // Expo Router requires route files to default-export their component.
 export default function RootLayout() {
@@ -17,8 +20,13 @@ export default function RootLayout() {
 
     return (
         <QueryProvider>
-            <StatusBar style="light"/>
-            <Stack screenOptions={{headerShown: false, contentStyle: {backgroundColor: background}}}/>
+            <SyncProvider>
+                <StatusBar style="light"/>
+                <AccountPrompt/>
+                <RemindersProvider>
+                    <Stack screenOptions={{headerShown: false, contentStyle: {backgroundColor: background}}}/>
+                </RemindersProvider>
+            </SyncProvider>
         </QueryProvider>
     );
 }

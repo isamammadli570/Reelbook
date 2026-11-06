@@ -66,5 +66,29 @@
         "markSeason": "Sezonu izlədim",
         "unmarkSeason": "Sezon işarəsini götür",
         "notAired": "Hələ yayımlanmayıb"
+    },
+    "review": {
+        "title": "Sənin rəyin",
+        "write": "Rəy yaz",
+        "edit": "Redaktə et",
+        "label": "Rəyin",
+        "placeholder": "Bu barədə nə düşünürsən? Bir neçə cümlə kifayətdir.",
+        "save": "Yadda saxla",
+        "cancel": "Ləğv et",
+        "tooLong": "Ən çox {{max}} simvol ola bilər."
+    },
+    "trailer": {
+        "label": "Treyler",
+        "open": "Treyleri YouTube-da aç: {{name}}"
+    },
+    "watch": {
+        "title": "Harada izləmək olar",
+        "kinds": {
+            "stream": "Abunə ilə",
+            "rent": "İcarə",
+            "buy": "Satın al"
+        },
+        "none": "Bu ölkədə hələ heç bir platformada yoxdur.",
+        "source": "Məlumat: JustWatch"
     }
 }

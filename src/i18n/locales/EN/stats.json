@@ -27,5 +27,6 @@
     "empty": {
         "title": "No stats yet",
         "description": "As you log movies and episodes, your hours, genres and marathons show up here."
-    }
+    },
+    "guestDescription": "Stats are calculated from your diary. Create an account or sign in to continue."
 }

@@ -6,10 +6,22 @@ export const ROUTES = {
     PROFILE: "/profile",
     MOVIE: "/movie/[id]",
     SERIES: "/series/[id]",
+    SIGN_IN: "/sign-in",
+    SIGN_UP: "/sign-up",
+    FORGOT_PASSWORD: "/forgot-password",
+    SETTINGS: "/settings",
+    EDIT_PROFILE: "/edit-profile",
+    SHELF: "/list/[kind]",
+    LISTS: "/lists",
+    USER_LIST: "/lists/[id]",
+    PERSON: "/person/[id]",
 } as const;
 
 export const buildRoute = {
     movie: (movieId: number) => `/movie/${movieId}`,
     series: (seriesId: number) => `/series/${seriesId}`,
+    shelf: (shelf: string) => `/list/${shelf}`,
+    userList: (listId: string) => `/lists/${listId}`,
+    person: (personId: number) => `/person/${personId}`,
     media: (media: {id: number; media_type: "movie" | "tv"}) => (media.media_type === "tv" ? buildRoute.series(media.id) : buildRoute.movie(media.id)),
 };

@@ -127,6 +127,14 @@ export const longestMarathon = (watches: Watch[]): {item: LibraryItem; episodes:
     return best && best.episodes >= 2 ? best : null;
 };
 
+/** Watch time as months (of 30 days), days and hours, like "1mo 4d 15h" on the profile. */
+export const splitWatchTime = (minutes: number): {months: number; days: number; hours: number} => {
+    const totalHours = Math.floor(minutes / 60);
+    const months = Math.floor(totalHours / (24 * 30));
+    const rest = totalHours - months * 24 * 30;
+    return {months, days: Math.floor(rest / 24), hours: rest % 24};
+};
+
 /** Whole hours, and the same time expressed in days, for the big headline number. */
 export const watchTime = (minutes: number): {hours: number; days: number} => ({
     hours: Math.round(minutes / 60),

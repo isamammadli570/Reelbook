@@ -8,4 +8,8 @@ export const mediaTitle = (media: Titled): string => media.title ?? media.name ?
 
 export const mediaYear = (media: Dated): string => (media.release_date || media.first_air_date || "").slice(0, 4);
 
-export const imageUrl = (path: string | null | undefined, size: ImageSize): string | null => (path ? `${TMDB_IMAGE_BASE}/${size}${path}` : null);
+/** Alternates two lists so a mixed feed shows movies and series side by side. */
+export const interleave = <T>(first: T[], second: T[]): T[] =>
+    first.flatMap((item, index) => (index < second.length ? [item, second[index]] : [item])).concat(second.slice(first.length));
+
+export const imageUrl =(path: string | null | undefined, size: ImageSize): string | null => (path ? `${TMDB_IMAGE_BASE}/${size}${path}` : null);

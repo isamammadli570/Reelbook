@@ -6,4 +6,9 @@ export const API_ENDPOINTS = {
     MOVIE: "/movie",
     TV: "/tv",
     SEARCH: "/search/multi",
+    NOW_PLAYING: "/movie/now_playing",
+    ON_THE_AIR: "/tv/on_the_air",
+    DISCOVER_MOVIE: "/discover/movie",
+    DISCOVER_TV: "/discover/tv",
+    PERSON: "/person",
 } as const;

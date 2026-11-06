@@ -1,0 +1,39 @@
+{
+    "title": "Your lists",
+    "listCount": "{{count}} lists",
+    "count": "{{count}} titles",
+    "empty": "Make your own list, like \"Best sci-fi\" or \"One-night miniseries\".",
+    "emptyTitle": "No lists yet",
+    "guestDescription": "Lists are kept in your account. Sign in to make one.",
+    "notFound": "This list wasn’t found.",
+    "edit": "Edit list",
+    "emptyListTitle": "This list is empty",
+    "emptyList": "Tap the list button on a movie or series page and pick this list.",
+    "addTo": {
+        "title": "Add to list",
+        "newList": "New list"
+    },
+    "form": {
+        "createTitle": "New list",
+        "editTitle": "Edit list",
+        "create": "Create",
+        "save": "Save",
+        "cancel": "Cancel",
+        "name": "Name",
+        "namePlaceholder": "Best sci-fi",
+        "description": "Description",
+        "descriptionPlaceholder": "What is this list about?",
+        "nameRequired": "Give the list a name.",
+        "tooLong": "Up to {{max}} characters."
+    },
+    "manage": {
+        "start": "Manage titles",
+        "done": "Done",
+        "remove": "Remove"
+    },
+    "delete": {
+        "title": "Delete list",
+        "description": "\"{{name}}\" will be removed from all your devices. This can’t be undone.",
+        "confirm": "Delete"
+    }
+}

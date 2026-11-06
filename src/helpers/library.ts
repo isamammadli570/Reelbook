@@ -6,7 +6,7 @@ import {MEDIA_TYPE, type MediaType} from "@/constants/other";
 import {isReleased} from "@/helpers/details";
 import {mediaYear} from "@/helpers/media";
 
-export const createLibrary = (): Library => ({items: {}});
+export const createLibrary = (): Library => ({items: {}, removed: {}});
 
 export const itemKey = (mediaType: MediaType, id: number): string => `${mediaType}:${id}`;
 
@@ -70,11 +70,24 @@ const createItem = (snapshot: MediaSnapshot, nowIso: string): LibraryItem => ({
     rating: null,
     diary: [],
     episodes: {},
+    review: null,
 });
 
 /** An item the user no longer has any relation to is dropped instead of lingering in storage. */
 export const isEmptyItem = (item: LibraryItem): boolean =>
-    !item.isInWatchlist && !item.isFavorite && !item.isFollowing && item.rating === null && !item.diary.length && !Object.keys(item.episodes).length;
+    !item.isInWatchlist &&
+    !item.isFavorite &&
+    !item.isFollowing &&
+    item.rating === null &&
+    !item.diary.length &&
+    !Object.keys(item.episodes).length &&
+    !item.review;
+
+/** Trims the text; blank input clears the review rather than saving an empty one. */
+export const setReview = (item: LibraryItem, text: string, nowIso: string): LibraryItem => {
+    const trimmed = text.trim();
+    return {...item, review: trimmed ? {text: trimmed, updatedAt: nowIso} : null};
+};
 
 /** Applies `change` to the title's item (creating it when needed), refreshes its snapshot and prunes it if empty. */
 export const updateItem = (library: Library, snapshot: MediaSnapshot, change: (item: LibraryItem) => LibraryItem, nowIso: string): Library => {
@@ -83,9 +96,15 @@ export const updateItem = (library: Library, snapshot: MediaSnapshot, change: (i
     const next = {...change({...current, ...snapshot}), updatedAt: nowIso};
 
     const items = {...library.items};
-    if (isEmptyItem(next)) delete items[key];
-    else items[key] = next;
-    return {...library, items};
+    const removed = {...library.removed};
+    if (isEmptyItem(next)) {
+        delete items[key];
+        removed[key] = nowIso;
+    } else {
+        items[key] = next;
+        delete removed[key];
+    }
+    return {...library, items, removed};
 };
 
 /** Updates the stored snapshot of a title only if the user already has it, without touching `updatedAt`. */
@@ -208,7 +227,13 @@ export const toMediaSummary = (item: LibraryItem): MediaSummary => ({
     genre_ids: [],
 });
 
-export const favoriteItems = (library: Library): LibraryItem[] =>
+/** Every title with a written review, most recently written first. */
+export const reviewedItems = (library: Library): LibraryItem[] =>
+    Object.values(library.items)
+        .filter((item) => Boolean(item.review))
+        .sort((a, b) => (b.review?.updatedAt ?? "").localeCompare(a.review?.updatedAt ?? ""));
+
+export const favoriteItems =(library: Library): LibraryItem[] =>
     Object.values(library.items)
         .filter((item) => item.isFavorite)
         .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));

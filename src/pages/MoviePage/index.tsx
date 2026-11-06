@@ -10,7 +10,10 @@ import {ExpandableText} from "@/widgets/ExpandableText";
 import {Recommendations} from "@/widgets/Recommendations";
 import {Section} from "@/widgets/Section";
 import {RatingPanel} from "@/widgets/RatingPanel";
+import {ReviewSection} from "@/widgets/ReviewSection";
 import {StatStrip} from "@/widgets/StatStrip";
+import {TrailerButton} from "@/widgets/TrailerButton";
+import {WhereToWatch} from "@/widgets/WhereToWatch";
 import {MovieActions} from "@/pages/MoviePage/widgets/MovieActions";
 import {MovieDiary} from "@/pages/MoviePage/widgets/MovieDiary";
 import {useGetMovie} from "@/hooks/details";
@@ -18,13 +21,14 @@ import {useLibraryItem, useSyncSnapshot} from "@/hooks/library";
 import {useFormatRuntime} from "@/hooks/useFormatRuntime";
 import {directorNames, formatScore} from "@/helpers/details";
 import {movieSnapshot} from "@/helpers/library";
+import {translateGenre} from "@/helpers/genres";
 import {mediaYear} from "@/helpers/media";
 import {MEDIA_TYPE} from "@/constants/other";
 
 /** A movie: backdrop and poster, key numbers, overview, cast and similar movies. */
 export const MoviePage = () => {
     const {id} = useLocalSearchParams<{id: string}>();
-    const {t} = useTranslation(["details", "common"]);
+    const {t, i18n} = useTranslation(["details", "common"]);
     const formatRuntime = useFormatRuntime();
     const movieId = Number(id);
     const {data: movie, isLoading, isError, error, refetch} = useGetMovie(movieId);
@@ -37,7 +41,7 @@ export const MoviePage = () => {
 
     const directors = directorNames(movie.credits.crew);
     const year = mediaYear(movie);
-    const meta = [movie.genres.slice(0, 2).map((genre) => genre.name).join(", "), directors.length ? t("directedBy", {names: directors.join(", ")}) : null]
+    const meta = [movie.genres.slice(0, 2).map((genre) => translateGenre(genre.name, i18n.language)).join(", "), directors.length ? t("directedBy", {names: directors.join(", ")}) : null]
         .filter(Boolean)
         .join(" · ");
 
@@ -55,6 +59,7 @@ export const MoviePage = () => {
                 posterPath={movie.poster_path}
                 eyebrow={[t("common:mediaType.movie"), year].filter(Boolean).join(" · ")}
                 meta={meta}
+                action={<TrailerButton videos={movie.videos.results}/>}
             />
             <DetailBody>
                 <StatStrip stats={stats}/>
@@ -63,6 +68,8 @@ export const MoviePage = () => {
                 <Section title={t("overview")}>
                     <ExpandableText text={movie.overview || t("noOverview")}/>
                 </Section>
+                <WhereToWatch results={movie["watch/providers"].results}/>
+                <ReviewSection snapshot={snapshot} item={item}/>
                 <MovieDiary snapshot={snapshot} item={item}/>
                 {movie.credits.cast.length > 0 && (
                     <Section title={t("cast")}>

@@ -1,0 +1,23 @@
+{
+    "title": "Settings",
+    "account": {
+        "title": "Account",
+        "signedInAs": "Signed in as",
+        "signOut": "Sign out",
+        "guestDescription": "Create an account to keep your diary and favourites on all your devices."
+    },
+    "about": {
+        "title": "About",
+        "tmdb": "Movie and series data comes from TMDB. This product uses the TMDB API but is not endorsed or certified by TMDB."
+    },
+    "reminders": {
+        "title": "Notifications",
+        "label": "New episodes",
+        "description": "We'll let you know at {{hour}} on the day a new episode of a show you follow comes out.",
+        "webOnly": "Notifications work in the phone app.",
+        "denied": "Notifications are turned off for Reelbook. Turn them on in your phone's settings.",
+        "openSettings": "Open settings",
+        "channel": "New episodes",
+        "body": "{{code}} · {{name}} is out today"
+    }
+}

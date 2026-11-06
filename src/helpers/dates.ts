@@ -32,5 +32,8 @@ export const formatMonthYear = (date: Date, names: MonthNames): string => `${nam
 /** "noy 26", under a big day number. */
 export const formatShortMonthYear = (date: Date, names: MonthNames): string => `${names.monthsShort[date.getMonth()]} ${pad(date.getFullYear() % 100)}`;
 
+/** "3 aprel 1973" */
+export const formatLongDate = (date: Date, names: MonthNames): string => `${formatDayMonth(date, names)} ${date.getFullYear()}`;
+
 /** "05" */
 export const formatDayNumber = (date: Date): string => pad(date.getDate());

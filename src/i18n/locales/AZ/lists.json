@@ -1,0 +1,39 @@
+{
+    "title": "Siyahıların",
+    "listCount": "{{count}} siyahı",
+    "count": "{{count}} başlıq",
+    "empty": "Öz siyahını yarat: \"Ən yaxşı sci-fi\", \"Bir gecəlik mini-seriallar\" kimi.",
+    "emptyTitle": "Hələ siyahın yoxdur",
+    "guestDescription": "Siyahılar hesabında saxlanılır. Siyahı yaratmaq üçün daxil ol.",
+    "notFound": "Bu siyahı tapılmadı.",
+    "edit": "Siyahını redaktə et",
+    "emptyListTitle": "Siyahı boşdur",
+    "emptyList": "Film və ya serial səhifəsində siyahı düyməsinə toxun və bu siyahını seç.",
+    "addTo": {
+        "title": "Siyahıya əlavə et",
+        "newList": "Yeni siyahı"
+    },
+    "form": {
+        "createTitle": "Yeni siyahı",
+        "editTitle": "Siyahını redaktə et",
+        "create": "Yarat",
+        "save": "Yadda saxla",
+        "cancel": "Ləğv et",
+        "name": "Ad",
+        "namePlaceholder": "Ən yaxşı sci-fi",
+        "description": "Təsvir",
+        "descriptionPlaceholder": "Bu siyahı nə haqdadır?",
+        "nameRequired": "Siyahıya ad ver.",
+        "tooLong": "Ən çox {{max}} simvol ola bilər."
+    },
+    "manage": {
+        "start": "Başlıqları idarə et",
+        "done": "Hazırdır",
+        "remove": "Çıxar"
+    },
+    "delete": {
+        "title": "Siyahını sil",
+        "description": "\"{{name}}\" siyahısı bütün cihazlarından silinəcək. Bu geri qaytarılmır.",
+        "confirm": "Sil"
+    }
+}

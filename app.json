@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "SerieMovies",
-    "slug": "SerieMovies",
-    "scheme": "seriemovies",
+    "name": "Reelbook",
+    "slug": "reelbook",
+    "scheme": "reelbook",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -30,7 +30,23 @@
       "expo-status-bar",
       "expo-font",
       "expo-image",
-      "expo-localization"
+      "expo-localization",
+      "expo-sharing",
+      [
+        "expo-notifications",
+        {
+          "enableRemoteNotifications": false,
+          "color": "#F5A524"
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Reelbook uses your photos so you can choose a profile picture.",
+          "cameraPermission": false,
+          "microphonePermission": false
+        }
+      ]
     ]
   }
 }

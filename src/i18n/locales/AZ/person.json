@@ -1,0 +1,35 @@
+{
+    "born": "Doğulub",
+    "birthplace": "Doğum yeri",
+    "died": "Vəfat edib",
+    "biography": "Bioqrafiya",
+    "knownFor": "Tanınır",
+    "filmography": "Filmoqrafiya",
+    "episodes_one": "{{count}} epizod",
+    "episodes_other": "{{count}} epizod",
+    "showMore": "Daha çox göstər ({{count}})",
+    "tabs": {
+        "movies": "Filmlər · {{count}}",
+        "series": "Seriallar · {{count}}"
+    },
+    "stats": {
+        "age": "Yaş",
+        "lifespan": "Ömrü",
+        "movies": "Film",
+        "series": "Serial"
+    },
+    "departments": {
+        "acting": "Aktyor",
+        "directing": "Rejissor",
+        "writing": "Ssenarist",
+        "production": "Prodüser",
+        "sound": "Səs",
+        "camera": "Operator",
+        "editing": "Montaj",
+        "art": "Rəssam",
+        "costume": "Kostyum və qrim",
+        "visualEffects": "Vizual effektlər",
+        "lighting": "İşıq",
+        "crew": "Heyət"
+    }
+}

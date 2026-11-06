@@ -1,5 +1,5 @@
 import {describe, expect, it} from "vitest";
-import {collectWatches, longestMarathon, monthlyMinutes, summarize, topGenres, topSeries, watchTime, watchesInYear} from "@/helpers/stats";
+import {collectWatches, longestMarathon, monthlyMinutes, splitWatchTime, summarize, topGenres, topSeries, watchTime, watchesInYear} from "@/helpers/stats";
 import type {Library, LibraryItem} from "@/api/library.api";
 
 const base = {posterPath: null, backdropPath: null, year: "2024", addedAt: "", updatedAt: "", isInWatchlist: false, isFavorite: false, isFollowing: false};
@@ -87,6 +87,13 @@ describe("series highlights", () => {
 
     it("needs at least two episodes in a day for a marathon", () => {
         expect(longestMarathon(watchesInYear(watches, 2025))).toBeNull();
+    });
+});
+
+describe("splitWatchTime", () => {
+    it("splits minutes into months, days and hours", () => {
+        expect(splitWatchTime(((30 + 4) * 24 + 15) * 60 + 59)).toEqual({months: 1, days: 4, hours: 15});
+        expect(splitWatchTime(90)).toEqual({months: 0, days: 0, hours: 1});
     });
 });
 

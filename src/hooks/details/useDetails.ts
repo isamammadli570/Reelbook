@@ -1,6 +1,7 @@
 import {useQuery} from "@tanstack/react-query";
 import {getMovie} from "@/api/movies.api";
 import {getSeason, getSeries} from "@/api/series.api";
+import {getPerson} from "@/api/people.api";
 import {hasTmdbToken} from "@/lib/env";
 import {QUERY_KEYS} from "@/constants/other";
 
@@ -26,4 +27,11 @@ export const useGetSeason = (seriesId: number, seasonNumber: number | null) =>
         queryKey: [QUERY_KEYS.SEASON, seriesId, seasonNumber],
         queryFn: () => getSeason(seriesId, seasonNumber ?? 0),
         enabled: hasTmdbToken && isValidId(seriesId) && seasonNumber !== null,
+    });
+
+export const useGetPerson = (personId: number) =>
+    useQuery({
+        queryKey: [QUERY_KEYS.PERSON, personId],
+        queryFn: () => getPerson(personId),
+        enabled: hasTmdbToken && isValidId(personId),
     });

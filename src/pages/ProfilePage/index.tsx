@@ -1,70 +1,73 @@
 import {useMemo, useState} from "react";
-import {Text} from "react-native";
+import {View} from "react-native";
 import {router} from "expo-router";
 import {useTranslation} from "react-i18next";
-import {SegmentedControl} from "@/components/ui/segmented-control";
-import {PosterGrid} from "@/widgets/PosterGrid";
+import {AccountRequired} from "@/widgets/AccountRequired";
+import {PosterRow} from "@/widgets/PosterRow";
 import {Screen} from "@/widgets/Screen";
-import {Section} from "@/widgets/Section";
-import {StatStrip} from "@/widgets/StatStrip";
-import {DiaryList} from "@/pages/ProfilePage/widgets/DiaryList";
-import {LanguagePicker} from "@/pages/ProfilePage/widgets/LanguagePicker";
-import {ProfileHeader} from "@/pages/ProfilePage/widgets/ProfileHeader";
-import {useFavorites, useWatches, useWatchlist} from "@/hooks/library";
-import {toMediaSummary} from "@/helpers/library";
-import {summarize, watchTime} from "@/helpers/stats";
-import {buildRoute} from "@/constants/routes";
-import {POSTER_COLUMNS} from "@/constants/other";
-import type {MediaSummary} from "@/api/media.api";
+import {SeriesProgressLine} from "@/widgets/SeriesProgressLine";
+import {ProfileCover} from "@/pages/ProfilePage/widgets/ProfileCover";
+import {ProfileMenu} from "@/pages/ProfilePage/widgets/ProfileMenu";
+import {WatchStats} from "@/pages/ProfilePage/widgets/WatchStats";
+import {ListsRow} from "@/pages/ProfilePage/widgets/ListsRow";
+import {useSession} from "@/hooks/auth/useSession";
+import {useShelf, useWatches} from "@/hooks/library";
+import {useGetProfile} from "@/hooks/profile";
+import {summarize} from "@/helpers/stats";
+import {hasSupabase} from "@/lib/env";
+import {buildRoute, ROUTES} from "@/constants/routes";
+import {SHELF, type Shelf} from "@/constants/other";
+import {EMPTY_PROFILE} from "@/api/profile.api";
 
-const PROFILE_TAB = {
-    DIARY: "diary",
-    FAVORITES: "favorites",
-    WATCHLIST: "watchlist",
-} as const;
-type ProfileTab = (typeof PROFILE_TAB)[keyof typeof PROFILE_TAB];
-
-const openMedia = (media: MediaSummary) => router.push(buildRoute.media(media));
-
-/** The user's corner: who they are, all-time numbers, favourite four, diary, lists and the language switch. */
+/** The user's page: cover and avatar, watch time, then favourites, movies, series, watchlist and reviews as rows. */
 export const ProfilePage = () => {
     const {t} = useTranslation("profile");
-    const [tab, setTab] = useState<ProfileTab>(PROFILE_TAB.DIARY);
+    const {session, isLoading: isSessionLoading} = useSession();
+    const isGuest = hasSupabase && !session && !isSessionLoading;
+    const {data: profile = EMPTY_PROFILE} = useGetProfile();
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+
     const {watches} = useWatches();
-    const {items: favorites} = useFavorites();
-    const {items: watchlist} = useWatchlist();
-
     const summary = useMemo(() => summarize(watches), [watches]);
-    const favoritePosters = useMemo(() => favorites.map(toMediaSummary), [favorites]);
-    const watchlistPosters = useMemo(() => watchlist.map(toMediaSummary), [watchlist]);
+    const {items: favorites} = useShelf(SHELF.FAVORITES);
+    const {items: movies} = useShelf(SHELF.MOVIES);
+    const {items: series} = useShelf(SHELF.SERIES);
+    const {items: watchlist} = useShelf(SHELF.WATCHLIST);
+    const {items: reviews} = useShelf(SHELF.REVIEWS);
 
-    const stats = [
-        {value: String(summary.movies), label: t("stats.movies")},
-        {value: String(summary.series), label: t("stats.series")},
-        {value: summary.episodes.toLocaleString(), label: t("stats.episodes")},
-        {value: watchTime(summary.minutes).hours.toLocaleString(), label: t("stats.hours")},
-    ];
-    const tabs = Object.values(PROFILE_TAB).map((value) => ({value, label: t(`tabs.${value}`)}));
-
-    const renderTab = () => {
-        if (tab === PROFILE_TAB.DIARY) return <DiaryList watches={watches}/>;
-        const posters = tab === PROFILE_TAB.FAVORITES ? favoritePosters : watchlistPosters;
-        if (!posters.length) return <Text className="py-6 text-center font-sans text-sm text-muted-foreground">{tab === PROFILE_TAB.FAVORITES ? t("favoritesTabEmpty") : t("watchlistEmpty")}</Text>;
-        return <PosterGrid items={posters} onPress={openMedia}/>;
-    };
+    const fallbackCoverPath = [...favorites, ...movies, ...series].find((item) => item.backdropPath)?.backdropPath ?? null;
+    // A guest has nothing to edit or sign out of, so the ⋮ button goes straight to settings.
+    const openMenu = () => (isGuest ? router.push(ROUTES.SETTINGS) : setIsMenuOpen(true));
+    const seeAll = (shelf: Shelf) => () => router.push(buildRoute.shelf(shelf));
 
     return (
-        <Screen>
-            <ProfileHeader/>
-            <StatStrip stats={stats}/>
-            <Section title={t("favorites")}>
-                {favoritePosters.length
-                    ? <PosterGrid items={favoritePosters.slice(0, POSTER_COLUMNS)} onPress={openMedia}/>
-                    : <Text className="font-sans text-sm leading-5 text-muted-foreground">{t("favoritesEmpty")}</Text>}
-            </Section>
-            <SegmentedControl options={tabs} value={tab} onChange={setTab} label={t("title")}/>
-            {renderTab()}
-            <LanguagePicker/>
+        <Screen isEdgeToEdge>
+            <ProfileCover profile={profile} fallbackCoverPath={fallbackCoverPath} onOpenMenu={openMenu}/>
+
+            <View className="gap-8 px-5">
+                {isGuest ? (
+                    <AccountRequired description={t("guestDescription")}/>
+                ) : (
+                    <>
+                        <WatchStats summary={summary}/>
+                        <PosterRow index={0} title={t("shelves.favorites")} items={favorites} emptyText={t("empty.favorites")} onSeeAll={seeAll(SHELF.FAVORITES)}/>
+                        <PosterRow index={1} title={t("shelves.movies")} items={movies} emptyText={t("empty.movies")} onSeeAll={seeAll(SHELF.MOVIES)}/>
+                        <PosterRow
+                            index={2}
+                            title={t("shelves.series")}
+                            items={series}
+                            emptyText={t("empty.series")}
+                            onSeeAll={seeAll(SHELF.SERIES)}
+                            renderFooter={(item) => <SeriesProgressLine item={item}/>}
+                        />
+                        <PosterRow index={3} title={t("shelves.watchlist")} items={watchlist} emptyText={t("empty.watchlist")} onSeeAll={seeAll(SHELF.WATCHLIST)}/>
+                        <ListsRow index={4}/>
+                        <PosterRow index={5} title={t("shelves.reviews")} items={reviews} emptyText={t("empty.reviews")} onSeeAll={seeAll(SHELF.REVIEWS)}/>
+                    </>
+                )}
+            </View>
+
+            <ProfileMenu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)}/>
         </Screen>
     );
 };

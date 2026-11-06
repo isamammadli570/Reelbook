@@ -17,7 +17,8 @@
     },
     "actions": {
         "retry": "Yenidən cəhd et",
-        "seeAll": "Hamısı"
+        "seeAll": "Hamısı",
+        "close": "Bağla"
     },
     "apiErrors": {
         "generic": "Nəsə alınmadı. Yenidən cəhd et.",
@@ -28,10 +29,6 @@
     },
     "errors": {
         "load": "Məlumat yüklənmədi"
-    },
-    "comingSoon": {
-        "title": "Tezliklə",
-        "description": "Bu bölmə növbəti mərhələdə hazır olacaq."
     },
     "missingToken": {
         "title": "TMDB açarı lazımdır",
@@ -78,5 +75,14 @@
         "oktyabr",
         "noyabr",
         "dekabr"
+    ],
+    "weekdaysShort": [
+        "B.",
+        "B.e.",
+        "Ç.a.",
+        "Ç.",
+        "C.a.",
+        "C.",
+        "Ş."
     ]
 }

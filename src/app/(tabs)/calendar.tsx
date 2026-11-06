@@ -1,7 +1,3 @@
-import {useTranslation} from "react-i18next";
-import {ComingSoonPage} from "@/widgets/ComingSoonPage";
+import {CalendarPage} from "@/pages/CalendarPage";
 
-export default function Route() {
-    const {t} = useTranslation();
-    return <ComingSoonPage title={t("nav.calendar")}/>;
-}
+export default CalendarPage;

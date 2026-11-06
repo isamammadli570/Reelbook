@@ -1,5 +1,6 @@
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {getProfile, saveProfile, type Profile} from "@/api/profile.api";
+import {ensureAccount} from "@/lib/accountGate";
 import {QUERY_KEYS} from "@/constants/other";
 
 export const useGetProfile = () =>
@@ -10,11 +11,15 @@ export const useGetProfile = () =>
         gcTime: Infinity,
     });
 
+/** Editing the profile needs an account, because the profile is uploaded for other devices. */
 export const useSaveProfile = () => {
     const queryClient = useQueryClient();
 
     return useMutation<Profile, Error, Profile>({
-        mutationFn: saveProfile,
+        mutationFn: async (profile) => {
+            await ensureAccount();
+            return saveProfile(profile);
+        },
         onSuccess: (profile) => queryClient.setQueryData([QUERY_KEYS.PROFILE], profile),
     });
 };

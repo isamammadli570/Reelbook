@@ -66,5 +66,29 @@
         "markSeason": "Watched the season",
         "unmarkSeason": "Unmark the season",
         "notAired": "Not aired yet"
+    },
+    "review": {
+        "title": "Your review",
+        "write": "Write a review",
+        "edit": "Edit review",
+        "label": "Your review",
+        "placeholder": "What did you think? A few sentences is enough.",
+        "save": "Save",
+        "cancel": "Cancel",
+        "tooLong": "Up to {{max}} characters."
+    },
+    "trailer": {
+        "label": "Trailer",
+        "open": "Open the trailer on YouTube: {{name}}"
+    },
+    "watch": {
+        "title": "Where to watch",
+        "kinds": {
+            "stream": "Stream",
+            "rent": "Rent",
+            "buy": "Buy"
+        },
+        "none": "Not available on any service in this country yet.",
+        "source": "Data: JustWatch"
     }
 }

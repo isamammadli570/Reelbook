@@ -1,0 +1,23 @@
+{
+    "title": "Ayarlar",
+    "account": {
+        "title": "Hesab",
+        "signedInAs": "Hesabın",
+        "signOut": "Çıxış et",
+        "guestDescription": "Gündəliyini və sevimlilərini bütün cihazlarında saxlamaq üçün hesab yarat."
+    },
+    "about": {
+        "title": "Haqqında",
+        "tmdb": "Film və serial məlumatları TMDB-dən alınır. Bu məhsul TMDB API-dən istifadə edir, lakin TMDB tərəfindən təsdiqlənməyib."
+    },
+    "reminders": {
+        "title": "Bildirişlər",
+        "label": "Yeni epizodlar",
+        "description": "İzlədiyin serialın yeni epizodu çıxan gün saat {{hour}}-da xəbər verək.",
+        "webOnly": "Bildirişlər telefon tətbiqində işləyir.",
+        "denied": "Bildirişlərə icazə verilməyib. Telefonun parametrlərindən Reelbook üçün aç.",
+        "openSettings": "Parametrləri aç",
+        "channel": "Yeni epizodlar",
+        "body": "{{code}} · {{name}} bu gün çıxır"
+    }
+}

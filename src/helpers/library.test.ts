@@ -10,6 +10,7 @@ import {
     nextRating,
     refreshSnapshot,
     seriesProgress,
+    setReview,
     setEpisodesWatched,
     toggleEpisode,
     toggleFollowing,
@@ -69,6 +70,19 @@ describe("nextRating", () => {
         expect(nextRating(4, 4)).toBe(3.5);
         expect(nextRating(3.5, 4)).toBeNull();
         expect(nextRating(2, 5)).toBe(5);
+    });
+});
+
+describe("setReview", () => {
+    it("saves trimmed text and removes the entry when blank", () => {
+        const withReview = itemOf(movie, (current) => setReview(current, "  Great score.  ", NOW));
+        expect(withReview.review).toEqual({text: "Great score.", updatedAt: NOW});
+        expect(setReview(withReview, "   ", NOW).review).toBeNull();
+    });
+
+    it("keeps a titled entry alive when only its review is left", () => {
+        const reviewed = updateItem(createLibrary(), movie, (current) => setReview(current, "Slow but worth it.", NOW), NOW);
+        expect(reviewed.items["movie:1"]).toBeDefined();
     });
 });
 

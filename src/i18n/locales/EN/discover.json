@@ -1,0 +1,17 @@
+{
+    "title": "Discover",
+    "searchLabel": "Search",
+    "searchPlaceholder": "Film, series or actor",
+    "results": "Results",
+    "noResults": "Nothing found. Try another word.",
+    "newReleases": "New releases",
+    "genres": {
+        "drama": "Drama",
+        "comedy": "Comedy",
+        "animation": "Animation",
+        "documentary": "Documentary",
+        "crime": "Crime",
+        "scifi": "Sci-fi"
+    },
+    "people": "People"
+}

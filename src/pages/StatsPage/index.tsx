@@ -9,6 +9,9 @@ import {GenreBars} from "@/pages/StatsPage/widgets/GenreBars";
 import {Highlights} from "@/pages/StatsPage/widgets/Highlights";
 import {MonthlyChart} from "@/pages/StatsPage/widgets/MonthlyChart";
 import {useWatches} from "@/hooks/library";
+import {useSession} from "@/hooks/auth/useSession";
+import {hasSupabase} from "@/lib/env";
+import {AccountRequired} from "@/widgets/AccountRequired";
 import {monthlyMinutes, summarize, topGenres, watchTime, watchesInYear} from "@/helpers/stats";
 
 const PERIOD = {
@@ -22,12 +25,23 @@ export const StatsPage = () => {
     const {t} = useTranslation("stats");
     const [period, setPeriod] = useState<Period>(PERIOD.YEAR);
     const {watches} = useWatches();
+    const {session, isLoading: isSessionLoading} = useSession();
+    const isGuest = hasSupabase && !session && !isSessionLoading;
     const year = new Date().getFullYear();
 
     const scoped = useMemo(() => watchesInYear(watches, period === PERIOD.YEAR ? year : null), [watches, period, year]);
     const summary = useMemo(() => summarize(scoped), [scoped]);
     const months = useMemo(() => monthlyMinutes(watches, year), [watches, year]);
     const genres = useMemo(() => topGenres(scoped), [scoped]);
+
+    if (isGuest) {
+        return (
+            <Screen>
+                <PageTitle title={t("title")}/>
+                <AccountRequired description={t("guestDescription")}/>
+            </Screen>
+        );
+    }
 
     if (!watches.length) {
         return (
@@ -58,7 +72,8 @@ export const StatsPage = () => {
                     {"\n"}
                     <Text className="font-serif-italic text-brand">{t("screenTime")}</Text>
                 </Text>
-                <Text className="font-sans text-sm text-muted-foreground">{t("days", {days})}</Text>
+                {/* "About 0.1 days" reads oddly; the line only adds something from a full day up. */}
+                {days >= 1 && <Text className="font-sans text-sm text-muted-foreground">{t("days", {days})}</Text>}
             </View>
 
             <SegmentedControl options={periods} value={period} onChange={setPeriod} label={t("title")}/>

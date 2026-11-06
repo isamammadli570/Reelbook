@@ -1,0 +1,15 @@
+{
+    "title": "Təqvim",
+    "thisWeek": "Bu həftə: {{count}} epizod",
+    "today": "Bu gün",
+    "tomorrow": "Sabah",
+    "noTracked": {
+        "title": "Təqvim boşdur",
+        "description": "Serial səhifəsində \"İzləməyə başla\" düyməsinə bas, yeni epizodlar burada görünəcək."
+    },
+    "noneThisWeek": {
+        "title": "Bu həftə yeni epizod yoxdur",
+        "description": "İzlədiyin seriallar üçün növbəti tarixlər burada görünəcək."
+    },
+    "guestDescription": "Təqvim izlədiyin seriallara görə qurulur. Davam etmək üçün hesab yarat və ya daxil ol."
+}

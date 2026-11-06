@@ -1,0 +1,17 @@
+{
+    "title": "Обзор",
+    "searchLabel": "Поиск",
+    "searchPlaceholder": "Фильм, сериал или актёр",
+    "results": "Результаты",
+    "noResults": "Ничего не найдено. Попробуйте другое слово.",
+    "newReleases": "Новинки",
+    "genres": {
+        "drama": "Драма",
+        "comedy": "Комедия",
+        "animation": "Анимация",
+        "documentary": "Документальный",
+        "crime": "Криминал",
+        "scifi": "Sci-fi"
+    },
+    "people": "Люди"
+}

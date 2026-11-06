@@ -20,6 +20,7 @@ export const IMAGE_SIZE = {
     POSTER: "w342",
     BACKDROP: "w780",
     PROFILE: "w185",
+    LOGO: "w92",
 } as const;
 export type ImageSize = (typeof IMAGE_SIZE)[keyof typeof IMAGE_SIZE];
 
@@ -37,14 +38,72 @@ export const QUERY_KEYS = {
     SEASON: "season",
     LIBRARY: "library",
     PROFILE: "profile",
+    SEARCH: "search",
+    NEW_RELEASES: "newReleases",
+    GENRE: "genre",
+    LISTS: "lists",
+    PERSON: "person",
+    EPISODE_REMINDERS: "episodeReminders",
 } as const;
+
+export const LIST_LIMITS = {
+    NAME_MAX: 60,
+    DESCRIPTION_MAX: 300,
+} as const;
+
+export const SEARCH_DEBOUNCE_MS = 350;
 
 /** Bump the suffix when a stored shape changes in a way old data cannot be read as. */
 export const STORAGE_KEYS = {
     LIBRARY: "library:v1",
     PROFILE: "profile:v1",
+    LISTS: "lists:v1",
     LANGUAGE: "settings:language",
+    EPISODE_REMINDERS: "settings:episodeReminders",
 } as const;
+
+export const REVIEW_MAX_LENGTH = 1000;
+
+/** Avatar backgrounds with the ink that reads on each; chosen on the edit-profile page. */
+export const AVATAR_COLORS = {
+    amber: {bg: "#F5A524", ink: "#1A1206"},
+    teal: {bg: "#5DCAA5", ink: "#04342C"},
+    violet: {bg: "#AFA9EC", ink: "#26215C"},
+    rose: {bg: "#ED93B1", ink: "#4B1528"},
+    sky: {bg: "#85B7EB", ink: "#042C53"},
+    lime: {bg: "#97C459", ink: "#173404"},
+} as const;
+export type AvatarColor = keyof typeof AVATAR_COLORS;
+export const DEFAULT_AVATAR_COLOR: AvatarColor = "amber";
+
+/** The rows on the profile, each with a "see all" page. */
+export const SHELF = {
+    FAVORITES: "favorites",
+    MOVIES: "movies",
+    SERIES: "series",
+    WATCHLIST: "watchlist",
+    REVIEWS: "reviews",
+} as const;
+export type Shelf = (typeof SHELF)[keyof typeof SHELF];
+
+export const SHELF_SORT = {
+    LAST_WATCHED: "lastWatched",
+    LAST_ADDED: "lastAdded",
+    ALPHABETICAL: "alphabetical",
+    RELEASE_DATE: "releaseDate",
+} as const;
+export type ShelfSort = (typeof SHELF_SORT)[keyof typeof SHELF_SORT];
+
+export const SERIES_STATUS = {
+    WATCHING: "watching",
+    COMPLETED: "completed",
+    NOT_STARTED: "notStarted",
+} as const;
+export type SeriesStatus = (typeof SERIES_STATUS)[keyof typeof SERIES_STATUS];
+
+/** Posters shown in a profile row before "see all". */
+export const SHELF_PREVIEW = 4;
+export const PROFILE_BIO_MAX = 160;
 
 export const PROFILE_LIMITS = {
     NAME_MAX: 40,

@@ -1,4 +1,6 @@
-import type {DiaryEntry, EpisodeRef, Library, LibraryItem, MediaSnapshot, SeriesSnapshot} from "@/api/library.api";
+import type {DiaryEntry, EpisodeRef, Library, LibraryItem, MediaSnapshot, PersonRef, SeriesSnapshot, TitlePeople} from "@/api/library.api";
+import type {Credits} from "@/api/people.api";
+import type {AggregateCredits} from "@/api/titleExtras.api";
 import type {MediaSummary} from "@/api/media.api";
 import type {MovieDetails} from "@/api/movies.api";
 import type {SeriesDetails} from "@/api/series.api";
@@ -12,8 +14,8 @@ export const createLibrary = (): Library => ({items: {}, removed: {}});
  * Only the title's details from a stored item. Library writes merge the snapshot they are given over the stored
  * item, so passing a whole item would also write back its diary and rating as they were when it was read.
  */
-export const snapshotOf = ({id, mediaType, title, posterPath, backdropPath, year, genres, runtime, series}: LibraryItem): MediaSnapshot =>
-    ({id, mediaType, title, posterPath, backdropPath, year, genres, runtime, series});
+export const snapshotOf = ({id, mediaType, title, posterPath, backdropPath, year, genres, runtime, series, people}: LibraryItem): MediaSnapshot =>
+    ({id, mediaType, title, posterPath, backdropPath, year, genres, runtime, series, ...(people ? {people} : {})});
 
 export const itemKey = (mediaType: MediaType, id: number): string => `${mediaType}:${id}`;
 
@@ -22,6 +24,37 @@ export const episodeKey = ({season, episode}: EpisodeRef): string => `${season}:
 const parseEpisodeKey = (key: string): EpisodeRef => {
     const [season, episode] = key.split(":").map(Number);
     return {season, episode};
+};
+
+/* ------------------------------ people ------------------------------- */
+
+/** Top-billed actors kept per title: the faces people remember, without storing the whole cast. */
+const CAST_KEPT = 5;
+const DIRECTORS_KEPT = 3;
+
+const toRef = (person: {id: number; name: string; profile_path?: string | null}): PersonRef => ({id: person.id, name: person.name, profilePath: person.profile_path ?? null});
+
+const uniqueRefs = (people: PersonRef[]): PersonRef[] => people.filter((person, index) => people.findIndex((other) => other.id === person.id) === index);
+
+/** A film's directors and its first-billed cast, from TMDB's credits. */
+export const moviePeople = (credits: Pick<Credits, "cast" | "crew"> | undefined): TitlePeople => ({
+    directors: uniqueRefs((credits?.crew ?? []).filter((member) => member.job === "Director").map(toRef)).slice(0, DIRECTORS_KEPT),
+    cast: uniqueRefs([...(credits?.cast ?? [])].sort((a, b) => a.order - b.order).map(toRef)).slice(0, CAST_KEPT),
+});
+
+/** A series' main cast across all seasons; series are made by many directors, so none are kept. */
+export const seriesPeople = (aggregate: AggregateCredits | undefined, credits?: Pick<Credits, "cast">): TitlePeople => ({
+    directors: [],
+    cast: uniqueRefs((aggregate?.cast.length ? aggregate.cast : credits?.cast ?? []).map(toRef)).slice(0, CAST_KEPT),
+});
+
+/** Saves people found for titles already in the library, leaving `updatedAt` alone: it is not the person's edit. */
+export const setPeople = (library: Library, people: Record<string, TitlePeople>): Library => {
+    const items = {...library.items};
+    Object.entries(people).forEach(([key, found]) => {
+        if (items[key]) items[key] = {...items[key], people: found};
+    });
+    return {...library, items};
 };
 
 /* ----------------------------- snapshots ----------------------------- */
@@ -36,6 +69,7 @@ export const movieSnapshot = (movie: MovieDetails): MediaSnapshot => ({
     genres: movie.genres.map((genre) => genre.name),
     runtime: movie.runtime,
     series: null,
+    people: moviePeople(movie.credits),
 });
 
 /** TMDB moves an episode from "next" to "last" with a delay, so a "next" whose air date has passed already counts. */
@@ -63,6 +97,7 @@ export const seriesSnapshot =(series: SeriesDetails): MediaSnapshot => ({
         episodeRuntime: series.episode_run_time[0] ?? series.last_episode_to_air?.runtime ?? null,
         network: series.networks[0]?.name ?? null,
     },
+    people: seriesPeople(series.aggregate_credits, series.credits),
 });
 
 /* ------------------------------ items ------------------------------- */
@@ -156,7 +191,8 @@ export const nextRating = (current: number | null, tapped: number): number | nul
 /** 3.5 → "★★★½", the compact form used in lists. */
 export const formatStars = (rating: number): string => "★".repeat(Math.floor(rating)) + (rating % 1 ? "½" : "");
 
-const createId = (): string => `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 7)}`;
+/** A short id for a diary entry, unique enough within one person's library. */
+export const createId = (): string => `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 7)}`;
 
 export const addDiaryEntry = (item: LibraryItem, watchedAt: string): LibraryItem => ({
     ...item,

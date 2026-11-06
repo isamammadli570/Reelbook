@@ -1,6 +1,7 @@
 import {storage} from "@/lib/storage";
 import {STORAGE_KEYS, type MediaType} from "@/constants/other";
 import {
+    setPeople,
     addDiaryEntry,
     createLibrary,
     removeDiaryEntry,
@@ -32,7 +33,14 @@ export type MediaSnapshot = {
     runtime?: number | null;
     /** Series only: the season layout and how far it has aired, for progress and "up next". */
     series: SeriesSnapshot | null;
+    /** Who directed and who stars, for the most-watched people in stats; filled in later for older items. */
+    people?: TitlePeople;
 };
+
+/** A person as a title remembers them: enough for a round portrait that opens their page. */
+export type PersonRef = {id: number; name: string; profilePath: string | null};
+
+export type TitlePeople = {directors: PersonRef[]; cast: PersonRef[]};
 
 export type SeriesSnapshot = {
     seasons: {number: number; episodeCount: number}[];
@@ -133,8 +141,14 @@ export const toggleEpisodeWatched = ({snapshot, episode}: {snapshot: MediaSnapsh
 export const setSeasonWatched = ({snapshot, season, episodes, isWatched}: {snapshot: MediaSnapshot; season: number; episodes: number[]; isWatched: boolean}) =>
     modifyLibrary((library) => updateItem(library, snapshot, (item) => setEpisodesWatched(item, season, episodes, isWatched, now()), now()));
 
+/** Applies a change to the whole library in one write, used by imports. */
+export const mergeIntoLibrary = (change: (library: Library) => Library) => modifyLibrary(change);
+
 /** Replaces the whole library, used when a backup is restored. */
 export const replaceLibrary = (library: Library) => modifyLibrary(() => library);
+
+/** Stores who made and stars in titles, found after they were saved; quiet, so it does not count as an edit to sync. */
+export const storePeople = (people: Record<string, TitlePeople>) => modifyLibrary((library) => setPeople(library, people));
 
 /** Keeps a stored series' season layout current without creating an entry for unseen titles. */
 export const refreshItemSnapshot = (snapshot: MediaSnapshot) => modifyLibrary((library) => refreshSnapshot(library, snapshot));

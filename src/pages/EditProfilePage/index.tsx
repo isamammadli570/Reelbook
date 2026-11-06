@@ -284,7 +284,7 @@ export const EditProfilePage = () => {
                         />
                         <Text className={cn("self-end font-sans text-xs", bioLength > PROFILE_BIO_MAX ? "text-danger" : "text-subtle-foreground")}>{bioLength}/{PROFILE_BIO_MAX}</Text>
                     </View>
-                    <Button variant="brand" label={t("edit.save")} disabled={isSubmitting} onPress={() => void save()}/>
+                    <Button variant="brand" label={t("edit.save")} isLoading={isSubmitting} onPress={() => void save()}/>
                 </Reveal>
             </View>
         </Screen>

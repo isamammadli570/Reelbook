@@ -84,7 +84,7 @@ export const ForgotPasswordPage = () => {
                     )}
                 />
                 {formError && <Reveal key={formError} variant="fade"><Text className="font-sans text-sm text-danger">{formError}</Text></Reveal>}
-                <Button variant="brand" label={t("forgot.sendCode")} disabled={emailForm.formState.isSubmitting} onPress={() => void submitEmail()}/>
+                <Button variant="brand" label={t("forgot.sendCode")} isLoading={emailForm.formState.isSubmitting} onPress={() => void submitEmail()}/>
             </AuthLayout>
         );
     }
@@ -129,7 +129,7 @@ export const ForgotPasswordPage = () => {
             />
             {formError && <Reveal key={formError} variant="fade"><Text className="font-sans text-sm text-danger">{formError}</Text></Reveal>}
             {notice && <Reveal key={notice} variant="fade"><Text className="font-sans text-sm text-muted-foreground">{notice}</Text></Reveal>}
-            <Button variant="brand" label={t("forgot.submit")} disabled={resetForm.formState.isSubmitting} onPress={() => void submitReset()}/>
+            <Button variant="brand" label={t("forgot.submit")} isLoading={resetForm.formState.isSubmitting} onPress={() => void submitReset()}/>
             <View className="flex-row flex-wrap justify-center gap-1">
                 <PressScale
                     hitSlop={8}

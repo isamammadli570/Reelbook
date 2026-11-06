@@ -8,11 +8,13 @@ import {Screen} from "@/widgets/Screen";
 import {GenreBars} from "@/pages/StatsPage/widgets/GenreBars";
 import {Highlights} from "@/pages/StatsPage/widgets/Highlights";
 import {MonthlyChart} from "@/pages/StatsPage/widgets/MonthlyChart";
-import {useWatches} from "@/hooks/library";
+import {RatingChart} from "@/pages/StatsPage/widgets/RatingChart";
+import {TopPeople} from "@/pages/StatsPage/widgets/TopPeople";
+import {useBackfillPeople, useWatches} from "@/hooks/library";
 import {useSession} from "@/hooks/auth/useSession";
 import {hasSupabase} from "@/lib/env";
 import {AccountRequired} from "@/widgets/AccountRequired";
-import {monthlyMinutes, summarize, topGenres, watchTime, watchesInYear} from "@/helpers/stats";
+import {monthlyMinutes, ratingDistribution, summarize, topGenres, topPeople, watchTime, watchesInYear} from "@/helpers/stats";
 
 const PERIOD = {
     YEAR: "year",
@@ -33,6 +35,10 @@ export const StatsPage = () => {
     const summary = useMemo(() => summarize(scoped), [scoped]);
     const months = useMemo(() => monthlyMinutes(watches, year), [watches, year]);
     const genres = useMemo(() => topGenres(scoped), [scoped]);
+    const ratings = useMemo(() => ratingDistribution(scoped), [scoped]);
+    const directors = useMemo(() => topPeople(scoped, "directors"), [scoped]);
+    const actors = useMemo(() => topPeople(scoped, "cast"), [scoped]);
+    useBackfillPeople();
 
     if (isGuest) {
         return (
@@ -89,7 +95,10 @@ export const StatsPage = () => {
                 ))}
             </View>
 
+            <RatingChart counts={ratings.counts} total={ratings.total} average={summary.averageRating}/>
             <GenreBars genres={genres}/>
+            <TopPeople title={t("people.directors")} people={directors} unit="films"/>
+            <TopPeople title={t("people.actors")} people={actors} unit="titles" index={1}/>
             <Highlights watches={scoped}/>
         </Screen>
     );

@@ -36,7 +36,8 @@ export const deleteList = (store: ListsStore, id: string, nowIso: string): Lists
     return {lists, removed: {...store.removed, [id]: nowIso}};
 };
 
-const toEntry = (snapshot: MediaSnapshot, nowIso: string): ListEntry => ({
+/** A title as a list keeps it: just enough to draw the poster. */
+export const toEntry = (snapshot: MediaSnapshot, nowIso: string): ListEntry => ({
     key: itemKey(snapshot.mediaType, snapshot.id),
     id: snapshot.id,
     mediaType: snapshot.mediaType,

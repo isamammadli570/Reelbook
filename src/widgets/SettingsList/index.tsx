@@ -1,5 +1,5 @@
 import {Children, Fragment, isValidElement, type ReactNode} from "react";
-import {Switch, Text, View} from "react-native";
+import {ActivityIndicator, Switch, Text, View} from "react-native";
 import {ChevronRight, type LucideIcon} from "lucide-react-native";
 import {useCSSVariable} from "uniwind";
 import {PressScale} from "@/components/motion/PressScale";
@@ -59,10 +59,12 @@ type SettingsRowProps = {
     toggle?: {value: boolean; onChange: (value: boolean) => void; isDisabled?: boolean};
     /** A link that leaves the screen it opens on, drawn without a chevron. */
     isDanger?: boolean;
+    /** Its action is running: a spinner shows at the end and taps are ignored until it is done. */
+    isLoading?: boolean;
 };
 
 /** One setting: a coloured icon tile, the label, and a value, chevron or switch. */
-export const SettingsRow = ({icon: Icon, tint, label, value, onPress, toggle, isDanger}: SettingsRowProps) => {
+export const SettingsRow = ({icon: Icon, tint, label, value, onPress, toggle, isDanger, isLoading = false}: SettingsRowProps) => {
     const [muted, brand, track] = useCSSVariable(["--color-subtle-foreground", "--color-brand", "--color-border"]).map(String);
 
     const content = (
@@ -72,7 +74,9 @@ export const SettingsRow = ({icon: Icon, tint, label, value, onPress, toggle, is
             </View>
             <Text className={cn("min-w-0 flex-1 font-sans-medium text-[15px]", isDanger ? "text-danger" : "text-foreground")} numberOfLines={1}>{label}</Text>
             {value ? <Text className="max-w-[45%] font-sans text-[15px] text-muted-foreground" numberOfLines={1}>{value}</Text> : null}
-            {toggle ? (
+            {isLoading ? (
+                <ActivityIndicator size="small" color={muted}/>
+            ) : toggle ? (
                 <Switch
                     value={toggle.value}
                     disabled={toggle.isDisabled}
@@ -89,7 +93,7 @@ export const SettingsRow = ({icon: Icon, tint, label, value, onPress, toggle, is
     if (toggle || !onPress) return <View className="min-h-[52px] flex-row items-center gap-3 px-3.5 py-2">{content}</View>;
 
     return (
-        <PressScale scaleTo={0.98} onPress={onPress} role="button" className="min-h-[52px] flex-row items-center gap-3 px-3.5 py-2 active:bg-surface-raised">
+        <PressScale scaleTo={0.98} onPress={onPress} disabled={isLoading} aria-busy={isLoading} role="button" className="min-h-[52px] flex-row items-center gap-3 px-3.5 py-2 active:bg-surface-raised">
             {content}
         </PressScale>
     );

@@ -4,7 +4,8 @@
         "title": "Hesab",
         "signedInAs": "Hesabın",
         "signOut": "Çıxış et",
-        "guestDescription": "Gündəliyini və sevimlilərini bütün cihazlarında saxlamaq üçün hesab yarat."
+        "guestDescription": "Gündəliyini və sevimlilərini bütün cihazlarında saxlamaq üçün hesab yarat.",
+        "signingOut": "Çıxış edilir…"
     },
     "about": {
         "tmdb": "Film və serial məlumatları TMDB-dən alınır. Bu məhsul TMDB API-dən istifadə edir, lakin TMDB tərəfindən təsdiqlənməyib.",
@@ -99,5 +100,46 @@
             "title": "Əlaqə",
             "body": "Məxfilik və ya məlumatların barədə sualın varsa, yaz:"
         }
+    },
+    "letterboxd": {
+        "row": "Letterboxd-dan köçür",
+        "title": "Letterboxd-dan köçür",
+        "eyebrow": "İdxal",
+        "steps": {
+            "export": "Brauzerdə letterboxd.com/data/export ünvanını aç (və ya Settings → Import & Export) və “Export Data” düyməsinə bas. Mobil tətbiqdə bu bölmə yoxdur.",
+            "download": "Letterboxd sənə ZIP faylı göndərəcək — onu telefonuna və ya kompüterinə yüklə.",
+            "pick": "Aşağıdakı düymə ilə həmin ZIP-i seç (açmağa ehtiyac yoxdur). Siyahıların da köçürüləcək."
+        },
+        "keepsYours": "Mövcud qeydlərin silinmir: eyni günə olan baxışlar təkrarlanmır, öz ulduzun və rəyin qalır. Faylı ikinci dəfə idxal etmək heç nəyi ikiqat etməz.",
+        "choose": "ZIP faylını seç",
+        "matching": "Filmlər TMDB-də axtarılır…",
+        "progress": "{{done}} / {{total}} film",
+        "stayHere": "Bitənə qədər bu səhifədə qal.",
+        "found": "Tapıldı",
+        "import": "{{count}} filmi idxal et",
+        "importing": "İdxal olunur…",
+        "another": "Başqa fayl seç",
+        "unmatched": "Tapılmadı ({{count}})",
+        "unmatchedHint": "Bu filmlər TMDB-də adı və ili ilə tapılmadı. Onları axtarışdan əl ilə əlavə edə bilərsən.",
+        "showAll": "Hamısını göstər ({{count}})",
+        "doneTitle": "Hazırdır",
+        "doneBody": "{{count}} film və {{viewings}} baxış kitabxanana əlavə olundu.",
+        "openDiary": "Gündəliyə bax",
+        "failed": "İdxal alınmadı. Bir daha yoxla.",
+        "stats": {
+            "films": "Film",
+            "viewings": "Baxış",
+            "ratings": "Ulduz",
+            "reviews": "Rəy",
+            "watchlist": "İzləniləcək",
+            "liked": "Sevimli"
+        },
+        "errors": {
+            "invalid": "Bu fayl Letterboxd exportu deyil. Letterboxd-un göndərdiyi ZIP-i seç.",
+            "empty": "Faylda film tapılmadı.",
+            "failed": "Fayl oxunmadı. Bir daha yoxla."
+        },
+        "listsFound": "Üstəlik {{count}} siyahı ({{entries}} film) sənin siyahılarına əlavə olunacaq.",
+        "doneLists": "{{count}} siyahı da Siyahılar bölməsindədir."
     }
 }

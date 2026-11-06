@@ -1,3 +1,4 @@
+import {useState} from "react";
 import {useQueryClient} from "@tanstack/react-query";
 import {useTranslation} from "react-i18next";
 import {exportBackup, importBackup} from "@/api/backup.api";
@@ -8,16 +9,22 @@ import {QUERY_KEYS} from "@/constants/other";
 export const useBackupActions = () => {
     const {t} = useTranslation("profile");
     const queryClient = useQueryClient();
+    const [isExporting, setIsExporting] = useState(false);
+    const [isImporting, setIsImporting] = useState(false);
 
     const runExport = async () => {
+        setIsExporting(true);
         try {
             await exportBackup();
         } catch {
             toast.error(t("backup.exportFailed"));
+        } finally {
+            setIsExporting(false);
         }
     };
 
     const runImport = async () => {
+        setIsImporting(true);
         try {
             const result = await importBackup();
             if (result.status === "imported") {
@@ -29,8 +36,10 @@ export const useBackupActions = () => {
             }
         } catch {
             toast.error(t("backup.importFailed"));
+        } finally {
+            setIsImporting(false);
         }
     };
 
-    return {runExport, runImport};
+    return {runExport, runImport, isExporting, isImporting};
 };

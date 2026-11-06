@@ -6,6 +6,7 @@ import {ListPlus, LogOut, Pencil, Settings, type LucideIcon} from "lucide-react-
 import {useCSSVariable} from "uniwind";
 import {PressScale} from "@/components/motion/PressScale";
 import {ListFormSheet} from "@/widgets/ListFormSheet";
+import {BusyOverlay} from "@/widgets/BusyOverlay";
 import {Popover} from "@/widgets/Popover";
 import {useCreateAndOpenList} from "@/hooks/lists";
 import {useSignOut} from "@/hooks/auth/useSignOut";
@@ -78,6 +79,8 @@ export const ProfileMenu = ({isOpen, onClose}: ProfileMenuProps) => {
                     ))}
                 </View>
             </Popover>
+            {/* The menu closes at once; this shows the sign-out is under way until the app moves on. */}
+            <BusyOverlay isVisible={isSigningOut} label={t("menu.signingOut")}/>
             <ListFormSheet
                 isOpen={isCreatingList}
                 onClose={() => setIsCreatingList(false)}

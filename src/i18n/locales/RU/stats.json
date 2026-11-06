@@ -30,5 +30,30 @@
         "title": "Статистики пока нет",
         "description": "Отмечай фильмы и эпизоды — здесь появятся часы, жанры и марафоны."
     },
-    "guestDescription": "Статистика считается по твоему дневнику. Создай аккаунт или войди, чтобы продолжить."
+    "guestDescription": "Статистика считается по твоему дневнику. Создай аккаунт или войди, чтобы продолжить.",
+    "ratings": {
+        "title": "Ваши оценки",
+        "summary_one": "{{count}} оценка · в среднем {{average}}",
+        "summary_few": "{{count}} оценки · в среднем {{average}}",
+        "summary_many": "{{count}} оценок · в среднем {{average}}",
+        "summary_other": "{{count}} оценки · в среднем {{average}}",
+        "count_one": "{{count}} оценка",
+        "count_few": "{{count}} оценки",
+        "count_many": "{{count}} оценок",
+        "count_other": "{{count}} оценки",
+        "bar": "{{stars}}: {{count}}",
+        "mostGiven": "Чаще всего: {{stars}} ({{count}} раз)"
+    },
+    "people": {
+        "directors": "Ваши режиссёры",
+        "actors": "Ваши актёры",
+        "films_one": "{{count}} фильм",
+        "films_few": "{{count}} фильма",
+        "films_many": "{{count}} фильмов",
+        "films_other": "{{count}} фильма",
+        "titles_one": "{{count}} проект",
+        "titles_few": "{{count}} проекта",
+        "titles_many": "{{count}} проектов",
+        "titles_other": "{{count}} проекта"
+    }
 }

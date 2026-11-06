@@ -1,5 +1,10 @@
+import {Platform} from "react-native";
+import * as Linking from "expo-linking";
+import * as WebBrowser from "expo-web-browser";
 import type {Session} from "@supabase/supabase-js";
 import {supabase} from "@/lib/supabase";
+import {ROUTES} from "@/constants/routes";
+import {parseAuthRedirect} from "@/helpers/authRedirect";
 
 /** `error` is a key under `auth:errors`, never the provider's raw message. */
 export type AuthResult = {error: string | null; needsConfirmation?: boolean};
@@ -55,6 +60,42 @@ export const signIn = async (email: string, password: string): Promise<AuthResul
     if (!supabase) return {error: "not_configured"};
     const {error} = await supabase.auth.signInWithPassword({email, password});
     return {error: error ? mapError(error.message) : null};
+};
+
+/**
+ * Signing out of Reelbook does not sign the browser out of Google, so Google would quietly pick the account
+ * used last. Asking it to show the chooser every time lets someone switch to another Google account.
+ */
+const GOOGLE_PARAMS = {prompt: "select_account"};
+
+/** `isRedirecting`: the web page is on its way to Google, so nothing more should happen here. */
+export type GoogleResult = AuthResult & {cancelled?: boolean; isRedirecting?: boolean};
+
+/**
+ * Signs in, or creates the account, with Google. On the web the page goes to Google and comes back to the
+ * site, where the session is read from the address. In the app Google opens in an in-app browser that returns
+ * to the app's own link; the session is taken from that link.
+ */
+export const signInWithGoogle = async (): Promise<GoogleResult> => {
+    if (!supabase) return {error: "not_configured"};
+
+    if (Platform.OS === "web") {
+        const {error} = await supabase.auth.signInWithOAuth({provider: "google", options: {redirectTo: window.location.origin, queryParams: GOOGLE_PARAMS}});
+        return error ? {error: mapError(error.message)} : {error: null, isRedirecting: true};
+    }
+
+    const redirectTo = Linking.createURL(ROUTES.AUTH_CALLBACK);
+    const {data, error} = await supabase.auth.signInWithOAuth({provider: "google", options: {redirectTo, skipBrowserRedirect: true, queryParams: GOOGLE_PARAMS}});
+    if (error || !data.url) return {error: mapError(error?.message ?? "")};
+
+    const result = await WebBrowser.openAuthSessionAsync(data.url, redirectTo);
+    if (result.type !== "success") return {error: null, cancelled: true};
+
+    const parsed = parseAuthRedirect(result.url);
+    if (!parsed) return {error: "generic"};
+    if ("error" in parsed) return {error: mapError(parsed.error)};
+    const session = await supabase.auth.setSession({access_token: parsed.accessToken, refresh_token: parsed.refreshToken});
+    return {error: session.error ? mapError(session.error.message) : null};
 };
 
 export const signOut = async (): Promise<void> => {

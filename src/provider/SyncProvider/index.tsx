@@ -63,8 +63,14 @@ export const SyncProvider = ({children}: SyncProviderProps) => {
         if (!userId) return;
         enqueue(async () => {
             const session = await getCurrentSession();
-            const signUpUsername: unknown = session?.user.user_metadata?.username;
-            const profileChanged = await syncProfileOnSignIn(userId, typeof signUpUsername === "string" ? signUpUsername : null);
+            // A handle from the sign-up form; a name and photo from Google, which calls them differently.
+            const metadata: Record<string, unknown> = session?.user.user_metadata ?? {};
+            const text = (...keys: string[]) => keys.map((key) => metadata[key]).find((value): value is string => typeof value === "string" && value.trim() !== "") ?? null;
+            const profileChanged = await syncProfileOnSignIn(userId, {
+                username: text("username"),
+                name: text("full_name", "name"),
+                avatarUrl: text("avatar_url", "picture"),
+            });
             const libraryChanged = await syncLibrary(userId);
             if (profileChanged) void queryClient.invalidateQueries({queryKey: [QUERY_KEYS.PROFILE]});
             if (libraryChanged) void queryClient.invalidateQueries({queryKey: [QUERY_KEYS.LIBRARY]});

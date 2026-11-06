@@ -1,4 +1,4 @@
-import type {EpisodeRef, Library, LibraryItem} from "@/api/library.api";
+import type {EpisodeRef, Library, LibraryItem, PersonRef} from "@/api/library.api";
 import {MEDIA_TYPE, type MediaType} from "@/constants/other";
 
 /** One thing watched at one moment: a movie viewing or a single episode. */
@@ -140,3 +140,49 @@ export const watchTime = (minutes: number): {hours: number; days: number} => ({
     hours: Math.round(minutes / 60),
     days: Math.round((minutes / 60 / 24) * 10) / 10,
 });
+
+/** The half-star steps a rating can take, lowest first: 0.5, 1, … 5. */
+export const RATING_STEPS = Array.from({length: 10}, (_, index) => (index + 1) / 2);
+
+/**
+ * How many titles got each rating, 0.5 to 5, counting each title once with its current rating:
+ * the bars of a Letterboxd-style ratings chart.
+ */
+export const ratingDistribution = (watches: Watch[]): {counts: number[]; total: number} => {
+    const rated = new Map<string, number>();
+    watches.forEach((watch) => {
+        if (watch.item.rating !== null) rated.set(`${watch.item.mediaType}:${watch.item.id}`, watch.item.rating);
+    });
+    const counts = RATING_STEPS.map(() => 0);
+    rated.forEach((rating) => {
+        const index = Math.round(rating * 2) - 1;
+        if (index >= 0 && index < counts.length) counts[index] += 1;
+    });
+    return {counts, total: rated.size};
+};
+
+/** A person with how many titles they made or appeared in, for the "most watched" rows. */
+export type PersonCount = {person: PersonRef; titles: number};
+
+/**
+ * The people behind most of what was watched: directors of films, or actors across films and series.
+ * Each title counts once however often it was watched, as on Letterboxd; ties go to the name.
+ */
+export const topPeople = (watches: Watch[], role: "directors" | "cast", limit = 6): PersonCount[] => {
+    const seen = new Set<string>();
+    const counts = new Map<number, PersonCount>();
+    watches.forEach((watch) => {
+        if (role === "directors" && watch.kind !== MEDIA_TYPE.MOVIE) return;
+        const key = `${watch.item.mediaType}:${watch.item.id}`;
+        if (seen.has(key)) return;
+        seen.add(key);
+        (watch.item.people?.[role] ?? []).forEach((person) => {
+            const entry = counts.get(person.id) ?? {person, titles: 0};
+            counts.set(person.id, {...entry, titles: entry.titles + 1});
+        });
+    });
+    return [...counts.values()]
+        .filter((entry) => entry.titles >= 2)
+        .sort((a, b) => b.titles - a.titles || a.person.name.localeCompare(b.person.name))
+        .slice(0, limit);
+};

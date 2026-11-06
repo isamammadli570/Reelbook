@@ -28,5 +28,22 @@
         "title": "Statistika hələ boşdur",
         "description": "Film və epizodları işarələdikcə saatların, janrların və marafonların burada görünəcək."
     },
-    "guestDescription": "Statistika gündəliyinə görə hesablanır. Davam etmək üçün hesab yarat və ya daxil ol."
+    "guestDescription": "Statistika gündəliyinə görə hesablanır. Davam etmək üçün hesab yarat və ya daxil ol.",
+    "ratings": {
+        "title": "Ulduzların",
+        "summary_one": "{{count}} qiymət · orta {{average}}",
+        "summary_other": "{{count}} qiymət · orta {{average}}",
+        "count_one": "{{count}} qiymət",
+        "count_other": "{{count}} qiymət",
+        "bar": "{{stars}}: {{count}}",
+        "mostGiven": "Ən çox verdiyin: {{stars}} ({{count}} dəfə)"
+    },
+    "people": {
+        "directors": "Ən çox izlədiyin rejissorlar",
+        "actors": "Ən çox izlədiyin aktyorlar",
+        "films_one": "{{count}} film",
+        "films_other": "{{count}} film",
+        "titles_one": "{{count}} əsər",
+        "titles_other": "{{count}} əsər"
+    }
 }

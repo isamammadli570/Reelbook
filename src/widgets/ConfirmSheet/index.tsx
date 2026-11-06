@@ -19,7 +19,7 @@ export const ConfirmSheet = ({isOpen, onClose, title, description, confirmLabel,
         <Text className="font-sans text-sm leading-5 text-muted-foreground">{description}</Text>
         <View className="flex-row gap-2 pt-1">
             <Button variant="outline" label={cancelLabel} className="flex-1" onPress={onClose}/>
-            <Button variant="primary" label={confirmLabel} className="flex-1 bg-danger" disabled={isBusy} onPress={onConfirm}/>
+            <Button variant="primary" label={confirmLabel} className="flex-1 bg-danger" isLoading={isBusy} onPress={onConfirm}/>
         </View>
     </BottomSheet>
 );

@@ -25,7 +25,8 @@
         "close": "Close menu",
         "edit": "Edit profile",
         "settings": "Settings",
-        "signOut": "Sign out"
+        "signOut": "Sign out",
+        "signingOut": "Signing out…"
     },
     "cards": {
         "watchTime": "Watch time",

@@ -59,7 +59,7 @@ export const ListFormSheet = ({isOpen, onClose, title, submitLabel, initial = EM
             />
             <View className="flex-row gap-2 pt-1">
                 <Button variant="outline" label={t("form.cancel")} className="flex-1" onPress={close}/>
-                <Button variant="brand" label={submitLabel} className="flex-1" disabled={isSubmitting} onPress={() => void submit()}/>
+                <Button variant="brand" label={submitLabel} className="flex-1" isLoading={isSubmitting} onPress={() => void submit()}/>
             </View>
         </BottomSheet>
     );

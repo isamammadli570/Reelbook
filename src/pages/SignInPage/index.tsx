@@ -8,6 +8,7 @@ import {Reveal} from "@/components/motion/Reveal";
 import {Button} from "@/components/ui/button";
 import {FormInput} from "@/components/form/FormInput";
 import {AuthLayout} from "@/widgets/AuthLayout";
+import {GoogleButton, OrDivider} from "@/widgets/GoogleButton";
 import {signIn} from "@/api/auth.api";
 import {ROUTES} from "@/constants/routes";
 import {EMAIL_PATTERN} from "@/constants/validation";
@@ -40,6 +41,8 @@ export const SignInPage = () => {
                 </View>
             )}
         >
+            <GoogleButton onError={setFormError}/>
+            <OrDivider/>
             <Controller
                 control={control}
                 name="email"
@@ -60,7 +63,7 @@ export const SignInPage = () => {
                 <Text className="font-sans-medium text-[13px] text-muted-foreground">{t("signIn.forgotPassword")}</Text>
             </PressScale>
             {formError && <Reveal key={formError} variant="fade"><Text className="font-sans text-sm text-danger">{formError}</Text></Reveal>}
-            <Button variant="brand" label={t("signIn.submit")} disabled={isSubmitting} onPress={() => void submit()}/>
+            <Button variant="brand" label={t("signIn.submit")} isLoading={isSubmitting} onPress={() => void submit()}/>
             <PressScale dimTo={0.5} scaleTo={0.97} onPress={() => router.replace(ROUTES.HOME)} className="items-center py-2" hitSlop={8}>
                 <Text className="font-sans-medium text-sm text-muted-foreground">{t("continueAsGuest")}</Text>
             </PressScale>

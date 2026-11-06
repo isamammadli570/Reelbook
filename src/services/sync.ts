@@ -45,7 +45,10 @@ export const syncLists = async (userId: string): Promise<boolean> => {
  * On sign-in: a device with an empty profile takes the server's; otherwise the device's profile is uploaded.
  * A username chosen at sign-up travels in the account metadata until the first profile upload.
  */
-export const syncProfileOnSignIn = async (userId: string, signUpUsername: string | null): Promise<boolean> => {
+/** What the account itself knows: the handle chosen at sign-up, or the name and photo a Google account brings. */
+export type AccountDetails = {username: string | null; name: string | null; avatarUrl: string | null};
+
+export const syncProfileOnSignIn = async (userId: string, account: AccountDetails): Promise<boolean> => {
     const local = await getProfile();
     const remote = await pullRemoteProfile(userId);
 
@@ -55,16 +58,17 @@ export const syncProfileOnSignIn = async (userId: string, signUpUsername: string
         return true;
     }
 
-    const username = local.username || remote?.username || signUpUsername || "";
+    const username = local.username || remote?.username || account.username || "";
     // Photos set on another device carry over to one that has none yet.
     const next = await saveProfile({
         ...local,
         username,
-        avatarUrl: local.avatarUrl ?? remote?.avatarUrl ?? null,
+        name: local.name || remote?.name || account.name || "",
+        avatarUrl: local.avatarUrl ?? remote?.avatarUrl ?? account.avatarUrl ?? null,
         coverUrl: local.coverUrl ?? remote?.coverUrl ?? null,
     });
     await pushRemoteProfile(userId, next);
-    return next.username !== local.username;
+    return next.username !== local.username || next.name !== local.name || next.avatarUrl !== local.avatarUrl;
 };
 
 export const pushProfileChange = async (userId: string): Promise<void> => {

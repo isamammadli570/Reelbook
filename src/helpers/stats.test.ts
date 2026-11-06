@@ -1,5 +1,5 @@
 import {describe, expect, it} from "vitest";
-import {collectWatches, longestMarathon, monthlyMinutes, splitWatchTime, summarize, topGenres, topSeries, watchTime, watchesInYear} from "@/helpers/stats";
+import {collectWatches, longestMarathon, monthlyMinutes, ratingDistribution, topPeople, splitWatchTime, summarize, topGenres, topSeries, watchTime, watchesInYear} from "@/helpers/stats";
 import type {Library, LibraryItem} from "@/api/library.api";
 
 const base = {posterPath: null, backdropPath: null, year: "2024", addedAt: "", updatedAt: "", isInWatchlist: false, isFavorite: false, isFollowing: false};
@@ -101,5 +101,34 @@ describe("watchTime", () => {
     it("rounds to hours and tenths of a day", () => {
         expect(watchTime(54_720)).toEqual({hours: 912, days: 38});
         expect(watchTime(90)).toEqual({hours: 2, days: 0.1});
+    });
+});
+
+describe("ratingDistribution", () => {
+    it("counts each rated title once, in half-star buckets", () => {
+        const watches = collectWatches({items: {"movie:1": dune, "tv:2": severance}});
+        const {counts, total} = ratingDistribution(watches);
+        expect(total).toBe(2);
+        expect(counts).toEqual([0, 0, 0, 0, 0, 0, 1, 0, 1, 0]);
+    });
+});
+
+describe("topPeople", () => {
+    const nolan = {id: 525, name: "Christopher Nolan", profilePath: null};
+    const pugh = {id: 1373737, name: "Florence Pugh", profilePath: null};
+    const film = (id: number, people: LibraryItem["people"]): LibraryItem => ({...dune, id, people, diary: [{id: `v${id}`, watchedAt: new Date(2026, 1, id).toISOString(), rating: null}]});
+
+    it("counts each title once per person, and needs at least two", () => {
+        const library: Library = {
+            items: {
+                "movie:1": {...film(1, {directors: [nolan], cast: [pugh]}), diary: [...film(1, undefined).diary, {id: "again", watchedAt: new Date(2026, 5, 1).toISOString(), rating: null}]},
+                "movie:2": film(2, {directors: [nolan], cast: [pugh]}),
+                "movie:3": film(3, {directors: [{id: 9, name: "Once Only", profilePath: null}], cast: []}),
+                "tv:2": {...severance, people: {directors: [], cast: [pugh]}},
+            },
+        };
+        const watches = collectWatches(library);
+        expect(topPeople(watches, "directors")).toEqual([{person: nolan, titles: 2}]);
+        expect(topPeople(watches, "cast")).toEqual([{person: pugh, titles: 3}]);
     });
 });

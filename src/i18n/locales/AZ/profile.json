@@ -25,7 +25,8 @@
         "close": "Menyunu bağla",
         "edit": "Profili redaktə et",
         "settings": "Ayarlar",
-        "signOut": "Çıxış et"
+        "signOut": "Çıxış et",
+        "signingOut": "Çıxış edilir…"
     },
     "cards": {
         "watchTime": "İzləmə vaxtı",

@@ -77,3 +77,6 @@ export const restoreToList = ({listId, entry, index}: {listId: string; entry: Li
 
 /** Replaces every list, used by sync and when signing out. */
 export const replaceLists = (store: ListsStore) => modifyLists(() => store);
+
+/** Applies a change to every list in one write, used by imports. */
+export const mergeIntoLists = (change: (store: ListsStore) => ListsStore) => modifyLists(change);

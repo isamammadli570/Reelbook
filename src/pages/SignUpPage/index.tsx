@@ -8,6 +8,7 @@ import {Reveal} from "@/components/motion/Reveal";
 import {Button} from "@/components/ui/button";
 import {FormInput} from "@/components/form/FormInput";
 import {AuthLayout} from "@/widgets/AuthLayout";
+import {GoogleButton, OrDivider} from "@/widgets/GoogleButton";
 import {EmptyState} from "@/widgets/EmptyState";
 import {signUp} from "@/api/auth.api";
 import {getProfile, saveProfile} from "@/api/profile.api";
@@ -70,6 +71,8 @@ export const SignUpPage = () => {
 
     return (
         <AuthLayout title={t("signUp.title")} subtitle={t("signUp.subtitle")} footer={footer}>
+            <GoogleButton onError={setFormError}/>
+            <OrDivider/>
             <Controller
                 control={control}
                 name="username"
@@ -95,7 +98,7 @@ export const SignUpPage = () => {
                 )}
             />
             {formError && <Reveal key={formError} variant="fade"><Text className="font-sans text-sm text-danger">{formError}</Text></Reveal>}
-            <Button variant="brand" label={t("signUp.submit")} disabled={isSubmitting} onPress={() => void submit()}/>
+            <Button variant="brand" label={t("signUp.submit")} isLoading={isSubmitting} onPress={() => void submit()}/>
             <Text className="text-center font-sans text-xs leading-[18px] text-subtle-foreground">{t("signUp.hint")}</Text>
         </AuthLayout>
     );

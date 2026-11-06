@@ -4,7 +4,8 @@
         "title": "Account",
         "signedInAs": "Signed in as",
         "signOut": "Sign out",
-        "guestDescription": "Create an account to keep your diary and favourites on all your devices."
+        "guestDescription": "Create an account to keep your diary and favourites on all your devices.",
+        "signingOut": "Signing out…"
     },
     "about": {
         "tmdb": "Movie and series data comes from TMDB. This product uses the TMDB API but is not endorsed or certified by TMDB.",
@@ -99,5 +100,46 @@
             "title": "Contact",
             "body": "Questions about privacy or your data? Write to:"
         }
+    },
+    "letterboxd": {
+        "row": "Import from Letterboxd",
+        "title": "Import from Letterboxd",
+        "eyebrow": "Import",
+        "steps": {
+            "export": "In a browser, open letterboxd.com/data/export (or Settings → Import & Export) and tap “Export Data”. The mobile app has no such page.",
+            "download": "Letterboxd gives you a ZIP file — save it to your phone or computer.",
+            "pick": "Pick that ZIP with the button below (no need to unzip it). Your lists come along too."
+        },
+        "keepsYours": "Nothing you have is removed: viewings on days already logged are skipped, and your own rating and review stay. Importing the same file again doubles nothing.",
+        "choose": "Choose ZIP file",
+        "matching": "Finding your films on TMDB…",
+        "progress": "{{done}} / {{total}} films",
+        "stayHere": "Stay on this page until it finishes.",
+        "found": "Found",
+        "import": "Import {{count}} films",
+        "importing": "Importing…",
+        "another": "Choose another file",
+        "unmatched": "Not found ({{count}})",
+        "unmatchedHint": "These films were not found on TMDB by name and year. You can add them from search.",
+        "showAll": "Show all ({{count}})",
+        "doneTitle": "All done",
+        "doneBody": "{{count}} films and {{viewings}} viewings were added to your library.",
+        "openDiary": "Open diary",
+        "failed": "The import did not go through. Please try again.",
+        "stats": {
+            "films": "Films",
+            "viewings": "Viewings",
+            "ratings": "Ratings",
+            "reviews": "Reviews",
+            "watchlist": "Watchlist",
+            "liked": "Liked"
+        },
+        "errors": {
+            "invalid": "This is not a Letterboxd export. Choose the ZIP Letterboxd gave you.",
+            "empty": "No films were found in the file.",
+            "failed": "The file could not be read. Please try again."
+        },
+        "listsFound": "Plus {{count}} lists ({{entries}} films) will be added to your lists.",
+        "doneLists": "{{count}} lists are now in Lists too."
     }
 }

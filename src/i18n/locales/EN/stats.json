@@ -28,5 +28,22 @@
         "title": "No stats yet",
         "description": "As you log movies and episodes, your hours, genres and marathons show up here."
     },
-    "guestDescription": "Stats are calculated from your diary. Create an account or sign in to continue."
+    "guestDescription": "Stats are calculated from your diary. Create an account or sign in to continue.",
+    "ratings": {
+        "title": "Your ratings",
+        "summary_one": "{{count}} rating · avg {{average}}",
+        "summary_other": "{{count}} ratings · avg {{average}}",
+        "count_one": "{{count}} rating",
+        "count_other": "{{count}} ratings",
+        "bar": "{{stars}}: {{count}}",
+        "mostGiven": "Given most: {{stars}} ({{count}} times)"
+    },
+    "people": {
+        "directors": "Directors you watch most",
+        "actors": "Actors you watch most",
+        "films_one": "{{count}} film",
+        "films_other": "{{count}} films",
+        "titles_one": "{{count}} title",
+        "titles_other": "{{count}} titles"
+    }
 }

@@ -58,7 +58,7 @@ export const ReviewDialog = ({snapshot, item, isOpen, onClose}: ReviewDialogProp
             />
             <View className="flex-row gap-2 pt-1">
                 <Button variant="outline" label={t("review.cancel")} className="flex-1" onPress={close}/>
-                <Button variant="primary" label={t("review.save")} className="flex-1" disabled={isPending} onPress={() => void save()}/>
+                <Button variant="primary" label={t("review.save")} className="flex-1" isLoading={isPending} onPress={() => void save()}/>
             </View>
         </BottomSheet>
     );

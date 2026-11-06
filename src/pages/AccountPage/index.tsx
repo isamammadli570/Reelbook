@@ -110,7 +110,7 @@ export const AccountPage = () => {
                     )}
                 />
                 <Note text={emailNote?.text ?? null} isError={emailNote?.isError}/>
-                <Button variant="outline" label={t("accountPage.sendLink")} disabled={emailForm.formState.isSubmitting} onPress={() => void submitEmail()}/>
+                <Button variant="outline" label={t("accountPage.sendLink")} isLoading={emailForm.formState.isSubmitting} onPress={() => void submitEmail()}/>
             </Section>
 
             <Section title={t("accountPage.passwordTitle")} index={1}>
@@ -149,7 +149,7 @@ export const AccountPage = () => {
                     )}
                 />
                 <Note text={passwordNote?.text ?? null} isError={passwordNote?.isError}/>
-                <Button variant="outline" label={t("accountPage.savePassword")} disabled={passwordForm.formState.isSubmitting} onPress={() => void submitPassword()}/>
+                <Button variant="outline" label={t("accountPage.savePassword")} isLoading={passwordForm.formState.isSubmitting} onPress={() => void submitPassword()}/>
             </Section>
 
             <Section title={t("accountPage.deleteTitle")} index={2}>

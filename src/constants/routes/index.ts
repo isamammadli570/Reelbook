@@ -19,6 +19,8 @@ export const ROUTES = {
     ACCOUNT: "/account",
     PRIVACY: "/privacy",
     COLLECTION: "/collection/[id]",
+    IMPORT_LETTERBOXD: "/import-letterboxd",
+    AUTH_CALLBACK: "/auth-callback",
 } as const;
 
 export const buildRoute = {

@@ -6,6 +6,9 @@ import {
     formatStars,
     itemKey,
     lastAiredEpisode,
+    moviePeople,
+    seriesPeople,
+    setPeople,
     nextEpisode,
     nextRating,
     refreshSnapshot,
@@ -248,5 +251,29 @@ describe("snapshotOf", () => {
         expect(snapshot).not.toHaveProperty("diary");
         expect(snapshot).not.toHaveProperty("rating");
         expect(snapshot).toMatchObject({id: movie.id, title: movie.title, mediaType: "movie"});
+    });
+});
+
+describe("people on titles", () => {
+    it("keeps a film's directors and first-billed cast, without repeats", () => {
+        const people = moviePeople({
+            crew: [{id: 1, name: "Denis Villeneuve", job: "Director"}, {id: 1, name: "Denis Villeneuve", job: "Director"}, {id: 2, name: "Someone", job: "Producer"}],
+            cast: [{id: 4, name: "Second", character: "", profile_path: null, order: 1}, {id: 3, name: "First", character: "", profile_path: "/a.jpg", order: 0}],
+        });
+        expect(people).toEqual({
+            directors: [{id: 1, name: "Denis Villeneuve", profilePath: null}],
+            cast: [{id: 3, name: "First", profilePath: "/a.jpg"}, {id: 4, name: "Second", profilePath: null}],
+        });
+    });
+
+    it("keeps a series' main cast and no directors", () => {
+        const people = seriesPeople({cast: [{id: 7, name: "Adam Scott", profile_path: null, roles: [], total_episode_count: 19}]});
+        expect(people).toEqual({directors: [], cast: [{id: 7, name: "Adam Scott", profilePath: null}]});
+    });
+
+    it("stores found people without marking the title as edited", () => {
+        const library = setPeople({items: {"movie:1": {...itemOf(movie, toggleWatchlist), updatedAt: "2026-01-01"}}}, {"movie:1": {directors: [], cast: []}, "movie:99": {directors: [], cast: []}});
+        expect(library.items["movie:1"]).toMatchObject({updatedAt: "2026-01-01", people: {directors: [], cast: []}});
+        expect(library.items["movie:99"]).toBeUndefined();
     });
 });

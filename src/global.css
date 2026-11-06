@@ -27,3 +27,9 @@
     --font-serif: "InstrumentSerif_400Regular";
     --font-serif-italic: "InstrumentSerif_400Regular_Italic";
 }
+
+/* On the web the page stays empty until the fonts load; paint it dark meanwhile, not the browser's white. */
+html,
+body {
+    background-color: #0e0e10;
+}

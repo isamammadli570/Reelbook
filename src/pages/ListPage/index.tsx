@@ -11,14 +11,14 @@ import {PosterGrid} from "@/widgets/PosterGrid";
 import {ReviewList} from "@/widgets/ReviewList";
 import {Screen} from "@/widgets/Screen";
 import {Section} from "@/widgets/Section";
-import {SeriesProgressLine} from "@/widgets/SeriesProgressLine";
+import {ShelfFooter} from "@/widgets/ShelfFooter";
 import {SortMenu} from "@/pages/ListPage/widgets/SortMenu";
 import {useShelf} from "@/hooks/library";
 import {useSession} from "@/hooks/auth/useSession";
 import {hasSupabase} from "@/lib/env";
 import {AccountRequired} from "@/widgets/AccountRequired";
 import {toMediaSummary} from "@/helpers/library";
-import {DEFAULT_SHELF_SORT, groupByStatus} from "@/helpers/shelves";
+import {DEFAULT_SHELF_SORT, groupByStatus, shelfSorts} from "@/helpers/shelves";
 import {buildRoute} from "@/constants/routes";
 import {SHELF, type Shelf, type ShelfSort} from "@/constants/other";
 import type {LibraryItem} from "@/api/library.api";
@@ -42,6 +42,7 @@ export const ListPage = () => {
 
     const isSeries = shelf === SHELF.SERIES;
     const isReviews = shelf === SHELF.REVIEWS;
+    const isWatchlist = shelf === SHELF.WATCHLIST;
     const byKey = useMemo(() => new Map(items.map((item) => [`${item.mediaType}-${item.id}`, item])), [items]);
 
     if (isGuest) {
@@ -67,10 +68,11 @@ export const ListPage = () => {
             columns={GRID_COLUMNS}
             items={list.map(toMediaSummary)}
             onPress={(media) => router.push(buildRoute.media(media))}
-            renderFooter={isSeries ? (media) => {
+            // The watchlist is unwatched and mixes movies with series, so it keeps the plain "type · year" line.
+            renderFooter={isWatchlist ? undefined : (media) => {
                 const item = byKey.get(`${media.media_type}-${media.id}`);
-                return item ? <SeriesProgressLine item={item}/> : null;
-            } : undefined}
+                return item ? <ShelfFooter item={item}/> : null;
+            }}
         />
     );
 
@@ -100,6 +102,7 @@ export const ListPage = () => {
             <SortMenu
                 isOpen={isSortOpen}
                 onClose={() => setIsSortOpen(false)}
+                sorts={shelfSorts(shelf)}
                 sort={sort}
                 onSortChange={setSort}
                 canGroup={isSeries}

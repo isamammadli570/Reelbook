@@ -1,18 +1,13 @@
-import {Alert, Platform} from "react-native";
+import {Alert} from "react-native";
 import {useQueryClient} from "@tanstack/react-query";
 import {useTranslation} from "react-i18next";
-import {Download, Upload} from "lucide-react-native";
-import {Button} from "@/components/ui/button";
-import {Section} from "@/widgets/Section";
 import {exportBackup, importBackup} from "@/api/backup.api";
 import {QUERY_KEYS} from "@/constants/other";
 
-/** Export and restore on the device. Hidden on web, where the share sheet and file picker are not available. */
-export const BackupSection = () => {
+/** Export to a file through the share sheet, and restore from one; the outcome is reported in an alert. */
+export const useBackupActions = () => {
     const {t} = useTranslation("profile");
     const queryClient = useQueryClient();
-
-    if (Platform.OS === "web") return null;
 
     const runExport = async () => {
         try {
@@ -37,10 +32,5 @@ export const BackupSection = () => {
         }
     };
 
-    return (
-        <Section title={t("backup.title")}>
-            <Button variant="outline" icon={Download} label={t("backup.export")} onPress={() => void runExport()}/>
-            <Button variant="outline" icon={Upload} label={t("backup.import")} onPress={() => void runImport()}/>
-        </Section>
-    );
+    return {runExport, runImport};
 };

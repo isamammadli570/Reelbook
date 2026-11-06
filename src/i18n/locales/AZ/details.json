@@ -36,7 +36,7 @@
     },
     "actions": {
         "logWatch": "Gündəliyə yaz",
-        "logAgain": "Yenidən izlədim",
+        "logAgain": "Yenə izlədim",
         "watchlistAdd": "Watchlist-ə əlavə et",
         "watchlistRemove": "Watchlist-dən çıxar",
         "favoriteAdd": "Sevimlilərə əlavə et",
@@ -48,7 +48,9 @@
         "label": "Sənin reytinqin",
         "hint": "Toxunaraq qiymətləndir",
         "stars_one": "{{count}} ulduz",
-        "stars_other": "{{count}} ulduz"
+        "stars_other": "{{count}} ulduz",
+        "loggedAsWatched": "İzlədim kimi qeyd olundu",
+        "undo": "Geri al"
     },
     "diary": {
         "title": "Sənin gündəliyin",
@@ -90,5 +92,18 @@
         },
         "none": "Bu ölkədə hələ heç bir platformada yoxdur.",
         "source": "Məlumat: JustWatch"
-    }
+    },
+    "logSheet": {
+        "title": "Nə vaxt izlədin?",
+        "when": "İzlədiyin gün",
+        "today": "Bu gün",
+        "yesterday": "Dünən",
+        "other": "Başqa gün",
+        "submit": "Gündəliyə yaz",
+        "save": "Yadda saxla",
+        "changeDate": "Tarixi dəyiş",
+        "previousMonth": "Əvvəlki ay",
+        "nextMonth": "Növbəti ay"
+    },
+    "spoilerName": "Epizod {{number}}"
 }

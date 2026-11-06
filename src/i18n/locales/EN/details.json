@@ -35,8 +35,8 @@
         "pilot": "Pilot"
     },
     "actions": {
-        "logWatch": "Log a watch",
-        "logAgain": "Watched again",
+        "logWatch": "Log",
+        "logAgain": "Log again",
         "watchlistAdd": "Add to watchlist",
         "watchlistRemove": "Remove from watchlist",
         "favoriteAdd": "Add to favourites",
@@ -48,7 +48,9 @@
         "label": "Your rating",
         "hint": "Tap to rate",
         "stars_one": "{{count}} star",
-        "stars_other": "{{count}} stars"
+        "stars_other": "{{count}} stars",
+        "loggedAsWatched": "Logged as watched today",
+        "undo": "Undo"
     },
     "diary": {
         "title": "Your diary",
@@ -90,5 +92,18 @@
         },
         "none": "Not available on any service in this country yet.",
         "source": "Data: JustWatch"
-    }
+    },
+    "logSheet": {
+        "title": "When did you watch it?",
+        "when": "Day watched",
+        "today": "Today",
+        "yesterday": "Yesterday",
+        "other": "Another day",
+        "submit": "Add to diary",
+        "save": "Save",
+        "changeDate": "Change date",
+        "previousMonth": "Previous month",
+        "nextMonth": "Next month"
+    },
+    "spoilerName": "Episode {{number}}"
 }

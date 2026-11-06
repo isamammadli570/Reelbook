@@ -10,6 +10,8 @@ import {
     nextRating,
     refreshSnapshot,
     seriesProgress,
+    setDiaryDate,
+    setRating,
     setReview,
     setEpisodesWatched,
     toggleEpisode,
@@ -100,6 +102,38 @@ describe("addDiaryEntry", () => {
         expect(item.diary).toHaveLength(1);
         expect(item.diary[0]).toMatchObject({watchedAt: NOW, rating: 4.5});
         expect(item.isInWatchlist).toBe(false);
+    });
+});
+
+describe("setRating", () => {
+    const LATER = "2026-11-06T09:00:00.000Z";
+
+    it("logs a never-watched movie today with the rating and leaves the watchlist", () => {
+        const item = itemOf(movie, (current) => setRating(toggleWatchlist(current), 4, NOW));
+        expect(item.diary).toHaveLength(1);
+        expect(item.diary[0]).toMatchObject({watchedAt: NOW, rating: 4});
+        expect(item.isInWatchlist).toBe(false);
+    });
+
+    it("rates the latest viewing only, so older ones keep their rating", () => {
+        const watchedTwice = itemOf(movie, (current) => addDiaryEntry(addDiaryEntry({...current, rating: 3}, NOW), LATER));
+        const rated = setRating(watchedTwice, 4.5, LATER);
+        expect(rated.diary.map((entry) => entry.rating)).toEqual([4.5, 3]);
+    });
+
+    it("clearing keeps the viewing, and series are never logged by a rating", () => {
+        const watched = itemOf(movie, (current) => setRating(current, 4, NOW));
+        expect(setRating(watched, null, LATER).diary).toEqual([{...watched.diary[0], rating: null}]);
+        expect(itemOf(series, (current) => setRating(current, 5, NOW))).toMatchObject({rating: 5, diary: [], episodes: {}});
+    });
+});
+
+describe("setDiaryDate", () => {
+    it("moves a viewing and keeps the diary newest first", () => {
+        const watched = itemOf(movie, (current) => addDiaryEntry(addDiaryEntry(current, "2026-10-01T20:00:00.000Z"), NOW));
+        const [latest, older] = watched.diary;
+        const moved = setDiaryDate(watched, latest.id, "2026-09-01T20:00:00.000Z");
+        expect(moved.diary.map((entry) => entry.id)).toEqual([older.id, latest.id]);
     });
 });
 

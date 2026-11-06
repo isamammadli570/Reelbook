@@ -8,7 +8,9 @@
     },
     "about": {
         "title": "Haqqında",
-        "tmdb": "Film və serial məlumatları TMDB-dən alınır. Bu məhsul TMDB API-dən istifadə edir, lakin TMDB tərəfindən təsdiqlənməyib."
+        "tmdb": "Film və serial məlumatları TMDB-dən alınır. Bu məhsul TMDB API-dən istifadə edir, lakin TMDB tərəfindən təsdiqlənməyib.",
+        "privacy": "Məxfilik siyasəti",
+        "justwatch": "İzləmə platformaları haqqında məlumat JustWatch-dan alınır."
     },
     "reminders": {
         "title": "Bildirişlər",
@@ -18,6 +20,85 @@
         "denied": "Bildirişlərə icazə verilməyib. Telefonun parametrlərindən Reelbook üçün aç.",
         "openSettings": "Parametrləri aç",
         "channel": "Yeni epizodlar",
-        "body": "{{code}} · {{name}} bu gün çıxır"
+        "body": "{{code}} · {{name}} bu gün çıxır",
+        "bodyNoSpoilers": "{{code}} bu gün çıxır"
+    },
+    "groups": {
+        "you": "Sən",
+        "app": "Tətbiq",
+        "data": "Məlumatların",
+        "about": "Haqqında"
+    },
+    "app": {
+        "language": "Dil",
+        "haptics": "Vibrasiya",
+        "hideSpoilers": "Spoylerləri gizlət",
+        "hideSpoilersHint": "İzləmədiyin epizodların şəkli bulanıq olur, adı gizlənir."
+    },
+    "data": {
+        "export": "Məlumatları ixrac et",
+        "import": "Backup-dan bərpa et",
+        "hint": "Gündəliyini, reytinqlərini və profilini bir faylda saxla, sonra istənilən cihazda bərpa et."
+    },
+    "common": {
+        "cancel": "Ləğv et"
+    },
+    "accountPage": {
+        "emailTitle": "E-poçtu dəyiş",
+        "newEmail": "Yeni e-poçt",
+        "sendLink": "Təsdiq linki göndər",
+        "emailSent": "{{email}} ünvanına təsdiq linki göndərdik. Linki açandan sonra yeni e-poçtla daxil olacaqsan.",
+        "sameEmail": "Bu, indiki e-poçtundur.",
+        "passwordTitle": "Şifrəni dəyiş",
+        "repeatPassword": "Yeni şifrəni təkrarla",
+        "savePassword": "Şifrəni yenilə",
+        "passwordChanged": "Şifrə yeniləndi.",
+        "passwordsDiffer": "Şifrələr eyni deyil.",
+        "deleteTitle": "Hesabı sil",
+        "deleteDescription": "Hesabın, gündəliyin, reytinqlərin, rəylərin, siyahıların və şəkillərin birdəfəlik silinir. Bunu geri qaytarmaq olmur. İstəsən, əvvəlcə Ayarlarda məlumatlarını ixrac et.",
+        "deleteButton": "Hesabı sil",
+        "confirmTitle": "Hesab silinsin?",
+        "confirmDescription": "Bütün məlumatların bütün cihazlardan birdəfəlik silinəcək.",
+        "confirmDelete": "Bəli, sil",
+        "deleteFailed": "Hesabı silmək alınmadı. İnternetə qoşul və yenidən cəhd et."
+    },
+    "privacy": {
+        "title": "Məxfilik siyasəti",
+        "updated": "Yenilənib: noyabr 2026",
+        "intro": "Reelbook izlədiyin filmləri və serialları qeyd etmək üçündür. Burada hansı məlumatları saxladığımızı, onları necə istifadə etdiyimizi və necə silə biləcəyini sadə dillə yazmışıq.",
+        "sections": [
+            {
+                "title": "Nə saxlayırıq",
+                "body": "Hesab yaradanda e-poçtun və şifrən. Şifrə şifrələnmiş halda saxlanılır, onu heç kim görə bilmir. Profilin: adın, istifadəçi adın, bion, avatar və örtük şəkillərin. Gündəliyin: izlədiyin filmlər və epizodlar, tarixləri, reytinqlərin, rəylərin, siyahıların və watchlist-in."
+            },
+            {
+                "title": "Harada saxlanılır",
+                "body": "Hesabın varsa, bu məlumatlar Supabase serverlərində saxlanılır ki, bütün cihazlarında eyni olsun. Bir surəti də telefonunda qalır. Qonaq kimi istifadə edəndə heç nə serverə göndərilmir."
+            },
+            {
+                "title": "Başqa xidmətlər",
+                "body": "Film və serial məlumatları TMDB-dən gəlir. Axtarış etdikdə sorğun TMDB-yə gedir, amma onunla birlikdə səni tanıdan heç bir məlumat göndərilmir. İzləmə platformaları JustWatch-dan TMDB vasitəsilə alınır. Treylerlər YouTube-da açılır. Hesab məktubları e-poçt xidməti vasitəsilə göndərilir."
+            },
+            {
+                "title": "Reklam və izləmə yoxdur",
+                "body": "Reelbook-da reklam, analitika və ya izləmə alətləri yoxdur. Məlumatların satılmır və heç kimlə paylaşılmır. Profilin başqa istifadəçilərə göstərilmir."
+            },
+            {
+                "title": "Bildirişlər",
+                "body": "Yeni epizod bildirişləri telefonunun özündə planlanır. Onlar üçün heç bir məlumat serverə göndərilmir. Bildirişləri Ayarlarda istənilən vaxt söndürə bilərsən."
+            },
+            {
+                "title": "Məlumatlarını idarə etmək",
+                "body": "Ayarlarda məlumatlarını faylla ixrac edə bilərsən. Ayarlar → Hesab → Hesabı sil seçəndə hesabın və bütün məlumatların serverdən və telefonundan birdəfəlik silinir."
+            },
+            {
+                "title": "Dəyişikliklər",
+                "body": "Bu siyasət dəyişsə, yeni variant bu səhifədə yayımlanacaq və yuxarıdakı tarix yenilənəcək."
+            }
+        ],
+        "contact": {
+            "title": "Əlaqə",
+            "body": "Məxfilik və ya məlumatların barədə sualın varsa, yaz:"
+        }
     }
 }

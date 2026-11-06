@@ -6,6 +6,7 @@ import {useCalendar} from "@/hooks/calendar";
 import {useRemindersEnabled} from "@/hooks/reminders";
 import {configureNotifications, hasNotificationPermission, isNotificationsSupported, responseUrl, syncScheduledReminders} from "@/lib/notifications";
 import {planReminders} from "@/helpers/reminders";
+import {usePreference} from "@/lib/preferences";
 import {buildRoute} from "@/constants/routes";
 
 /** How far ahead reminders are scheduled; a launch every few weeks keeps them topped up. */
@@ -16,6 +17,7 @@ const ReminderScheduler = () => {
     const {t} = useTranslation(["settings", "details"]);
     const today = useMemo(() => new Date(), []);
     const {episodes, isLoading} = useCalendar(today, REMINDER_WINDOW_DAYS);
+    const [isHidingSpoilers] = usePreference("hideSpoilers");
     // Runs one after another, so a quick second change cannot schedule against a stale list.
     const queue = useRef<Promise<void>>(Promise.resolve());
 
@@ -25,13 +27,15 @@ const ReminderScheduler = () => {
             if (!(await hasNotificationPermission())) return;
             await syncScheduledReminders(planReminders(episodes, new Date()), ({episode}) => ({
                 title: episode.title,
-                body: t("reminders.body", {code: t("details:episodeCode", {season: episode.season, episode: episode.episode}), name: episode.episodeName}),
+                body: isHidingSpoilers
+                    ? t("reminders.bodyNoSpoilers", {code: t("details:episodeCode", {season: episode.season, episode: episode.episode})})
+                    : t("reminders.body", {code: t("details:episodeCode", {season: episode.season, episode: episode.episode}), name: episode.episodeName}),
                 url: buildRoute.series(episode.seriesId),
             }));
         }).catch(() => {
             // A failed schedule is retried on the next change or launch; nothing to show the user.
         });
-    }, [episodes, isLoading, t]);
+    }, [episodes, isLoading, isHidingSpoilers, t]);
 
     return null;
 };

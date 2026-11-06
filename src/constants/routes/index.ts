@@ -15,6 +15,9 @@ export const ROUTES = {
     LISTS: "/lists",
     USER_LIST: "/lists/[id]",
     PERSON: "/person/[id]",
+    DIARY: "/diary",
+    ACCOUNT: "/account",
+    PRIVACY: "/privacy",
 } as const;
 
 export const buildRoute = {

@@ -15,6 +15,8 @@ const mapError = (message: string): string => {
     if (/different from the old/i.test(message)) return "same_password";
     // The SMTP server refused the login or the message; the fix is in the Supabase email settings, not in the form.
     if (/sending.*email|smtp/i.test(message)) return "email_send_failed";
+    if (/reauthenticat|recent login/i.test(message)) return "needs_recent_sign_in";
+    if (/email.*(invalid|valid)|invalid.*email/i.test(message)) return "invalidEmail";
     if (/password/i.test(message)) return "weak_password";
     return "generic";
 };
@@ -78,4 +80,32 @@ export const resetPassword = async (email: string, code: string, password: strin
     if (verified.error) return {error: mapError(verified.error.message)};
     const {error} = await supabase.auth.updateUser({password});
     return {error: error ? mapError(error.message) : null};
+};
+
+/**
+ * Asks Supabase to move the account to a new address. Nothing changes until the link it emails is opened;
+ * with "secure email change" on, the old address gets a link to confirm too.
+ */
+export const changeEmail = async (email: string): Promise<AuthResult> => {
+    if (!supabase) return {error: "not_configured"};
+    const {error} = await supabase.auth.updateUser({email});
+    return {error: error ? mapError(error.message) : null};
+};
+
+export const changePassword = async (password: string): Promise<AuthResult> => {
+    if (!supabase) return {error: "not_configured"};
+    const {error} = await supabase.auth.updateUser({password});
+    return {error: error ? mapError(error.message) : null};
+};
+
+/**
+ * Deletes the signed-in account through the database function from migration 006; the user's rows go with it
+ * (their tables cascade from auth.users). Storage files are removed by the caller first.
+ */
+export const deleteOwnAccount = async (): Promise<void> => {
+    if (!supabase) throw new Error("Supabase is not configured");
+    const {error} = await supabase.rpc("delete_my_account");
+    if (error) throw error;
+    // The session belongs to a user who no longer exists, so only this device's copy is cleared.
+    await supabase.auth.signOut({scope: "local"}).catch(() => undefined);
 };

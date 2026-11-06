@@ -1,5 +1,5 @@
 import {describe, expect, it} from "vitest";
-import {coverChoices, groupByStatus, lastWatchedAt, seriesStatus, shelfItems, sortShelf} from "@/helpers/shelves";
+import {coverChoices, groupByStatus, lastWatchedAt, seriesStatus, shelfItems, shelfSorts, sortShelf} from "@/helpers/shelves";
 import {addDiaryEntry, createLibrary, setEpisodesWatched, toggleFavorite, toggleFollowing, toggleWatchlist, updateItem} from "@/helpers/library";
 import type {Library, LibraryItem, MediaSnapshot} from "@/api/library.api";
 
@@ -49,6 +49,19 @@ describe("sortShelf", () => {
         expect(titles(sortShelf(movies, "lastWatched"))).toEqual(["Arrival", "Dune"]);
         expect(titles(sortShelf(movies, "lastAdded"))).toEqual(["Arrival", "Dune"]);
         expect(titles(sortShelf(movies, "releaseDate"))).toEqual(["Dune", "Arrival"]);
+    });
+});
+
+describe("rating sort", () => {
+    it("puts the highest rated first and unrated titles last", () => {
+        const [first, second, third] = shelfItems(library, "movies").concat(shelfItems(library, "watchlist"));
+        const rated = [{...first, rating: 3}, {...second, rating: null}, {...third, rating: 4.5}];
+        expect(sortShelf(rated, "rating").map((item) => item.rating)).toEqual([4.5, 3, null]);
+    });
+
+    it("is not offered on the watchlist", () => {
+        expect(shelfSorts("watchlist")).not.toContain("rating");
+        expect(shelfSorts("movies")).toContain("rating");
     });
 });
 

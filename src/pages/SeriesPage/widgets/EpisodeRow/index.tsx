@@ -8,6 +8,7 @@ import {Image} from "@/components/ui/image";
 import {useDateFormat} from "@/hooks/useDateFormat";
 import {useFormatRuntime} from "@/hooks/useFormatRuntime";
 import {imageUrl} from "@/helpers/media";
+import {usePreference} from "@/lib/preferences";
 import {cn} from "@/lib/utils";
 import {IMAGE_SIZE} from "@/constants/other";
 import type {Episode} from "@/api/series.api";
@@ -19,12 +20,17 @@ type EpisodeRowProps = {
     onToggle: (episode: Episode) => void;
 };
 
-/** One episode: still frame, "S2 · E7", title, air date and length, with a watched toggle once it has aired. */
+/**
+ * One episode: still frame, "S2 · E7", title, air date and length, with a watched toggle once it has aired.
+ * With spoilers hidden, an episode not yet watched shows a blurred still and "Episode 7" instead of its title.
+ */
 export const EpisodeRow = memo(({episode, isWatched, isReleased, onToggle}: EpisodeRowProps) => {
     const {t} = useTranslation("details");
     const formatRuntime = useFormatRuntime();
     const {shortDate} = useDateFormat();
     const [successInk, foreground] = useCSSVariable(["--color-background", "--color-foreground"]).map(String);
+    const [isHidingSpoilers] = usePreference("hideSpoilers");
+    const isHidden = isHidingSpoilers && !isWatched;
     const still = imageUrl(episode.still_path, IMAGE_SIZE.BACKDROP);
     const code = t("episodeCode", {season: episode.season_number, episode: episode.episode_number});
     const meta = [shortDate(episode.air_date) ?? t("dateUnknown"), formatRuntime(episode.runtime)].filter(Boolean).join(" · ");
@@ -32,11 +38,11 @@ export const EpisodeRow = memo(({episode, isWatched, isReleased, onToggle}: Epis
     return (
         <View className={cn("flex-row items-center gap-3 rounded-2xl bg-surface p-2", !isReleased && "opacity-60")}>
             <View className="h-16 w-28 overflow-hidden rounded-xl bg-surface-raised">
-                {still && <Image source={still} className="h-full w-full" contentFit="cover" transition={200}/>}
+                {still && <Image source={still} className="h-full w-full" contentFit="cover" transition={200} blurRadius={isHidden ? 24 : 0}/>}
             </View>
             <View className="min-w-0 flex-1 gap-0.5">
                 <Text className="font-sans-medium text-[11px] text-brand">{code}</Text>
-                <Text className="font-sans-medium text-sm text-foreground" numberOfLines={1}>{episode.name}</Text>
+                <Text className="font-sans-medium text-sm text-foreground" numberOfLines={1}>{isHidden ? t("spoilerName", {number: episode.episode_number}) : episode.name}</Text>
                 <Text className="font-sans text-[11px] text-muted-foreground" numberOfLines={1}>{isReleased ? meta : `${meta} · ${t("episodeActions.notAired")}`}</Text>
             </View>
             {isReleased && (

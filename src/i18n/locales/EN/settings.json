@@ -8,7 +8,9 @@
     },
     "about": {
         "title": "About",
-        "tmdb": "Movie and series data comes from TMDB. This product uses the TMDB API but is not endorsed or certified by TMDB."
+        "tmdb": "Movie and series data comes from TMDB. This product uses the TMDB API but is not endorsed or certified by TMDB.",
+        "privacy": "Privacy policy",
+        "justwatch": "Streaming availability is provided by JustWatch."
     },
     "reminders": {
         "title": "Notifications",
@@ -18,6 +20,85 @@
         "denied": "Notifications are turned off for Reelbook. Turn them on in your phone's settings.",
         "openSettings": "Open settings",
         "channel": "New episodes",
-        "body": "{{code}} · {{name}} is out today"
+        "body": "{{code}} · {{name}} is out today",
+        "bodyNoSpoilers": "{{code}} is out today"
+    },
+    "groups": {
+        "you": "You",
+        "app": "App",
+        "data": "Your data",
+        "about": "About"
+    },
+    "app": {
+        "language": "Language",
+        "haptics": "Haptic feedback",
+        "hideSpoilers": "Hide episode spoilers",
+        "hideSpoilersHint": "Blur stills and hide titles of episodes you haven't watched."
+    },
+    "data": {
+        "export": "Export my data",
+        "import": "Restore from backup",
+        "hint": "Keep your diary, ratings and profile in one file, then restore them on any device."
+    },
+    "common": {
+        "cancel": "Cancel"
+    },
+    "accountPage": {
+        "emailTitle": "Change email",
+        "newEmail": "New email",
+        "sendLink": "Send confirmation link",
+        "emailSent": "We sent a confirmation link to {{email}}. Once you open it, sign in with the new address.",
+        "sameEmail": "That's your current email.",
+        "passwordTitle": "Change password",
+        "repeatPassword": "Repeat new password",
+        "savePassword": "Update password",
+        "passwordChanged": "Password updated.",
+        "passwordsDiffer": "The passwords don't match.",
+        "deleteTitle": "Delete account",
+        "deleteDescription": "Your account, diary, ratings, reviews, lists and photos are deleted for good. This can't be undone. You can export your data in Settings first.",
+        "deleteButton": "Delete account",
+        "confirmTitle": "Delete your account?",
+        "confirmDescription": "All your data will be removed from every device, permanently.",
+        "confirmDelete": "Yes, delete",
+        "deleteFailed": "Couldn't delete the account. Check your connection and try again."
+    },
+    "privacy": {
+        "title": "Privacy policy",
+        "updated": "Updated: November 2026",
+        "intro": "Reelbook is for keeping track of the movies and series you watch. This page explains, in plain words, what we keep, how it's used, and how to delete it.",
+        "sections": [
+            {
+                "title": "What we keep",
+                "body": "When you create an account: your email and password. The password is stored encrypted and nobody can read it. Your profile: name, username, bio, avatar and cover photos. Your diary: the movies and episodes you watched and when, your ratings, reviews, lists and watchlist."
+            },
+            {
+                "title": "Where it's stored",
+                "body": "With an account, this data is stored on Supabase servers so it's the same on all your devices. A copy also stays on your phone. As a guest, nothing is sent to a server."
+            },
+            {
+                "title": "Other services",
+                "body": "Movie and series information comes from TMDB. When you search, the query goes to TMDB without anything that identifies you. Streaming availability comes from JustWatch through TMDB. Trailers open on YouTube. Account emails are sent through an email provider."
+            },
+            {
+                "title": "No ads, no tracking",
+                "body": "Reelbook has no ads, analytics or tracking tools. Your data isn't sold or shared with anyone. Your profile isn't shown to other users."
+            },
+            {
+                "title": "Notifications",
+                "body": "New-episode reminders are scheduled on your phone. No data is sent to a server for them. You can turn them off in Settings at any time."
+            },
+            {
+                "title": "Managing your data",
+                "body": "You can export your data to a file in Settings. Settings → Account → Delete account permanently removes your account and all your data from the server and your phone."
+            },
+            {
+                "title": "Changes",
+                "body": "If this policy changes, the new version is published on this page and the date above is updated."
+            }
+        ],
+        "contact": {
+            "title": "Contact",
+            "body": "Questions about privacy or your data? Write to:"
+        }
     }
 }

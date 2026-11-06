@@ -73,12 +73,12 @@ export const pushRemoteLists = async (userId: string, entries: Record<string, Ve
     if (error) throw error;
 };
 
-type ProfileRow ={name: string; bio: string; username: string | null; cover_path: string | null; avatar_color: string | null; avatar_url: string | null};
+type ProfileRow ={name: string; bio: string; username: string | null; cover_path: string | null; cover_url: string | null; avatar_color: string | null; avatar_url: string | null};
 
 export const pullRemoteProfile = async (userId: string): Promise<Profile | null> => {
     const {data, error} = await client()
         .from("profiles")
-        .select("name, bio, username, cover_path, avatar_color, avatar_url")
+        .select("name, bio, username, cover_path, cover_url, avatar_color, avatar_url")
         .eq("user_id", userId)
         .maybeSingle<ProfileRow>();
     if (error) throw error;
@@ -88,6 +88,7 @@ export const pullRemoteProfile = async (userId: string): Promise<Profile | null>
         bio: data.bio,
         username: data.username ?? "",
         coverPath: data.cover_path,
+        coverUrl: data.cover_url,
         avatarColor: data.avatar_color ?? DEFAULT_AVATAR_COLOR,
         avatarUrl: data.avatar_url,
     };
@@ -104,6 +105,7 @@ export const pushRemoteProfile = async (userId: string, profile: Profile): Promi
                 // An empty handle is stored as null so the unique index ignores it.
                 username: profile.username || null,
                 cover_path: profile.coverPath,
+                cover_url: profile.coverUrl,
                 avatar_color: profile.avatarColor,
                 avatar_url: profile.avatarUrl,
                 updated_at: new Date().toISOString(),

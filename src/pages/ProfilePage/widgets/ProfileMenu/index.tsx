@@ -1,11 +1,14 @@
+import {useState} from "react";
 import {Modal, Pressable, Text} from "react-native";
 import {useSafeAreaInsets} from "react-native-safe-area-context";
 import {router} from "expo-router";
 import {useTranslation} from "react-i18next";
-import {LogOut, Pencil, Settings, type LucideIcon} from "lucide-react-native";
+import {ListPlus, LogOut, Pencil, Settings, type LucideIcon} from "lucide-react-native";
 import {FadeIn} from "react-native-reanimated";
 import {useCSSVariable} from "uniwind";
 import {AnimatedView} from "@/components/ui/animated";
+import {ListFormSheet} from "@/widgets/ListFormSheet";
+import {useCreateAndOpenList} from "@/hooks/lists";
 import {useSignOut} from "@/hooks/auth/useSignOut";
 import {ROUTES} from "@/constants/routes";
 import {cn} from "@/lib/utils";
@@ -22,12 +25,15 @@ type ProfileMenuProps = {
     onClose: () => void;
 };
 
-/** The profile's overflow menu, anchored under the ⋮ button: edit, settings and sign out. */
+/** The profile's overflow menu, anchored under the ⋮ button: edit, new list, settings and sign out. */
 export const ProfileMenu = ({isOpen, onClose}: ProfileMenuProps) => {
     const {t} = useTranslation("profile");
     const insets = useSafeAreaInsets();
     const [foreground, danger] = useCSSVariable(["--color-foreground", "--color-danger"]).map(String);
     const {signOut, isSigningOut} = useSignOut();
+    const {t: tLists} = useTranslation("lists");
+    const createList = useCreateAndOpenList();
+    const [isCreatingList, setIsCreatingList] = useState(false);
 
     const go = (route: string) => {
         onClose();
@@ -36,6 +42,14 @@ export const ProfileMenu = ({isOpen, onClose}: ProfileMenuProps) => {
 
     const items: MenuItem[] = [
         {label: t("menu.edit"), icon: Pencil, onPress: () => go(ROUTES.EDIT_PROFILE)},
+        {
+            label: tLists("form.createTitle"),
+            icon: ListPlus,
+            onPress: () => {
+                onClose();
+                setIsCreatingList(true);
+            },
+        },
         {label: t("menu.settings"), icon: Settings, onPress: () => go(ROUTES.SETTINGS)},
         {
             label: t("menu.signOut"),
@@ -49,6 +63,7 @@ export const ProfileMenu = ({isOpen, onClose}: ProfileMenuProps) => {
     ];
 
     return (
+        <>
         <Modal visible={isOpen} transparent animationType="none" onRequestClose={onClose}>
             <Pressable className="flex-1 bg-black/40" onPress={onClose} aria-label={t("menu.close")}>
                 <AnimatedView
@@ -70,5 +85,13 @@ export const ProfileMenu = ({isOpen, onClose}: ProfileMenuProps) => {
                 </AnimatedView>
             </Pressable>
         </Modal>
+        <ListFormSheet
+            isOpen={isCreatingList}
+            onClose={() => setIsCreatingList(false)}
+            title={tLists("form.createTitle")}
+            submitLabel={tLists("form.create")}
+            onSubmit={createList}
+        />
+        </>
     );
 };

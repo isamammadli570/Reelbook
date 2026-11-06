@@ -47,8 +47,15 @@ export const sortShelf = (items: LibraryItem[], sort: ShelfSort): LibraryItem[] 
                 return a.title.localeCompare(b.title);
             case SHELF_SORT.RELEASE_DATE:
                 return newestFirst(a.year, b.year) || a.title.localeCompare(b.title);
+            case SHELF_SORT.RATING:
+                // Unrated titles go last rather than counting as zero stars.
+                return (b.rating ?? -1) - (a.rating ?? -1) || a.title.localeCompare(b.title);
         }
     });
+
+/** Every sort a shelf offers; the watchlist holds unwatched titles, so it has no ratings to sort by. */
+export const shelfSorts = (shelf: Shelf): ShelfSort[] =>
+    Object.values(SHELF_SORT).filter((sort) => sort !== SHELF_SORT.RATING || shelf !== SHELF.WATCHLIST);
 
 /** Backdrops the user can pick as a profile cover: favourites first, then the most recently touched, no repeats. */
 export const coverChoices = (library: Library, limit = 24): {path: string; title: string}[] => {

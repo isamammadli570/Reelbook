@@ -47,7 +47,8 @@
         "movies": "Filmlər",
         "series": "Seriallar",
         "watchlist": "Watchlist",
-        "reviews": "Rəylər"
+        "reviews": "Rəylər",
+        "lists": "Siyahılar"
     },
     "empty": {
         "favorites": "Film və ya serial səhifəsində ürəyə toxun, burada görünəcək.",
@@ -60,7 +61,8 @@
         "lastWatched": "Son izlənən",
         "lastAdded": "Son əlavə edilən",
         "alphabetical": "Əlifba ilə",
-        "releaseDate": "Buraxılış tarixi"
+        "releaseDate": "Buraxılış tarixi",
+        "rating": "Reytinqə görə"
     },
     "status": {
         "watching": "İzləyirəm",
@@ -95,6 +97,17 @@
         "removePhoto": "Şəkli sil",
         "avatarColorHint": "Şəkil olmayanda adının ilk hərfi bu rəngdə görünür.",
         "photoFailed": "Şəkli açmaq alınmadı. Başqasını seç.",
-        "photoUploadFailed": "Şəkli yükləmək alınmadı. İnternetə qoşul və yenidən cəhd et."
+        "photoUploadFailed": "Şəkli yükləmək alınmadı. İnternetə qoşul və yenidən cəhd et.",
+        "uploadCover": "Öz şəklin",
+        "changeCoverPhoto": "Örtük şəklini dəyiş"
+    },
+    "favorites": {
+        "add": "Sevimli əlavə et"
+    },
+    "recent": {
+        "title": "Son izlədiklərim",
+        "diary": "Gündəlik",
+        "diaryTitle": "Gündəlik",
+        "empty": "İzlədiyin filmlər və epizodlar burada görünəcək."
     }
 }

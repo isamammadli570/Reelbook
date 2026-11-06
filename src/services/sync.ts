@@ -56,8 +56,13 @@ export const syncProfileOnSignIn = async (userId: string, signUpUsername: string
     }
 
     const username = local.username || remote?.username || signUpUsername || "";
-    // A photo set on another device carries over to one that has none yet.
-    const next = await saveProfile({...local, username, avatarUrl: local.avatarUrl ?? remote?.avatarUrl ?? null});
+    // Photos set on another device carry over to one that has none yet.
+    const next = await saveProfile({
+        ...local,
+        username,
+        avatarUrl: local.avatarUrl ?? remote?.avatarUrl ?? null,
+        coverUrl: local.coverUrl ?? remote?.coverUrl ?? null,
+    });
     await pushRemoteProfile(userId, next);
     return next.username !== local.username;
 };
@@ -74,6 +79,11 @@ export const flushAndClearDevice = async (userId: string): Promise<void> => {
     await syncLibrary(userId);
     await syncLists(userId);
     await pushProfileChange(userId);
+    await clearDevice();
+};
+
+/** Empties the library, lists and profile kept on this device; device preferences such as language stay. */
+export const clearDevice = async (): Promise<void> => {
     await replaceLibrary(createLibrary());
     await replaceLists(createListsStore());
     await saveProfile(EMPTY_PROFILE);

@@ -37,7 +37,7 @@ export const Button = ({label, icon: Icon, isIconFilled, variant = "secondary", 
                     <Icon size={20} strokeWidth={2} color={iconColor} fill={isIconFilled ? iconColor : "transparent"}/>
                 </PopOnActivate>
             )}
-            {label && <Text className={cn("font-sans-semibold text-[15px]", styles.text)}>{label}</Text>}
+            {label && <Text className={cn("shrink font-sans-semibold text-[15px]", styles.text)} numberOfLines={1}>{label}</Text>}
         </PressScale>
     );
 };

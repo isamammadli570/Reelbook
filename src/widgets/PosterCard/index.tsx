@@ -16,11 +16,13 @@ type PosterCardProps = {
     index?: number;
     /** Shown instead of "type · year" when given. */
     footer?: ReactNode;
+    /** Poster only, for rows where the poster already says what it is; a footer still shows. */
+    isCompact?: boolean;
     onPress?: (media: MediaSummary) => void;
 };
 
 /** A 2:3 poster with title and "type · year" underneath; it rises in with its place in the grid and springs when pressed. */
-export const PosterCard = memo(({media, width, rank, index = 0, footer, onPress}: PosterCardProps) => {
+export const PosterCard = memo(({media, width, rank, index = 0, footer, isCompact, onPress}: PosterCardProps) => {
     const {t} = useTranslation();
     const title = mediaTitle(media);
     const poster = imageUrl(media.poster_path, IMAGE_SIZE.POSTER);
@@ -44,8 +46,8 @@ export const PosterCard = memo(({media, width, rank, index = 0, footer, onPress}
                     </View>
                 )}
             </View>
-            <Text className="font-sans-medium text-xs text-foreground" numberOfLines={1}>{title}</Text>
-            {footer ?? <Text className="font-sans text-[11px] text-muted-foreground" numberOfLines={1}>{meta}</Text>}
+            {!isCompact && <Text className="font-sans-medium text-xs text-foreground" numberOfLines={1}>{title}</Text>}
+            {footer ?? (isCompact ? null : <Text className="font-sans text-[11px] text-muted-foreground" numberOfLines={1}>{meta}</Text>)}
         </PressScale>
         </AnimatedView>
     );

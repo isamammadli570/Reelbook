@@ -35,8 +35,8 @@
         "pilot": "Пилот"
     },
     "actions": {
-        "logWatch": "Отметить просмотр",
-        "logAgain": "Посмотрел снова",
+        "logWatch": "Отметить",
+        "logAgain": "Ещё раз",
         "watchlistAdd": "Добавить в список",
         "watchlistRemove": "Убрать из списка",
         "favoriteAdd": "В избранное",
@@ -50,7 +50,9 @@
         "stars_one": "{{count}} звезда",
         "stars_few": "{{count}} звезды",
         "stars_many": "{{count}} звёзд",
-        "stars_other": "{{count}} звезды"
+        "stars_other": "{{count}} звезды",
+        "loggedAsWatched": "Отмечено как просмотренное",
+        "undo": "Отменить"
     },
     "diary": {
         "title": "Твой дневник",
@@ -92,5 +94,18 @@
         },
         "none": "В этой стране пока нет ни на одной платформе.",
         "source": "Данные: JustWatch"
-    }
+    },
+    "logSheet": {
+        "title": "Когда ты смотрел?",
+        "when": "День просмотра",
+        "today": "Сегодня",
+        "yesterday": "Вчера",
+        "other": "Другой день",
+        "submit": "Добавить в дневник",
+        "save": "Сохранить",
+        "changeDate": "Изменить дату",
+        "previousMonth": "Предыдущий месяц",
+        "nextMonth": "Следующий месяц"
+    },
+    "spoilerName": "Эпизод {{number}}"
 }

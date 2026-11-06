@@ -15,11 +15,13 @@ type PosterGridProps = {
     columns?: number;
     /** Replaces the "type · year" line under a poster, e.g. a series' progress. */
     renderFooter?: (media: MediaSummary) => ReactNode;
+    /** Posters without title and year. */
+    isCompact?: boolean;
     onPress?: (media: MediaSummary) => void;
 };
 
 /** Four posters per row on a phone by default, the app's main building block for lists of titles. */
-export const PosterGrid = ({items, isLoading, placeholderCount, isRanked, columns = POSTER_COLUMNS, renderFooter, onPress}: PosterGridProps) => {
+export const PosterGrid = ({items, isLoading, placeholderCount, isRanked, columns = POSTER_COLUMNS, renderFooter, isCompact, onPress}: PosterGridProps) => {
     const width = usePosterWidth(columns);
 
     return (
@@ -40,6 +42,7 @@ export const PosterGrid = ({items, isLoading, placeholderCount, isRanked, column
                         index={index}
                         rank={isRanked ? index + 1 : undefined}
                         footer={renderFooter?.(media)}
+                        isCompact={isCompact}
                         onPress={onPress}
                     />
                 ))}

@@ -126,7 +126,18 @@ export const toggleFollowing = (item: LibraryItem): LibraryItem => ({
     isInWatchlist: item.isFollowing ? item.isInWatchlist : false,
 });
 
-export const setRating = (item: LibraryItem, rating: number | null): LibraryItem => ({...item, rating});
+/**
+ * A rating is the user's latest opinion, so it also lands on their most recent viewing; older viewings keep
+ * the rating they had then. Rating a movie never logged counts as having watched it: it is logged today.
+ * Clearing the rating keeps the viewing. Series are measured in episodes, so rating one marks nothing watched.
+ */
+export const setRating = (item: LibraryItem, rating: number | null, nowIso: string): LibraryItem => {
+    const next = {...item, rating};
+    if (item.mediaType !== MEDIA_TYPE.MOVIE) return next;
+    if (!item.diary.length) return rating === null ? next : addDiaryEntry(next, nowIso);
+    const [latest, ...older] = item.diary;
+    return {...next, diary: [{...latest, rating}, ...older]};
+};
 
 /** Star taps: a new star sets that rating, tapping the current one halves it, tapping the half clears it. */
 export const nextRating = (current: number | null, tapped: number): number | null => {
@@ -144,6 +155,12 @@ export const addDiaryEntry = (item: LibraryItem, watchedAt: string): LibraryItem
     ...item,
     isInWatchlist: false,
     diary: [{id: createId(), watchedAt, rating: item.rating}, ...item.diary].sort((a, b) => b.watchedAt.localeCompare(a.watchedAt)),
+});
+
+/** Moves a viewing to another day; the diary stays newest first, so it may now be the latest or not. */
+export const setDiaryDate = (item: LibraryItem, entryId: string, watchedAt: string): LibraryItem => ({
+    ...item,
+    diary: item.diary.map((entry) => (entry.id === entryId ? {...entry, watchedAt} : entry)).sort((a, b) => b.watchedAt.localeCompare(a.watchedAt)),
 });
 
 export const removeDiaryEntry = (item: LibraryItem, entryId: string): LibraryItem => ({...item, diary: item.diary.filter((entry) => entry.id !== entryId)});

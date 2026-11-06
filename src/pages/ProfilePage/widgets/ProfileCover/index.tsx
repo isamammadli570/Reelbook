@@ -17,17 +17,16 @@ const AVATAR_SIZE = 92;
 
 type ProfileCoverProps = {
     profile: Profile;
-    /** Used when the user has not picked a cover: a backdrop from their own titles. */
-    fallbackCoverPath: string | null;
     onOpenMenu: () => void;
 };
 
 /** Cover image fading into the page, the avatar overlapping it, and name, @username and bio beneath. */
-export const ProfileCover = ({profile, fallbackCoverPath, onOpenMenu}: ProfileCoverProps) => {
+export const ProfileCover = ({profile, onOpenMenu}: ProfileCoverProps) => {
     const {t} = useTranslation("profile");
     const insets = useSafeAreaInsets();
     const [background, foreground] = useCSSVariable(["--color-background", "--color-foreground"]).map(String);
-    const cover = imageUrl(profile.coverPath ?? fallbackCoverPath, IMAGE_SIZE.BACKDROP);
+    // Only what the user chose: with no cover the plain tinted band shows, exactly as on the edit page.
+    const cover = profile.coverUrl ?? imageUrl(profile.coverPath, IMAGE_SIZE.BACKDROP);
     const name = profile.name || t("defaultName");
 
     return (

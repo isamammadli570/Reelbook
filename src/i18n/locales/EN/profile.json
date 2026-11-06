@@ -47,7 +47,8 @@
         "movies": "Movies",
         "series": "Series",
         "watchlist": "Watchlist",
-        "reviews": "Reviews"
+        "reviews": "Reviews",
+        "lists": "Lists"
     },
     "empty": {
         "favorites": "Tap the heart on a movie or series page and it shows up here.",
@@ -60,7 +61,8 @@
         "lastWatched": "Last watched",
         "lastAdded": "Last added",
         "alphabetical": "Alphabetical",
-        "releaseDate": "Release date"
+        "releaseDate": "Release date",
+        "rating": "Your rating"
     },
     "status": {
         "watching": "Watching",
@@ -95,6 +97,17 @@
         "removePhoto": "Remove photo",
         "avatarColorHint": "Without a photo, your initial shows on this colour.",
         "photoFailed": "Couldn't open that photo. Pick another one.",
-        "photoUploadFailed": "Couldn't upload the photo. Check your connection and try again."
+        "photoUploadFailed": "Couldn't upload the photo. Check your connection and try again.",
+        "uploadCover": "Your photo",
+        "changeCoverPhoto": "Change cover photo"
+    },
+    "favorites": {
+        "add": "Add a favourite"
+    },
+    "recent": {
+        "title": "Recently watched",
+        "diary": "Diary",
+        "diaryTitle": "Diary",
+        "empty": "Movies and episodes you watch will show up here."
     }
 }

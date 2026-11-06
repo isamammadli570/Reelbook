@@ -47,6 +47,7 @@ export const parseBackup = (text: string): Backup | null => {
             username: typeof profile.username === "string" ? profile.username : "",
             bio: typeof profile.bio === "string" ? profile.bio : "",
             coverPath: typeof profile.coverPath === "string" ? profile.coverPath : null,
+            coverUrl: typeof profile.coverUrl === "string" ? profile.coverUrl : null,
             avatarColor: typeof profile.avatarColor === "string" ? profile.avatarColor : DEFAULT_AVATAR_COLOR,
             avatarUrl: typeof profile.avatarUrl === "string" ? profile.avatarUrl : null,
         },

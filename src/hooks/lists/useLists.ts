@@ -1,4 +1,5 @@
 import {useMemo} from "react";
+import {router} from "expo-router";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {
     createUserList,
@@ -9,9 +10,10 @@ import {
     updateUserList,
     type ListsStore,
 } from "@/api/lists.api";
-import {listIdsContaining, sortedLists} from "@/helpers/lists";
+import {createListId, listIdsContaining, sortedLists} from "@/helpers/lists";
 import {ensureAccount} from "@/lib/accountGate";
 import {QUERY_KEYS} from "@/constants/other";
+import {buildRoute} from "@/constants/routes";
 
 /** All of the user's lists from device storage; only this app writes them, so they never go stale. */
 export const useGetLists = () =>
@@ -57,3 +59,14 @@ export const useUpdateList = () => useListsMutation(updateUserList);
 export const useDeleteList = () => useListsMutation(deleteUserList);
 export const useToggleInList = () => useListsMutation(toggleInList);
 export const useRemoveFromList = () => useListsMutation(removeFromList);
+
+/** Creates a list and opens it, so the user can start filling it; resolves to whether it was created. */
+export const useCreateAndOpenList = () => {
+    const {mutateAsync: createList} = useCreateList();
+    return async (details: {name: string; description: string}): Promise<boolean> => {
+        const id = createListId();
+        const isCreated = await createList({id, details}).then(() => true, () => false);
+        if (isCreated) router.push(buildRoute.userList(id));
+        return isCreated;
+    };
+};

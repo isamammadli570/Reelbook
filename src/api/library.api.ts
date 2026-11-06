@@ -4,6 +4,7 @@ import {
     addDiaryEntry,
     createLibrary,
     removeDiaryEntry,
+    setDiaryDate,
     setEpisodesWatched,
     setRating,
     toggleEpisode,
@@ -107,13 +108,16 @@ export const saveReview = ({snapshot, text}: {snapshot: MediaSnapshot; text: str
     modifyLibrary((library) => updateItem(library, snapshot, (item) => setReview(item, text, now()), now()));
 
 export const rateItem =({snapshot, rating}: {snapshot: MediaSnapshot; rating: number | null}) =>
-    modifyLibrary((library) => updateItem(library, snapshot, (item) => setRating(item, rating), now()));
+    modifyLibrary((library) => updateItem(library, snapshot, (item) => setRating(item, rating, now()), now()));
 
 export const logWatch = ({snapshot, watchedAt}: {snapshot: MediaSnapshot; watchedAt?: string}) =>
     modifyLibrary((library) => updateItem(library, snapshot, (item) => addDiaryEntry(item, watchedAt ?? now()), now()));
 
 export const deleteWatch = ({snapshot, entryId}: {snapshot: MediaSnapshot; entryId: string}) =>
     modifyLibrary((library) => updateItem(library, snapshot, (item) => removeDiaryEntry(item, entryId), now()));
+
+export const changeWatchDate = ({snapshot, entryId, watchedAt}: {snapshot: MediaSnapshot; entryId: string; watchedAt: string}) =>
+    modifyLibrary((library) => updateItem(library, snapshot, (item) => setDiaryDate(item, entryId, watchedAt), now()));
 
 export const toggleEpisodeWatched = ({snapshot, episode}: {snapshot: MediaSnapshot; episode: EpisodeRef}) =>
     modifyLibrary((library) => updateItem(library, snapshot, (item) => toggleEpisode(item, episode, now()), now()));

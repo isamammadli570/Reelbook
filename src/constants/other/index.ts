@@ -60,6 +60,7 @@ export const STORAGE_KEYS = {
     LISTS: "lists:v1",
     LANGUAGE: "settings:language",
     EPISODE_REMINDERS: "settings:episodeReminders",
+    PREFERENCES: "settings:preferences",
 } as const;
 
 export const REVIEW_MAX_LENGTH = 1000;
@@ -91,6 +92,7 @@ export const SHELF_SORT = {
     LAST_ADDED: "lastAdded",
     ALPHABETICAL: "alphabetical",
     RELEASE_DATE: "releaseDate",
+    RATING: "rating",
 } as const;
 export type ShelfSort = (typeof SHELF_SORT)[keyof typeof SHELF_SORT];
 
@@ -126,3 +128,6 @@ export const RECOMMENDATION_LIMIT = 8;
 export const POSTER_COLUMNS = 4;
 /** Web shows the app as a phone-width column instead of stretching posters across a desktop screen. */
 export const MAX_CONTENT_WIDTH = 520;
+
+/** Where users reach the developer; shown on the privacy page, which the app stores require. */
+export const CONTACT_EMAIL = "isamammadlee@gmail.com";

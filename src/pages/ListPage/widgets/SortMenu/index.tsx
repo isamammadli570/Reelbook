@@ -4,7 +4,7 @@ import {useTranslation} from "react-i18next";
 import {FadeIn} from "react-native-reanimated";
 import {AnimatedView} from "@/components/ui/animated";
 import {cn} from "@/lib/utils";
-import {SHELF_SORT, type ShelfSort} from "@/constants/other";
+import type {ShelfSort} from "@/constants/other";
 
 type RadioRowProps = {
     label: string;
@@ -24,6 +24,8 @@ const RadioRow = ({label, isSelected, onPress}: RadioRowProps) => (
 type SortMenuProps = {
     isOpen: boolean;
     onClose: () => void;
+    /** The sorts this list offers, in menu order. */
+    sorts: ShelfSort[];
     sort: ShelfSort;
     onSortChange: (sort: ShelfSort) => void;
     /** Series can also be split into watching, not started and completed. */
@@ -33,7 +35,7 @@ type SortMenuProps = {
 };
 
 /** Popover under the sort button: order of the list, and grouping by watch status for series. */
-export const SortMenu = ({isOpen, onClose, sort, onSortChange, canGroup, isGrouped, onGroupedChange}: SortMenuProps) => {
+export const SortMenu = ({isOpen, onClose, sorts, sort, onSortChange, canGroup, isGrouped, onGroupedChange}: SortMenuProps) => {
     const {t} = useTranslation("profile");
     const insets = useSafeAreaInsets();
 
@@ -47,7 +49,7 @@ export const SortMenu = ({isOpen, onClose, sort, onSortChange, canGroup, isGroup
             <Pressable className="flex-1 bg-black/40" onPress={onClose} aria-label={t("list.closeSort")}>
                 <AnimatedView entering={FadeIn.duration(160)} className="absolute right-5 w-64 gap-2" style={{top: insets.top + 60}}>
                     <View role="radiogroup" className="overflow-hidden rounded-2xl border border-border bg-surface-raised py-1">
-                        {Object.values(SHELF_SORT).map((option) => (
+                        {sorts.map((option) => (
                             <RadioRow key={option} label={t(`sort.${option}`)} isSelected={option === sort} onPress={() => pick(() => onSortChange(option))}/>
                         ))}
                     </View>

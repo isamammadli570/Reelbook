@@ -1,6 +1,7 @@
 import {useEffect, useMemo} from "react";
 import {useQuery} from "@tanstack/react-query";
 import {
+    changeWatchDate,
     deleteWatch,
     saveReview,
     getLibrary,
@@ -81,6 +82,7 @@ export const useToggleFollowing = () => useLibraryMutation(toggleFollowingItem);
 export const useRateItem = () => useLibraryMutation(rateItem);
 export const useLogWatch = () => useLibraryMutation(logWatch);
 export const useDeleteWatch = () => useLibraryMutation(deleteWatch);
+export const useChangeWatchDate = () => useLibraryMutation(changeWatchDate);
 export const useToggleEpisode = () => useLibraryMutation(toggleEpisodeWatched);
 export const useSetSeasonWatched = () => useLibraryMutation(setSeasonWatched);
 export const useRefreshSnapshot = () => useLibraryMutation(refreshItemSnapshot, {requiresAccount: false});

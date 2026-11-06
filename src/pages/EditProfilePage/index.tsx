@@ -21,14 +21,14 @@ import {useSession} from "@/hooks/auth/useSession";
 import {useGetLibrary} from "@/hooks/library";
 import {useGetProfile, useSaveProfile} from "@/hooks/profile";
 import {isUsernameAvailable} from "@/api/auth.api";
-import {removeAvatar, uploadAvatar} from "@/api/avatar.api";
+import {removeProfileImages, uploadProfileImage, type ProfileImageKind} from "@/api/profileImages.api";
 import {EMPTY_PROFILE} from "@/api/profile.api";
 import {withAlpha} from "@/helpers/details";
 import {imageUrl} from "@/helpers/media";
 import {coverChoices} from "@/helpers/shelves";
 import {isValidUsername, normalizeUsername} from "@/helpers/username";
 import {hasSupabase} from "@/lib/env";
-import {pickAvatar, type PickedAvatar} from "@/lib/pickAvatar";
+import {pickAvatar, pickCover, type PickedImage} from "@/lib/pickImage";
 import {cn} from "@/lib/utils";
 import {AVATAR_COLORS, IMAGE_SIZE, PROFILE_BIO_MAX, PROFILE_LIMITS, type AvatarColor} from "@/constants/other";
 
@@ -38,7 +38,10 @@ const THUMB_HEIGHT = 74;
 
 type ProfileFormValues = {name: string; username: string; bio: string};
 
-/** A live preview of the profile while editing: a photo or avatar colour, a cover from your own titles, then name, @username and bio. */
+/**
+ * A live preview of the profile while editing: a cover (your own photo, or a still from your titles),
+ * a photo or avatar colour, then name, @username and bio.
+ */
 export const EditProfilePage = () => {
     const {t} = useTranslation("profile");
     const insets = useSafeAreaInsets();
@@ -52,9 +55,13 @@ export const EditProfilePage = () => {
     const [pickedCover, setPickedCover] = useState<string | null | undefined>(undefined);
     const [pickedColor, setPickedColor] = useState<AvatarColor | undefined>(undefined);
     // `null` means "remove the photo"; the upload waits for Save, so backing out changes nothing.
-    const [pickedPhoto, setPickedPhoto] = useState<PickedAvatar | null | undefined>(undefined);
+    const [pickedPhoto, setPickedPhoto] = useState<PickedImage | null | undefined>(undefined);
+    // An uploaded cover works the same way, and wins over a chosen still while it is set.
+    const [pickedUpload, setPickedUpload] = useState<PickedImage | null | undefined>(undefined);
     const [photoError, setPhotoError] = useState<string | null>(null);
+    const [coverError, setCoverError] = useState<string | null>(null);
     const photoUrl = pickedPhoto === undefined ? profile.avatarUrl : pickedPhoto?.uri ?? null;
+    const uploadedCover = pickedUpload === undefined ? profile.coverUrl : pickedUpload?.uri ?? null;
     const coverPath = pickedCover === undefined ? profile.coverPath : pickedCover;
     const avatarColor = pickedColor ?? profile.avatarColor;
     const covers = useMemo(() => (library ? coverChoices(library) : []), [library]);
@@ -85,15 +92,30 @@ export const EditProfilePage = () => {
         if (picked) setPickedPhoto(picked);
     };
 
+    const chooseCover = async () => {
+        setCoverError(null);
+        const picked = await pickCover().catch(() => {
+            setCoverError(t("edit.photoFailed"));
+            return null;
+        });
+        if (picked) setPickedUpload(picked);
+    };
+
+    /** Choosing a still or no cover lets go of an uploaded one. */
+    const chooseStill = (path: string | null) => {
+        setPickedCover(path);
+        if (uploadedCover) setPickedUpload(null);
+    };
+
     /** The address to store: uploaded for an account, kept inline on a device without one. */
-    const savePhoto = async (): Promise<string | null> => {
+    const saveImage = async (kind: ProfileImageKind, picked: PickedImage | null | undefined, current: string | null): Promise<string | null> => {
         const userId = session?.user.id;
-        if (pickedPhoto === undefined) return profile.avatarUrl;
-        if (pickedPhoto === null) {
-            if (userId) await removeAvatar(userId).catch(() => undefined);
+        if (picked === undefined) return current;
+        if (picked === null) {
+            if (userId) await removeProfileImages(userId, kind).catch(() => undefined);
             return null;
         }
-        return userId ? uploadAvatar(userId, pickedPhoto.base64) : `data:image/jpeg;base64,${pickedPhoto.base64}`;
+        return userId ? uploadProfileImage(userId, kind, picked.base64) : `data:image/jpeg;base64,${picked.base64}`;
     };
 
     const save = handleSubmit(async (values) => {
@@ -110,16 +132,23 @@ export const EditProfilePage = () => {
             }
         }
         setPhotoError(null);
-        const avatarUrl = await savePhoto().catch(() => undefined);
+        setCoverError(null);
+        const avatarUrl = await saveImage("avatar", pickedPhoto, profile.avatarUrl).catch(() => undefined);
         if (avatarUrl === undefined) {
             setPhotoError(t("edit.photoUploadFailed"));
             return;
         }
-        const isSaved = await saveProfile({...values, username, coverPath, avatarColor, avatarUrl}).then(() => true, () => false);
+        const coverUrl = await saveImage("cover", pickedUpload, profile.coverUrl).catch(() => undefined);
+        if (coverUrl === undefined) {
+            setCoverError(t("edit.photoUploadFailed"));
+            return;
+        }
+        const isSaved = await saveProfile({...values, username, coverPath, coverUrl, avatarColor, avatarUrl}).then(() => true, () => false);
         if (isSaved) router.back();
     });
 
-    const cover = imageUrl(coverPath, IMAGE_SIZE.BACKDROP);
+    const cover = uploadedCover ?? imageUrl(coverPath, IMAGE_SIZE.BACKDROP);
+    const isStillSelected = (path: string | null) => !uploadedCover && coverPath === path;
 
     return (
         <Screen isEdgeToEdge>
@@ -144,21 +173,42 @@ export const EditProfilePage = () => {
                 <Section title={t("edit.cover")} index={0}>
                     <ScrollView horizontal showsHorizontalScrollIndicator={false} className="-mx-5" contentContainerClassName="gap-2.5 px-5">
                         <PressScale
-                            onPress={() => setPickedCover(null)}
+                            onPress={() => void chooseCover()}
+                            aria-label={uploadedCover ? t("edit.changeCoverPhoto") : t("edit.uploadCover")}
+                            aria-selected={Boolean(uploadedCover)}
+                            className={cn("items-center justify-center gap-1 overflow-hidden rounded-xl border-2 bg-surface", uploadedCover ? "border-brand" : "border-dashed border-border")}
+                            style={{width: THUMB_WIDTH, height: THUMB_HEIGHT}}
+                        >
+                            {uploadedCover ? (
+                                <>
+                                    <Image source={uploadedCover} className="h-full w-full" contentFit="cover"/>
+                                    <View className="absolute right-1.5 top-1.5 h-6 w-6 items-center justify-center rounded-full bg-brand">
+                                        <Check size={14} strokeWidth={3} color={brandInk}/>
+                                    </View>
+                                </>
+                            ) : (
+                                <>
+                                    <ImagePlus size={20} strokeWidth={1.8} color={muted}/>
+                                    <Text className="font-sans text-[11px] text-muted-foreground">{t("edit.uploadCover")}</Text>
+                                </>
+                            )}
+                        </PressScale>
+                        <PressScale
+                            onPress={() => chooseStill(null)}
                             aria-label={t("edit.noCover")}
-                            aria-selected={coverPath === null}
-                            className={cn("items-center justify-center gap-1 rounded-xl border-2 bg-surface", coverPath === null ? "border-brand" : "border-transparent")}
+                            aria-selected={isStillSelected(null)}
+                            className={cn("items-center justify-center gap-1 rounded-xl border-2 bg-surface", isStillSelected(null) ? "border-brand" : "border-transparent")}
                             style={{width: THUMB_WIDTH, height: THUMB_HEIGHT}}
                         >
                             <ImageOff size={20} strokeWidth={1.8} color={muted}/>
                             <Text className="font-sans text-[11px] text-muted-foreground">{t("edit.noCover")}</Text>
                         </PressScale>
                         {covers.map((choice) => {
-                            const isSelected = choice.path === coverPath;
+                            const isSelected = isStillSelected(choice.path);
                             return (
                                 <PressScale
                                     key={choice.path}
-                                    onPress={() => setPickedCover(choice.path)}
+                                    onPress={() => chooseStill(choice.path)}
                                     aria-label={choice.title}
                                     aria-selected={isSelected}
                                     className={cn("overflow-hidden rounded-xl border-2", isSelected ? "border-brand" : "border-transparent")}
@@ -174,6 +224,7 @@ export const EditProfilePage = () => {
                             );
                         })}
                     </ScrollView>
+                    {coverError && <Text className="font-sans text-sm text-danger">{coverError}</Text>}
                     {!covers.length && <Text className="font-sans text-sm leading-5 text-muted-foreground">{t("edit.noCovers")}</Text>}
                 </Section>
 

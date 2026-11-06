@@ -1,5 +1,5 @@
 import {useMemo, useState} from "react";
-import {Pressable, ScrollView, Text, View} from "react-native";
+import {ScrollView, Text, View} from "react-native";
 import {useSafeAreaInsets} from "react-native-safe-area-context";
 import {router} from "expo-router";
 import {LinearGradient} from "expo-linear-gradient";
@@ -224,7 +224,7 @@ export const EditProfilePage = () => {
                             );
                         })}
                     </ScrollView>
-                    {coverError && <Text className="font-sans text-sm text-danger">{coverError}</Text>}
+                    {coverError && <Reveal key={coverError} variant="fade"><Text className="font-sans text-sm text-danger">{coverError}</Text></Reveal>}
                     {!covers.length && <Text className="font-sans text-sm leading-5 text-muted-foreground">{t("edit.noCovers")}</Text>}
                 </Section>
 
@@ -233,13 +233,13 @@ export const EditProfilePage = () => {
                         <Button variant="outline" icon={ImagePlus} label={photoUrl ? t("edit.changePhoto") : t("edit.choosePhoto")} className="flex-1" onPress={() => void choosePhoto()}/>
                         {photoUrl && <Button variant="outline" icon={Trash2} aria-label={t("edit.removePhoto")} onPress={() => setPickedPhoto(null)}/>}
                     </View>
-                    {photoError && <Text className="font-sans text-sm text-danger">{photoError}</Text>}
+                    {photoError && <Reveal key={photoError} variant="fade"><Text className="font-sans text-sm text-danger">{photoError}</Text></Reveal>}
                     <Text className="font-sans text-xs text-muted-foreground">{t("edit.avatarColorHint")}</Text>
                     <View className="flex-row justify-between">
                         {(Object.keys(AVATAR_COLORS) as AvatarColor[]).map((color) => {
                             const isSelected = color === avatarColor;
                             return (
-                                <Pressable
+                                <PressScale
                                     key={color}
                                     onPress={() => setPickedColor(color)}
                                     role="radio"
@@ -250,7 +250,7 @@ export const EditProfilePage = () => {
                                     <View className="h-9 w-9 items-center justify-center rounded-full" style={{backgroundColor: AVATAR_COLORS[color].bg}}>
                                         {isSelected && <Check size={18} strokeWidth={3} color={AVATAR_COLORS[color].ink}/>}
                                     </View>
-                                </Pressable>
+                                </PressScale>
                             );
                         })}
                     </View>

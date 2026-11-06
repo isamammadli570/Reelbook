@@ -1,4 +1,4 @@
-import type {EpisodeRef, Library, LibraryItem, MediaSnapshot, SeriesSnapshot} from "@/api/library.api";
+import type {DiaryEntry, EpisodeRef, Library, LibraryItem, MediaSnapshot, SeriesSnapshot} from "@/api/library.api";
 import type {MediaSummary} from "@/api/media.api";
 import type {MovieDetails} from "@/api/movies.api";
 import type {SeriesDetails} from "@/api/series.api";
@@ -7,6 +7,13 @@ import {isReleased} from "@/helpers/details";
 import {mediaYear} from "@/helpers/media";
 
 export const createLibrary = (): Library => ({items: {}, removed: {}});
+
+/**
+ * Only the title's details from a stored item. Library writes merge the snapshot they are given over the stored
+ * item, so passing a whole item would also write back its diary and rating as they were when it was read.
+ */
+export const snapshotOf = ({id, mediaType, title, posterPath, backdropPath, year, genres, runtime, series}: LibraryItem): MediaSnapshot =>
+    ({id, mediaType, title, posterPath, backdropPath, year, genres, runtime, series});
 
 export const itemKey = (mediaType: MediaType, id: number): string => `${mediaType}:${id}`;
 
@@ -163,7 +170,31 @@ export const setDiaryDate = (item: LibraryItem, entryId: string, watchedAt: stri
     diary: item.diary.map((entry) => (entry.id === entryId ? {...entry, watchedAt} : entry)).sort((a, b) => b.watchedAt.localeCompare(a.watchedAt)),
 });
 
-export const removeDiaryEntry = (item: LibraryItem, entryId: string): LibraryItem => ({...item, diary: item.diary.filter((entry) => entry.id !== entryId)});
+/**
+ * Undoes a deletion: the same viewing, with its own id, date and rating, back in date order.
+ * `rating` is the title's rating from before, which deleting the last viewing cleared.
+ */
+export const restoreDiaryEntry = (item: LibraryItem, entry: DiaryEntry, rating?: number | null): LibraryItem => ({
+    ...item,
+    rating: rating === undefined ? item.rating : rating,
+    diary: [entry, ...item.diary.filter((existing) => existing.id !== entry.id)].sort((a, b) => b.watchedAt.localeCompare(a.watchedAt)),
+});
+
+/** Undoes unmarking: the episodes come back with the dates they were first marked on, not today's. */
+export const restoreEpisodes = (item: LibraryItem, previous: Record<string, string>): LibraryItem => ({
+    ...item,
+    episodes: {...item.episodes, ...previous},
+});
+
+/**
+ * Deletes one viewing. A rating belongs to having watched the movie, so deleting the last viewing clears it too;
+ * otherwise a movie would be rated yet never watched. Favourite, watchlist and review are about the title and stay.
+ */
+export const removeDiaryEntry = (item: LibraryItem, entryId: string): LibraryItem => {
+    const diary = item.diary.filter((entry) => entry.id !== entryId);
+    const isLastViewing = item.mediaType === MEDIA_TYPE.MOVIE && diary.length === 0;
+    return {...item, diary, rating: isLastViewing ? null : item.rating};
+};
 
 export const toggleEpisode = (item: LibraryItem, episode: EpisodeRef, nowIso: string): LibraryItem => {
     const key = episodeKey(episode);

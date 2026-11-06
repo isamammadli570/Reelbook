@@ -17,8 +17,8 @@
     },
     "actions": {
         "retry": "Try again",
-        "seeAll": "See all",
-        "close": "Close"
+        "close": "Close",
+        "clear": "Clear"
     },
     "apiErrors": {
         "generic": "Something went wrong. Try again.",
@@ -84,5 +84,9 @@
         "Thu",
         "Fri",
         "Sat"
-    ]
+    ],
+    "toast": {
+        "saveFailed": "Couldn't save that. Try again.",
+        "syncFailed": "Couldn't sync. Your changes are kept on this device and will be sent later."
+    }
 }

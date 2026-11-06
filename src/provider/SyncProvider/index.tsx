@@ -1,10 +1,12 @@
 import {useEffect, useRef, useState, type ReactNode} from "react";
 import {useQueryClient} from "@tanstack/react-query";
+import i18n from "@/i18n";
 import {getCurrentSession} from "@/api/auth.api";
 import {useGetLibrary} from "@/hooks/library";
 import {useGetLists} from "@/hooks/lists";
 import {useGetProfile} from "@/hooks/profile";
 import {supabase} from "@/lib/supabase";
+import {toast} from "@/lib/toast";
 import {pushProfileChange, syncLibrary, syncLists, syncProfileOnSignIn} from "@/services/sync";
 import {QUERY_KEYS} from "@/constants/other";
 
@@ -16,6 +18,7 @@ type SyncProviderProps = {children: ReactNode};
 /**
  * Keeps the device and the account in step while signed in: it follows the session, merges the library
  * on sign-in and after each change, and uploads profile edits. Signed out, it does nothing.
+ * When a sync fails, the changes stay on the device for the next try, and a toast says so once.
  */
 export const SyncProvider = ({children}: SyncProviderProps) => {
     const queryClient = useQueryClient();
@@ -26,9 +29,20 @@ export const SyncProvider = ({children}: SyncProviderProps) => {
     const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
     // Runs syncs one at a time so two of them never read and write the library at once.
     const queue = useRef<Promise<unknown>>(Promise.resolve());
+    // A failed sync is reported once; the next success clears it, so being offline does not repeat the message.
+    const hasReportedFailure = useRef(false);
 
     const enqueue = (task: () => Promise<void>) => {
-        queue.current = queue.current.then(task, task).catch(() => undefined);
+        queue.current = queue.current.then(task, task).then(
+            () => {
+                hasReportedFailure.current = false;
+            },
+            () => {
+                if (hasReportedFailure.current) return;
+                hasReportedFailure.current = true;
+                toast.error(i18n.t("common:toast.syncFailed"));
+            },
+        );
     };
 
     useEffect(() => {

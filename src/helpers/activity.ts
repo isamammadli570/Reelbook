@@ -36,3 +36,24 @@ export const diaryMonths = (watches: Watch[]): DiaryMonth[] => {
     }
     return months;
 };
+
+export type DiaryRow =
+    | {kind: "month"; key: string; month: string}
+    | {kind: "watch"; key: string; watch: Watch; isFirstOfDay: boolean};
+
+const localDay = (iso: string): string => {
+    const date = new Date(iso);
+    return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+};
+
+/** The diary flattened for a virtual list: a heading row per month, then its viewings; the day shows once per day. */
+export const diaryRows = (watches: Watch[]): DiaryRow[] =>
+    diaryMonths(watches).flatMap((month): DiaryRow[] => [
+        {kind: "month", key: `month-${month.key}`, month: month.key},
+        ...month.watches.map((watch, position): DiaryRow => ({
+            kind: "watch",
+            key: `${watch.item.mediaType}-${watch.item.id}-${watch.watchedAt}`,
+            watch,
+            isFirstOfDay: position === 0 || localDay(month.watches[position - 1].watchedAt) !== localDay(watch.watchedAt),
+        })),
+    ]);

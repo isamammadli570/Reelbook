@@ -1,9 +1,10 @@
 import {memo} from "react";
-import {Pressable, Text, View} from "react-native";
+import {Text, View} from "react-native";
 import {router} from "expo-router";
 import {useTranslation} from "react-i18next";
 import {Check} from "lucide-react-native";
 import {useCSSVariable} from "uniwind";
+import {PressScale} from "@/components/motion/PressScale";
 import {Image} from "@/components/ui/image";
 import {ProgressBar} from "@/widgets/ProgressBar";
 import {useToggleEpisode} from "@/hooks/library";
@@ -29,7 +30,7 @@ export const ContinueCard = memo(({item, next}: ContinueCardProps) => {
 
     return (
         <View className="h-[92px] w-[264px] flex-row items-center gap-3 rounded-2xl bg-surface p-2.5">
-            <Pressable onPress={() => router.push(buildRoute.series(item.id))} aria-label={item.title} className="min-w-0 flex-1 flex-row items-center gap-3">
+            <PressScale scaleTo={0.98} onPress={() => router.push(buildRoute.series(item.id))} aria-label={item.title} className="min-w-0 flex-1 flex-row items-center gap-3">
                 <View className="h-[70px] w-[47px] overflow-hidden rounded-lg bg-surface-raised">
                     {poster && <Image source={poster} className="h-full w-full" contentFit="cover"/>}
                 </View>
@@ -38,8 +39,9 @@ export const ContinueCard = memo(({item, next}: ContinueCardProps) => {
                     <Text className="font-sans text-xs text-muted-foreground">{t("upNext.next", {code})}</Text>
                     <ProgressBar percent={seriesProgress(item).percent} className="mt-1 h-1" fillClassName="bg-brand"/>
                 </View>
-            </Pressable>
-            <Pressable
+            </PressScale>
+            <PressScale
+                scaleTo={0.98}
                 aria-label={t("details:episodeActions.mark", {code})}
                 onPress={() => {
                     haptics.success();
@@ -49,7 +51,7 @@ export const ContinueCard = memo(({item, next}: ContinueCardProps) => {
                 className="h-10 w-10 items-center justify-center rounded-full border-[1.5px] border-border"
             >
                 <Check size={18} strokeWidth={2.5} color={foreground}/>
-            </Pressable>
+            </PressScale>
         </View>
     );
 });

@@ -11,6 +11,7 @@ import {QueryProvider} from "@/provider/QueryProvider";
 import {RemindersProvider} from "@/provider/RemindersProvider";
 import {SyncProvider} from "@/provider/SyncProvider";
 import {AccountPrompt} from "@/widgets/AccountPrompt";
+import {ToastHost} from "@/widgets/ToastHost";
 
 // Expo Router requires route files to default-export their component.
 export default function RootLayout() {
@@ -32,6 +33,7 @@ export default function RootLayout() {
                     <RemindersProvider>
                         <Stack screenOptions={{headerShown: false, contentStyle: {backgroundColor: background}}}/>
                     </RemindersProvider>
+                    <ToastHost/>
                 </SyncProvider>
             </QueryProvider>
         </ThemeProvider>

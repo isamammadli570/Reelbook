@@ -1,8 +1,10 @@
 import {useState} from "react";
-import {Pressable, Text, View} from "react-native";
+import {Text, View} from "react-native";
 import {router} from "expo-router";
 import {Controller, useForm} from "react-hook-form";
 import {useTranslation} from "react-i18next";
+import {PressScale} from "@/components/motion/PressScale";
+import {Reveal} from "@/components/motion/Reveal";
 import {Button} from "@/components/ui/button";
 import {FormInput} from "@/components/form/FormInput";
 import {AuthLayout} from "@/widgets/AuthLayout";
@@ -55,9 +57,9 @@ export const ForgotPasswordPage = () => {
     });
 
     const backToSignIn = (
-        <Pressable onPress={() => router.replace(ROUTES.SIGN_IN)} className="items-center py-2" hitSlop={8}>
+        <PressScale dimTo={0.5} scaleTo={0.97} onPress={() => router.replace(ROUTES.SIGN_IN)} className="items-center py-2" hitSlop={8}>
             <Text className="font-sans-semibold text-sm text-brand">{t("forgot.backToSignIn")}</Text>
-        </Pressable>
+        </PressScale>
     );
 
     if (!email) {
@@ -81,7 +83,7 @@ export const ForgotPasswordPage = () => {
                         />
                     )}
                 />
-                {formError && <Text className="font-sans text-sm text-danger">{formError}</Text>}
+                {formError && <Reveal key={formError} variant="fade"><Text className="font-sans text-sm text-danger">{formError}</Text></Reveal>}
                 <Button variant="brand" label={t("forgot.sendCode")} disabled={emailForm.formState.isSubmitting} onPress={() => void submitEmail()}/>
             </AuthLayout>
         );
@@ -125,11 +127,11 @@ export const ForgotPasswordPage = () => {
                     />
                 )}
             />
-            {formError && <Text className="font-sans text-sm text-danger">{formError}</Text>}
-            {notice && <Text className="font-sans text-sm text-muted-foreground">{notice}</Text>}
+            {formError && <Reveal key={formError} variant="fade"><Text className="font-sans text-sm text-danger">{formError}</Text></Reveal>}
+            {notice && <Reveal key={notice} variant="fade"><Text className="font-sans text-sm text-muted-foreground">{notice}</Text></Reveal>}
             <Button variant="brand" label={t("forgot.submit")} disabled={resetForm.formState.isSubmitting} onPress={() => void submitReset()}/>
             <View className="flex-row flex-wrap justify-center gap-1">
-                <Pressable
+                <PressScale
                     hitSlop={8}
                     onPress={() => {
                         setNotice(null);
@@ -137,9 +139,9 @@ export const ForgotPasswordPage = () => {
                     }}
                 >
                     <Text className="font-sans-medium text-sm text-foreground">{t("forgot.resend")}</Text>
-                </Pressable>
+                </PressScale>
                 <Text className="font-sans text-sm text-muted-foreground">·</Text>
-                <Pressable
+                <PressScale
                     hitSlop={8}
                     onPress={() => {
                         setEmail(null);
@@ -149,7 +151,7 @@ export const ForgotPasswordPage = () => {
                     }}
                 >
                     <Text className="font-sans-medium text-sm text-foreground">{t("forgot.changeEmail")}</Text>
-                </Pressable>
+                </PressScale>
             </View>
         </AuthLayout>
     );

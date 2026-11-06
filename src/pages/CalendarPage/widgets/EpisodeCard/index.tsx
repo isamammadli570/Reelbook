@@ -1,6 +1,7 @@
-import {Pressable, Text, View} from "react-native";
+import {Text, View} from "react-native";
 import {router} from "expo-router";
 import {useTranslation} from "react-i18next";
+import {PressScale} from "@/components/motion/PressScale";
 import {Image} from "@/components/ui/image";
 import {useFormatRuntime} from "@/hooks/useFormatRuntime";
 import {imageUrl} from "@/helpers/media";
@@ -20,7 +21,7 @@ export const EpisodeCard = ({episode}: EpisodeCardProps) => {
     const meta = [episode.network, formatRuntime(episode.runtime)].filter(Boolean).join(" · ");
 
     return (
-        <Pressable onPress={() => router.push(buildRoute.series(episode.seriesId))} className="flex-row items-center gap-3.5 rounded-2xl bg-surface p-2.5">
+        <PressScale scaleTo={0.98} onPress={() => router.push(buildRoute.series(episode.seriesId))} className="flex-row items-center gap-3.5 rounded-2xl bg-surface p-2.5">
             <View className="h-[72px] w-12 overflow-hidden rounded-lg bg-surface-raised">
                 {poster && <Image source={poster} className="h-full w-full" contentFit="cover"/>}
             </View>
@@ -30,6 +31,6 @@ export const EpisodeCard = ({episode}: EpisodeCardProps) => {
                 {!isHidingSpoilers && <Text className="font-sans text-xs text-muted-foreground" numberOfLines={1}>{episode.episodeName}</Text>}
                 {meta && <Text className="font-sans text-[11px] text-muted-foreground" numberOfLines={1}>{meta}</Text>}
             </View>
-        </Pressable>
+        </PressScale>
     );
 };

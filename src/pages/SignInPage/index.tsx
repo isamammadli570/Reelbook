@@ -1,8 +1,10 @@
 import {useState} from "react";
-import {Pressable, Text, View} from "react-native";
+import {Text, View} from "react-native";
 import {router} from "expo-router";
 import {Controller, useForm} from "react-hook-form";
 import {useTranslation} from "react-i18next";
+import {PressScale} from "@/components/motion/PressScale";
+import {Reveal} from "@/components/motion/Reveal";
 import {Button} from "@/components/ui/button";
 import {FormInput} from "@/components/form/FormInput";
 import {AuthLayout} from "@/widgets/AuthLayout";
@@ -32,9 +34,9 @@ export const SignInPage = () => {
             footer={(
                 <View className="flex-row flex-wrap justify-center gap-1">
                     <Text className="font-sans text-sm text-muted-foreground">{t("signIn.noAccount")}</Text>
-                    <Pressable onPress={() => router.replace(ROUTES.SIGN_UP)} hitSlop={8}>
+                    <PressScale dimTo={0.5} scaleTo={0.97} onPress={() => router.replace(ROUTES.SIGN_UP)} hitSlop={8}>
                         <Text className="font-sans-semibold text-sm text-brand">{t("signIn.toSignUp")}</Text>
-                    </Pressable>
+                    </PressScale>
                 </View>
             )}
         >
@@ -54,14 +56,14 @@ export const SignInPage = () => {
                     <FormInput label={t("fields.password")} value={value} onChangeText={onChange} onBlur={onBlur} error={errors.password?.message} secureTextEntry autoCapitalize="none" autoComplete="password"/>
                 )}
             />
-            <Pressable onPress={() => router.push(ROUTES.FORGOT_PASSWORD)} className="-mt-1 self-end" hitSlop={8}>
+            <PressScale dimTo={0.5} scaleTo={0.97} onPress={() => router.push(ROUTES.FORGOT_PASSWORD)} className="-mt-1 self-end" hitSlop={8}>
                 <Text className="font-sans-medium text-[13px] text-muted-foreground">{t("signIn.forgotPassword")}</Text>
-            </Pressable>
-            {formError && <Text className="font-sans text-sm text-danger">{formError}</Text>}
+            </PressScale>
+            {formError && <Reveal key={formError} variant="fade"><Text className="font-sans text-sm text-danger">{formError}</Text></Reveal>}
             <Button variant="brand" label={t("signIn.submit")} disabled={isSubmitting} onPress={() => void submit()}/>
-            <Pressable onPress={() => router.replace(ROUTES.HOME)} className="items-center py-2" hitSlop={8}>
+            <PressScale dimTo={0.5} scaleTo={0.97} onPress={() => router.replace(ROUTES.HOME)} className="items-center py-2" hitSlop={8}>
                 <Text className="font-sans-medium text-sm text-muted-foreground">{t("continueAsGuest")}</Text>
-            </Pressable>
+            </PressScale>
         </AuthLayout>
     );
 };

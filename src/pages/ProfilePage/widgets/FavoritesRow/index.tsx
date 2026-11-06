@@ -5,6 +5,8 @@ import {Plus} from "lucide-react-native";
 import {useCSSVariable} from "uniwind";
 import {PressScale} from "@/components/motion/PressScale";
 import {Reveal} from "@/components/motion/Reveal";
+import {AnimatedView} from "@/components/ui/animated";
+import {enteringFor} from "@/lib/motion";
 import {PosterGrid} from "@/widgets/PosterGrid";
 import {RowHeader} from "@/pages/ProfilePage/widgets/RowHeader";
 import {POSTER_GAP, usePosterWidth} from "@/hooks/usePosterWidth";
@@ -41,15 +43,17 @@ export const FavoritesRow = ({items, index = 0}: FavoritesRowProps) => {
                     <PosterGrid items={preview.map(toMediaSummary)} isCompact onPress={(media) => router.push(buildRoute.media(media))}/>
                 )}
                 {Array.from({length: emptySlots}, (_, slot) => (
-                    <PressScale
-                        key={slot}
-                        onPress={() => router.push(ROUTES.DISCOVER)}
-                        aria-label={t("favorites.add")}
-                        className="aspect-[2/3] items-center justify-center rounded-[10px] border border-dashed border-border"
-                        style={{width}}
-                    >
-                        <Plus size={22} strokeWidth={1.8} color={muted}/>
-                    </PressScale>
+                    // The entrance sits on a wrapper so that its transform does not overwrite the press scale.
+                    <AnimatedView key={slot} entering={enteringFor("pop", preview.length + slot)}>
+                        <PressScale
+                            onPress={() => router.push(ROUTES.DISCOVER)}
+                            aria-label={t("favorites.add")}
+                            className="aspect-[2/3] items-center justify-center rounded-[10px] border border-dashed border-border"
+                            style={{width}}
+                        >
+                            <Plus size={22} strokeWidth={1.8} color={muted}/>
+                        </PressScale>
+                    </AnimatedView>
                 ))}
             </View>
         </Reveal>

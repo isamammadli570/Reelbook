@@ -7,7 +7,6 @@
         "guestDescription": "Create an account to keep your diary and favourites on all your devices."
     },
     "about": {
-        "title": "About",
         "tmdb": "Movie and series data comes from TMDB. This product uses the TMDB API but is not endorsed or certified by TMDB.",
         "privacy": "Privacy policy",
         "justwatch": "Streaming availability is provided by JustWatch."

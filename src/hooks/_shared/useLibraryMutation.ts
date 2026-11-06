@@ -1,6 +1,7 @@
 import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {QUERY_KEYS} from "@/constants/other";
 import {ensureAccount} from "@/lib/accountGate";
+import {reportSaveError} from "@/lib/saveError";
 import type {Library} from "@/api/library.api";
 
 type LibraryMutationOptions = {
@@ -8,7 +9,7 @@ type LibraryMutationOptions = {
     requiresAccount?: boolean;
 };
 
-/** Library writes return the whole new library, which replaces the cache directly — no refetch round-trip. */
+/** Library writes return the whole new library, which replaces the cache directly — no refetch round-trip. A failure shows a toast. */
 export const useLibraryMutation = <TVariables>(
     mutationFn: (variables: TVariables) => Promise<Library>,
     {requiresAccount = true}: LibraryMutationOptions = {},
@@ -21,5 +22,6 @@ export const useLibraryMutation = <TVariables>(
             return mutationFn(variables);
         },
         onSuccess: (library) => queryClient.setQueryData([QUERY_KEYS.LIBRARY], library),
+        onError: reportSaveError,
     });
 };

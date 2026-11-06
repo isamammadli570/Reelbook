@@ -1,8 +1,9 @@
 import {memo} from "react";
-import {Pressable, Text, View} from "react-native";
+import {Text, View} from "react-native";
 import {useTranslation} from "react-i18next";
 import {Check} from "lucide-react-native";
 import {useCSSVariable} from "uniwind";
+import {PressScale} from "@/components/motion/PressScale";
 import {PopOnActivate} from "@/components/motion/PopOnActivate";
 import {Image} from "@/components/ui/image";
 import {useDateFormat} from "@/hooks/useDateFormat";
@@ -46,7 +47,7 @@ export const EpisodeRow = memo(({episode, isWatched, isReleased, onToggle}: Epis
                 <Text className="font-sans text-[11px] text-muted-foreground" numberOfLines={1}>{isReleased ? meta : `${meta} · ${t("episodeActions.notAired")}`}</Text>
             </View>
             {isReleased && (
-                <Pressable
+                <PressScale
                     role="checkbox"
                     aria-checked={isWatched}
                     aria-label={isWatched ? t("episodeActions.unmark", {code}) : t("episodeActions.mark", {code})}
@@ -57,7 +58,7 @@ export const EpisodeRow = memo(({episode, isWatched, isReleased, onToggle}: Epis
                     <PopOnActivate active={isWatched}>
                         <Check size={18} strokeWidth={2.5} color={isWatched ? successInk : foreground}/>
                     </PopOnActivate>
-                </Pressable>
+                </PressScale>
             )}
         </View>
     );

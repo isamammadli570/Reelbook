@@ -1,6 +1,7 @@
-import {Pressable, Text, View} from "react-native";
+import {Text, View} from "react-native";
 import {ChevronRight} from "lucide-react-native";
 import {useCSSVariable} from "uniwind";
+import {PressScale} from "@/components/motion/PressScale";
 
 type RowHeaderProps = {
     title: string;
@@ -14,7 +15,7 @@ export const RowHeader = ({title, aside, onPress}: RowHeaderProps) => {
     const muted = String(useCSSVariable("--color-muted-foreground"));
 
     return (
-        <Pressable onPress={onPress} disabled={!onPress} className="flex-row items-center justify-between" aria-label={aside ? `${title}, ${aside}` : title}>
+        <PressScale scaleTo={0.98} onPress={onPress} disabled={!onPress} className="flex-row items-center justify-between" aria-label={aside ? `${title}, ${aside}` : title}>
             <Text role="heading" className="font-serif text-[26px] text-foreground">{title}</Text>
             {onPress && aside && (
                 <View className="flex-row items-center gap-1">
@@ -22,6 +23,6 @@ export const RowHeader = ({title, aside, onPress}: RowHeaderProps) => {
                     <ChevronRight size={20} strokeWidth={2} color={muted}/>
                 </View>
             )}
-        </Pressable>
+        </PressScale>
     );
 };

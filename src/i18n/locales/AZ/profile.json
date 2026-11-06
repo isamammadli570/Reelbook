@@ -1,15 +1,10 @@
 {
-    "title": "Profil",
     "defaultName": "Kinosevər",
-    "language": "Dil",
     "reviewsEmpty": {
         "title": "Hələ rəy yoxdur",
         "description": "Film və ya serial səhifəsində rəy yazdığın zaman burada görünəcək."
     },
     "backup": {
-        "title": "Yedək",
-        "export": "Yedəklə",
-        "import": "Bərpa et",
         "imported": "Məlumatlar bərpa olundu.",
         "invalid": "Bu fayl Reelbook yedəyi deyil və ya versiyası uyğun gəlmir.",
         "exportFailed": "Yedəkləmə alınmadı.",

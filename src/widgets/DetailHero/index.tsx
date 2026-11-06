@@ -1,6 +1,8 @@
 import type {ReactNode} from "react";
 import {Text, View} from "react-native";
 import {Reveal} from "@/components/motion/Reveal";
+import {useParallax} from "@/components/motion/ScrollContext";
+import {AnimatedView} from "@/components/ui/animated";
 import {useSafeAreaInsets} from "react-native-safe-area-context";
 import {LinearGradient} from "expo-linear-gradient";
 import {useCSSVariable} from "uniwind";
@@ -30,11 +32,18 @@ export const DetailHero = ({title, backdropPath, posterPath, eyebrow, meta, acti
     const background = String(useCSSVariable("--color-background"));
     const backdrop = imageUrl(backdropPath, IMAGE_SIZE.BACKDROP);
     const poster = imageUrl(posterPath, IMAGE_SIZE.POSTER);
+    const parallax = useParallax(BACKDROP_HEIGHT);
 
     return (
         <View>
-            <Reveal variant="fade" className="w-full bg-surface" style={{height: BACKDROP_HEIGHT}}>
-                {backdrop && <Image source={backdrop} className="h-full w-full" contentFit="cover" transition={250}/>}
+            <Reveal variant="fade" className="w-full" style={{height: BACKDROP_HEIGHT}}>
+                <AnimatedView className="absolute inset-0 overflow-hidden bg-surface" style={parallax.frame}>
+                    {backdrop && (
+                        <AnimatedView className="h-full w-full" style={parallax.image}>
+                            <Image source={backdrop} className="h-full w-full" contentFit="cover" transition={250}/>
+                        </AnimatedView>
+                    )}
+                </AnimatedView>
                 {/* A transparent stop in the page colour avoids the grey band "transparent" leaves on iOS. */}
                 <LinearGradient
                     colors={[withAlpha(background, 0.15), withAlpha(background, 0), background]}

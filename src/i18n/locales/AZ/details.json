@@ -18,7 +18,6 @@
     "similarMovies": "Bənzər filmlər",
     "similarSeries": "Bənzər seriallar",
     "directedBy": "Rejissor: {{names}}",
-    "createdBy": "Müəllif: {{names}}",
     "episodes": "Epizodlar",
     "season": "Sezon {{number}}",
     "specials": "Xüsusi",
@@ -56,7 +55,9 @@
         "title": "Sənin gündəliyin",
         "delete": "Qeydi sil",
         "firstTime": "İlk dəfə",
-        "rewatch": "Yenidən izləmə"
+        "rewatch": "Yenidən izləmə",
+        "actions": "{{title}}: seçimlər",
+        "unmarkEpisode": "Epizod işarəsini götür"
     },
     "progress": {
         "title": "Sənin irəliləyişin",
@@ -105,5 +106,15 @@
         "previousMonth": "Əvvəlki ay",
         "nextMonth": "Növbəti ay"
     },
-    "spoilerName": "Epizod {{number}}"
+    "spoilerName": "Epizod {{number}}",
+    "toast": {
+        "undo": "Geri al",
+        "logged": "Gündəliyə yazıldı · {{date}}",
+        "watchDeleted": "Qeyd silindi",
+        "dateChanged": "Tarix dəyişdi · {{date}}",
+        "seasonUnmarked": "Sezon {{number}} işarəsi götürüldü",
+        "reviewSaved": "Rəy saxlanıldı",
+        "reviewRemoved": "Rəy silindi",
+        "episodeUnmarked": "{{code}} işarəsi götürüldü"
+    }
 }

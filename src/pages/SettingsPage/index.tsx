@@ -23,7 +23,7 @@ import {REMINDER_HOUR} from "@/helpers/reminders";
 import {LANGUAGE_LABELS} from "@/i18n/resources";
 import {ROUTES} from "@/constants/routes";
 
-/** Vibration, sharing a file and picking one are phone features; the web has no use for those rows. */
+/** Vibration is a phone feature; the web has no use for that row. */
 const isNative = Platform.OS !== "web";
 
 /** Grouped like the system settings app: account, app behaviour, your data, and about with the required credits. */
@@ -110,7 +110,7 @@ export const SettingsPage = () => {
                 />
             </SettingsGroup>
 
-            {isSignedIn && isNative && (
+            {isSignedIn && (
                 <SettingsGroup title={t("groups.data")} footer={t("data.hint")} index={3}>
                     <SettingsRow icon={Upload} tint="orange" label={t("data.export")} onPress={() => void runExport()}/>
                     <SettingsRow icon={Download} tint="green" label={t("data.import")} onPress={() => void runImport()}/>

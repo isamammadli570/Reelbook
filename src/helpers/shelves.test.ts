@@ -1,5 +1,5 @@
 import {describe, expect, it} from "vitest";
-import {coverChoices, groupByStatus, lastWatchedAt, seriesStatus, shelfItems, shelfSorts, sortShelf} from "@/helpers/shelves";
+import {coverChoices, groupByStatus, lastWatchedAt, seriesStatus, shelfItems, shelfRows, shelfSorts, sortShelf} from "@/helpers/shelves";
 import {addDiaryEntry, createLibrary, setEpisodesWatched, toggleFavorite, toggleFollowing, toggleWatchlist, updateItem} from "@/helpers/library";
 import type {Library, LibraryItem, MediaSnapshot} from "@/api/library.api";
 
@@ -88,5 +88,19 @@ describe("series status", () => {
     it("groups in the order watching, not started, completed", () => {
         const groups = groupByStatus(shelfItems(library, "series"));
         expect(groups.map((group) => group.status)).toEqual(["watching", "notStarted", "completed"]);
+    });
+});
+
+describe("shelfRows", () => {
+    it("splits a shelf into rows of the column count", () => {
+        const rows = shelfRows(shelfItems(library, "series"), 2, false);
+        expect(rows.map((row) => (row.kind === "posters" ? row.items.length : row.status))).toEqual([2, 1]);
+    });
+
+    it("puts a heading before each watch status when grouped, with unique keys", () => {
+        const rows = shelfRows(shelfItems(library, "series"), 3, true);
+        const shape = rows.map((row) => (row.kind === "title" ? row.status : row.items.map((item) => item.title).join("+")));
+        expect(shape.filter((_, index) => rows[index].kind === "title")).toEqual(groupByStatus(shelfItems(library, "series")).map((group) => group.status));
+        expect(new Set(rows.map((row) => row.key)).size).toBe(rows.length);
     });
 });

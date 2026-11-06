@@ -5,8 +5,11 @@ import {Bookmark, Heart, Plus} from "lucide-react-native";
 import {Button} from "@/components/ui/button";
 import {AddToListButton} from "@/widgets/AddToListButton";
 import {LogWatchSheet} from "@/widgets/LogWatchSheet";
-import {useLogWatch, useToggleFavorite, useToggleWatchlist} from "@/hooks/library";
+import {useDeleteWatch, useLogWatch, useToggleFavorite, useToggleWatchlist} from "@/hooks/library";
+import {useDateFormat} from "@/hooks/useDateFormat";
 import {haptics} from "@/lib/haptics";
+import {itemKey} from "@/helpers/library";
+import {toast} from "@/lib/toast";
 import type {LibraryItem, MediaSnapshot} from "@/api/library.api";
 
 type MovieActionsProps = {
@@ -20,6 +23,8 @@ export const MovieActions = ({snapshot, item}: MovieActionsProps) => {
     const {mutate: logWatch} = useLogWatch();
     const {mutate: toggleFavorite} = useToggleFavorite();
     const {mutate: toggleWatchlist} = useToggleWatchlist();
+    const {mutate: deleteWatch} = useDeleteWatch();
+    const {longDate} = useDateFormat();
     const [isLogging, setIsLogging] = useState(false);
 
     const isFavorite = item?.isFavorite ?? false;
@@ -68,7 +73,14 @@ export const MovieActions = ({snapshot, item}: MovieActionsProps) => {
                 submitLabel={t("logSheet.submit")}
                 onSubmit={(watchedAt) => {
                     haptics.success();
-                    logWatch({snapshot, watchedAt});
+                    logWatch({snapshot, watchedAt}, {
+                        onSuccess: (library) => {
+                            const logged = library.items[itemKey(snapshot.mediaType, snapshot.id)]?.diary.find((entry) => entry.watchedAt === watchedAt);
+                            toast.success(t("toast.logged", {date: longDate(watchedAt)}), logged
+                                ? {label: t("toast.undo"), onPress: () => deleteWatch({snapshot, entryId: logged.id})}
+                                : undefined);
+                        },
+                    });
                 }}
             />
         </>

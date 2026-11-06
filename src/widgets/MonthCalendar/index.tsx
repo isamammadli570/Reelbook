@@ -1,8 +1,12 @@
 import {useState} from "react";
-import {Pressable, Text, View} from "react-native";
+import {FadeIn, FadeInLeft, FadeInRight} from "react-native-reanimated";
+import {Text, View} from "react-native";
 import {useTranslation} from "react-i18next";
 import {ChevronLeft, ChevronRight} from "lucide-react-native";
 import {useCSSVariable} from "uniwind";
+import {PopOnActivate} from "@/components/motion/PopOnActivate";
+import {PressScale} from "@/components/motion/PressScale";
+import {AnimatedView} from "@/components/ui/animated";
 import {useDateFormat} from "@/hooks/useDateFormat";
 import {isFutureDay, isSameDay, monthGrid} from "@/helpers/watchDate";
 import {cn} from "@/lib/utils";
@@ -23,21 +27,27 @@ export const MonthCalendar = ({value, onChange, today}: MonthCalendarProps) => {
     const {monthName, weekdayShort} = useDateFormat();
     const [foreground, subtle] = useCSSVariable(["--color-foreground", "--color-subtle-foreground"]).map(String);
     const [shown, setShown] = useState({year: value.getFullYear(), month: value.getMonth()});
+    // Which way the last arrow went, so the next month slides in from that side.
+    const [direction, setDirection] = useState<-1 | 0 | 1>(0);
 
     const isCurrentMonth = shown.year === today.getFullYear() && shown.month === today.getMonth();
-    const step = (delta: number) => setShown(({year, month}) => {
-        const next = new Date(year, month + delta, 1);
-        return {year: next.getFullYear(), month: next.getMonth()};
-    });
+    const step = (delta: -1 | 1) => {
+        setDirection(delta);
+        setShown(({year, month}) => {
+            const next = new Date(year, month + delta, 1);
+            return {year: next.getFullYear(), month: next.getMonth()};
+        });
+    };
+    const entering = direction === 0 ? FadeIn.duration(200) : (direction > 0 ? FadeInRight : FadeInLeft).duration(240);
 
     return (
         <View className="gap-1.5 rounded-2xl bg-background p-3">
             <View className="flex-row items-center justify-between">
-                <Pressable onPress={() => step(-1)} aria-label={t("logSheet.previousMonth")} hitSlop={8} className="h-9 w-9 items-center justify-center rounded-full">
+                <PressScale onPress={() => step(-1)} aria-label={t("logSheet.previousMonth")} hitSlop={8} className="h-9 w-9 items-center justify-center rounded-full">
                     <ChevronLeft size={20} strokeWidth={2} color={foreground}/>
-                </Pressable>
+                </PressScale>
                 <Text className="font-sans-semibold text-[15px] text-foreground">{monthName(shown.month)} {shown.year}</Text>
-                <Pressable
+                <PressScale
                     onPress={() => step(1)}
                     disabled={isCurrentMonth}
                     aria-label={t("logSheet.nextMonth")}
@@ -45,7 +55,7 @@ export const MonthCalendar = ({value, onChange, today}: MonthCalendarProps) => {
                     className="h-9 w-9 items-center justify-center rounded-full"
                 >
                     <ChevronRight size={20} strokeWidth={2} color={isCurrentMonth ? subtle : foreground}/>
-                </Pressable>
+                </PressScale>
             </View>
 
             <View className="flex-row">
@@ -54,37 +64,41 @@ export const MonthCalendar = ({value, onChange, today}: MonthCalendarProps) => {
                 ))}
             </View>
 
-            {monthGrid(shown.year, shown.month).map((week, index) => (
-                <View key={index} className="flex-row">
-                    {week.map((day, column) => {
-                        if (!day) return <View key={column} className="h-9 flex-1"/>;
-                        const isSelected = isSameDay(day, value);
-                        const isDisabled = isFutureDay(day, today);
-                        const isToday = isSameDay(day, today);
-                        return (
-                            <Pressable
-                                key={column}
-                                onPress={() => onChange(day)}
-                                disabled={isDisabled}
-                                role="radio"
-                                aria-checked={isSelected}
-                                aria-label={`${day.getDate()} ${monthName(day.getMonth())}`}
-                                className="h-9 flex-1 items-center justify-center"
-                            >
-                                <View className={cn("h-8 w-8 items-center justify-center rounded-full", isSelected && "bg-brand", !isSelected && isToday && "border border-border")}>
-                                    <Text className={cn(
-                                        "font-sans-medium text-sm",
-                                        isSelected ? "text-brand-ink" : isDisabled ? "text-subtle-foreground" : "text-foreground",
-                                    )}
-                                    >
-                                        {day.getDate()}
-                                    </Text>
-                                </View>
-                            </Pressable>
-                        );
-                    })}
-                </View>
-            ))}
+            <AnimatedView key={`${shown.year}-${shown.month}`} entering={entering} className="gap-1.5">
+                {monthGrid(shown.year, shown.month).map((week, index) => (
+                    <View key={index} className="flex-row">
+                        {week.map((day, column) => {
+                            if (!day) return <View key={column} className="h-9 flex-1"/>;
+                            const isSelected = isSameDay(day, value);
+                            const isDisabled = isFutureDay(day, today);
+                            const isToday = isSameDay(day, today);
+                            return (
+                                <PressScale
+                                    key={column}
+                                    onPress={() => onChange(day)}
+                                    disabled={isDisabled}
+                                    role="radio"
+                                    aria-checked={isSelected}
+                                    aria-label={`${day.getDate()} ${monthName(day.getMonth())}`}
+                                    className="h-9 flex-1 items-center justify-center"
+                                >
+                                                    <PopOnActivate active={isSelected}>
+                                        <View className={cn("h-8 w-8 items-center justify-center rounded-full", isSelected && "bg-brand", !isSelected && isToday && "border border-border")}>
+                                            <Text className={cn(
+                                                "font-sans-medium text-sm",
+                                                isSelected ? "text-brand-ink" : isDisabled ? "text-subtle-foreground" : "text-foreground",
+                                            )}
+                                            >
+                                                {day.getDate()}
+                                            </Text>
+                                        </View>
+                                    </PopOnActivate>
+                                </PressScale>
+                            );
+                        })}
+                    </View>
+                ))}
+            </AnimatedView>
         </View>
     );
 };

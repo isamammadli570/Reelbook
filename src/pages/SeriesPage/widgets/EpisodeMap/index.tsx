@@ -1,5 +1,6 @@
 import {Text, View, useWindowDimensions} from "react-native";
 import {useTranslation} from "react-i18next";
+import {PopOnActivate} from "@/components/motion/PopOnActivate";
 import {PressScale} from "@/components/motion/PressScale";
 import {AnimatedView} from "@/components/ui/animated";
 import {SCREEN_GUTTER} from "@/hooks/usePosterWidth";
@@ -23,7 +24,10 @@ type EpisodeMapProps = {
     onToggle: (episode: Episode) => void;
 };
 
-/** A season at a glance: one square per episode, filled when watched, ringed when it is the next one. Squares pop in as a wave. */
+/**
+ * A season at a glance: one square per episode, filled when watched, ringed when it is the next one.
+ * Squares pop in as a wave, and a square pops again when it is marked watched.
+ */
 export const EpisodeMap = ({cells, onToggle}: EpisodeMapProps) => {
     const {t} = useTranslation("details");
     const {width} = useWindowDimensions();
@@ -36,21 +40,24 @@ export const EpisodeMap = ({cells, onToggle}: EpisodeMapProps) => {
                 return (
                     // The entrance sits on a wrapper so that its transform does not overwrite the press scale.
                     <AnimatedView key={episode.id} entering={enteringFor("pop", index)} style={{width: size, height: size}}>
-                        <PressScale
-                            role="checkbox"
-                            aria-checked={isWatched}
-                            aria-label={isWatched ? t("episodeActions.unmark", {code}) : t("episodeActions.mark", {code})}
-                            disabled={!isReleased}
-                            onPress={() => onToggle(episode)}
-                            className={cn(
-                                "h-full w-full items-center justify-center rounded-lg",
-                                isWatched ? "bg-success" : "bg-surface",
-                                isNext && "border-[1.5px] border-foreground",
-                                !isReleased && "opacity-40",
-                            )}
-                        >
-                            <Text className={cn("font-sans-medium text-[11px]", isWatched ? "text-background" : "text-muted-foreground")}>{episode.episode_number}</Text>
-                        </PressScale>
+                        <PopOnActivate active={isWatched}>
+                            <PressScale
+                                role="checkbox"
+                                aria-checked={isWatched}
+                                aria-label={isWatched ? t("episodeActions.unmark", {code}) : t("episodeActions.mark", {code})}
+                                disabled={!isReleased}
+                                onPress={() => onToggle(episode)}
+                                style={{width: size, height: size}}
+                                className={cn(
+                                    "items-center justify-center rounded-lg",
+                                    isWatched ? "bg-success" : "bg-surface",
+                                    isNext && "border-[1.5px] border-foreground",
+                                    !isReleased && "opacity-40",
+                                )}
+                            >
+                                <Text className={cn("font-sans-medium text-[11px]", isWatched ? "text-background" : "text-muted-foreground")}>{episode.episode_number}</Text>
+                            </PressScale>
+                        </PopOnActivate>
                     </AnimatedView>
                 );
             })}

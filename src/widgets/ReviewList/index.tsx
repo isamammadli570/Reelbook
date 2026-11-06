@@ -1,6 +1,7 @@
-import {Pressable, Text, View} from "react-native";
+import {Text, View} from "react-native";
 import {router} from "expo-router";
 import {useTranslation} from "react-i18next";
+import {PressScale} from "@/components/motion/PressScale";
 import {Image} from "@/components/ui/image";
 import {EmptyState} from "@/widgets/EmptyState";
 import {useDateFormat} from "@/hooks/useDateFormat";
@@ -24,7 +25,8 @@ export const ReviewList = ({items}: ReviewListProps) => {
                 const poster = imageUrl(item.posterPath, IMAGE_SIZE.POSTER);
                 const isMovie = item.mediaType === MEDIA_TYPE.MOVIE;
                 return (
-                    <Pressable
+                    <PressScale
+                        scaleTo={0.98}
                         key={`${item.mediaType}-${item.id}`}
                         onPress={() => router.push(isMovie ? buildRoute.movie(item.id) : buildRoute.series(item.id))}
                         className="gap-3 rounded-2xl bg-surface p-3.5"
@@ -40,7 +42,7 @@ export const ReviewList = ({items}: ReviewListProps) => {
                             <Text className="font-sans text-xs text-muted-foreground">{shortDate(item.review?.updatedAt)}</Text>
                         </View>
                         <Text className="font-serif-italic text-[17px] leading-[23px] text-foreground" numberOfLines={4}>“{item.review?.text}”</Text>
-                    </Pressable>
+                    </PressScale>
                 );
             })}
         </View>

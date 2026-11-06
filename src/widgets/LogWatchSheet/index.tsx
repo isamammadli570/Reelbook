@@ -23,7 +23,7 @@ type LogWatchSheetProps = {
 
 /**
  * Asks when a movie was watched: today and yesterday are one tap, any earlier day is on a calendar.
- * Mounted only while open, so each opening starts from the viewing's own date.
+ * Re-created on each opening, so it starts from the viewing's own date.
  */
 const LogWatchForm = ({onClose, submitLabel, initialWatchedAt, onSubmit}: Omit<LogWatchSheetProps, "isOpen" | "title" | "subtitle">) => {
     const {t} = useTranslation("details");
@@ -57,9 +57,19 @@ const LogWatchForm = ({onClose, submitLabel, initialWatchedAt, onSubmit}: Omit<L
     );
 };
 
-export const LogWatchSheet = ({isOpen, onClose, title, subtitle, ...form}: LogWatchSheetProps) => (
-    <BottomSheet isOpen={isOpen} onClose={onClose} title={title}>
-        <Text className="-mt-2 shrink-0 font-sans text-sm text-muted-foreground" numberOfLines={1}>{subtitle}</Text>
-        {isOpen && <LogWatchForm onClose={onClose} {...form}/>}
-    </BottomSheet>
-);
+export const LogWatchSheet = ({isOpen, onClose, title, subtitle, ...form}: LogWatchSheetProps) => {
+    // Counts openings: a new key gives each opening a fresh form, while the form stays on screen as the sheet slides away.
+    const [opening, setOpening] = useState(0);
+    const [wasOpen, setWasOpen] = useState(isOpen);
+    if (isOpen !== wasOpen) {
+        setWasOpen(isOpen);
+        if (isOpen) setOpening((count) => count + 1);
+    }
+
+    return (
+        <BottomSheet isOpen={isOpen} onClose={onClose} title={title}>
+            <Text className="-mt-2 shrink-0 font-sans text-sm text-muted-foreground" numberOfLines={1}>{subtitle}</Text>
+            <LogWatchForm key={opening} onClose={onClose} {...form}/>
+        </BottomSheet>
+    );
+};

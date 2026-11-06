@@ -1,11 +1,12 @@
 import {Text, View} from "react-native";
 import {useTranslation} from "react-i18next";
+import {CountUp} from "@/components/motion/CountUp";
 import {Reveal} from "@/components/motion/Reveal";
 import {splitWatchTime, type StatsSummary} from "@/helpers/stats";
 
 type WatchStatsProps = {summary: StatsSummary};
 
-/** Watch time and counts as cards, the first thing under the name. */
+/** Watch time and counts as cards, the first thing under the name; the counts count up. */
 export const WatchStats = ({summary}: WatchStatsProps) => {
     const {t} = useTranslation("profile");
     const {months, days, hours} = splitWatchTime(summary.minutes);
@@ -16,9 +17,9 @@ export const WatchStats = ({summary}: WatchStatsProps) => {
     ].filter(Boolean).join(" ");
 
     const cards = [
-        {label: t("cards.watchTime"), value: watchTime},
-        {label: t("cards.movies"), value: summary.movies.toLocaleString()},
-        {label: t("cards.episodes"), value: summary.episodes.toLocaleString()},
+        {label: t("cards.watchTime"), value: watchTime, count: null},
+        {label: t("cards.movies"), value: null, count: summary.movies},
+        {label: t("cards.episodes"), value: null, count: summary.episodes},
     ];
 
     return (
@@ -26,7 +27,9 @@ export const WatchStats = ({summary}: WatchStatsProps) => {
             {cards.map((card, index) => (
                 <Reveal key={card.label} index={index} variant="rise" className={index === 0 ? "flex-[1.6] gap-1.5 rounded-2xl bg-surface p-3.5" : "flex-1 gap-1.5 rounded-2xl bg-surface p-3.5"}>
                     <Text className="font-sans-semibold text-[11px] uppercase tracking-wider text-muted-foreground" numberOfLines={1}>{card.label}</Text>
-                    <Text className="font-sans-semibold text-lg text-foreground" numberOfLines={1} adjustsFontSizeToFit>{card.value}</Text>
+                    {card.count === null
+                        ? <Text className="font-sans-semibold text-lg text-foreground" numberOfLines={1} adjustsFontSizeToFit>{card.value}</Text>
+                        : <CountUp value={card.count} format={(value) => value.toLocaleString()} className="font-sans-semibold text-lg text-foreground" numberOfLines={1}/>}
                 </Reveal>
             ))}
         </View>

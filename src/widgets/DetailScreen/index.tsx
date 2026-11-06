@@ -1,20 +1,39 @@
 import type {ReactNode} from "react";
-import {ScrollView, View} from "react-native";
+import {View} from "react-native";
+import Animated, {useAnimatedScrollHandler, useSharedValue} from "react-native-reanimated";
 import {useSafeAreaInsets} from "react-native-safe-area-context";
+import {useCSSVariable} from "uniwind";
+import {ScrollYProvider} from "@/components/motion/ScrollContext";
 import {MAX_CONTENT_WIDTH} from "@/constants/other";
 
 type DetailScreenProps = {children: ReactNode};
 
-/** Scroll body of a movie or series page: no tab bar, and the hero runs edge to edge under the notch. */
+/**
+ * Scroll body of a movie, series or person page: no tab bar, and the hero runs edge to edge under the notch.
+ * The scroll position is tracked on the UI thread so the hero can move with it.
+ */
 export const DetailScreen = ({children}: DetailScreenProps) => {
     const insets = useSafeAreaInsets();
+    const background = String(useCSSVariable("--color-background"));
+    const scrollY = useSharedValue(0);
+    const onScroll = useAnimatedScrollHandler((event) => {
+        scrollY.value = event.contentOffset.y;
+    });
 
     return (
-        <ScrollView className="flex-1 bg-background" contentContainerClassName="items-center" showsVerticalScrollIndicator={false}>
-            <View className="w-full gap-6" style={{maxWidth: MAX_CONTENT_WIDTH, paddingBottom: insets.bottom + 40}}>
-                {children}
-            </View>
-        </ScrollView>
+        <ScrollYProvider value={scrollY}>
+            <Animated.ScrollView
+                onScroll={onScroll}
+                scrollEventThrottle={16}
+                style={{flex: 1, backgroundColor: background}}
+                contentContainerStyle={{alignItems: "center"}}
+                showsVerticalScrollIndicator={false}
+            >
+                <View className="w-full gap-6" style={{maxWidth: MAX_CONTENT_WIDTH, paddingBottom: insets.bottom + 40}}>
+                    {children}
+                </View>
+            </Animated.ScrollView>
+        </ScrollYProvider>
     );
 };
 

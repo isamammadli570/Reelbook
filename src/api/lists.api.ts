@@ -6,6 +6,7 @@ import {
     deleteList,
     removeListEntry,
     toggleListEntry,
+    restoreListEntry,
     updateListDetails,
     type ListDetails,
 } from "@/helpers/lists";
@@ -70,6 +71,9 @@ export const deleteUserList = (id: string) => modifyLists((store) => deleteList(
 export const toggleInList = ({listId, snapshot}: {listId: string; snapshot: MediaSnapshot}) => modifyLists((store) => toggleListEntry(store, listId, snapshot, now()));
 
 export const removeFromList = ({listId, key}: {listId: string; key: string}) => modifyLists((store) => removeListEntry(store, listId, key, now()));
+
+export const restoreToList = ({listId, entry, index}: {listId: string; entry: ListEntry; index: number}) =>
+    modifyLists((store) => restoreListEntry(store, listId, entry, index, now()));
 
 /** Replaces every list, used by sync and when signing out. */
 export const replaceLists = (store: ListsStore) => modifyLists(() => store);

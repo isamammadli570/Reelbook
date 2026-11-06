@@ -1,5 +1,11 @@
+import type {ComponentProps} from "react";
 import {Image as ExpoImage} from "expo-image";
 import {withUniwind} from "uniwind";
 
-/** expo-image with `className` support. */
-export const Image = withUniwind(ExpoImage);
+const StyledImage = withUniwind(ExpoImage);
+
+/** A fade every image shares, so posters and photos never pop in. */
+const FADE_IN_MS = 220;
+
+/** expo-image with `className` support; images fade in as they load unless a caller sets its own transition. */
+export const Image = ({transition = FADE_IN_MS, ...props}: ComponentProps<typeof StyledImage>) => <StyledImage transition={transition} {...props}/>;

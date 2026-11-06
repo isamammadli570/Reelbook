@@ -1,8 +1,10 @@
 import {useState} from "react";
-import {Pressable, Text, View} from "react-native";
+import {Text, View} from "react-native";
 import {router} from "expo-router";
 import {Controller, useForm} from "react-hook-form";
 import {useTranslation} from "react-i18next";
+import {PressScale} from "@/components/motion/PressScale";
+import {Reveal} from "@/components/motion/Reveal";
 import {Button} from "@/components/ui/button";
 import {FormInput} from "@/components/form/FormInput";
 import {AuthLayout} from "@/widgets/AuthLayout";
@@ -48,9 +50,9 @@ export const SignUpPage = () => {
     const footer = (
         <View className="flex-row flex-wrap justify-center gap-1">
             <Text className="font-sans text-sm text-muted-foreground">{t("signUp.haveAccount")}</Text>
-            <Pressable onPress={() => router.replace(ROUTES.SIGN_IN)} hitSlop={8}>
+            <PressScale dimTo={0.5} scaleTo={0.97} onPress={() => router.replace(ROUTES.SIGN_IN)} hitSlop={8}>
                 <Text className="font-sans-semibold text-sm text-brand">{t("signUp.toSignIn")}</Text>
-            </Pressable>
+            </PressScale>
         </View>
     );
 
@@ -92,7 +94,7 @@ export const SignUpPage = () => {
                     <FormInput label={t("fields.password")} value={value} onChangeText={onChange} onBlur={onBlur} error={errors.password?.message} secureTextEntry autoCapitalize="none" autoComplete="new-password"/>
                 )}
             />
-            {formError && <Text className="font-sans text-sm text-danger">{formError}</Text>}
+            {formError && <Reveal key={formError} variant="fade"><Text className="font-sans text-sm text-danger">{formError}</Text></Reveal>}
             <Button variant="brand" label={t("signUp.submit")} disabled={isSubmitting} onPress={() => void submit()}/>
             <Text className="text-center font-sans text-xs leading-[18px] text-subtle-foreground">{t("signUp.hint")}</Text>
         </AuthLayout>

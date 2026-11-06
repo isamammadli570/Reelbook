@@ -35,5 +35,9 @@
         "title": "Siyahını sil",
         "description": "\"{{name}}\" siyahısı bütün cihazlarından silinəcək. Bu geri qaytarılmır.",
         "confirm": "Sil"
+    },
+    "toast": {
+        "undo": "Geri al",
+        "removed": "«{{title}}» siyahıdan çıxarıldı"
     }
 }

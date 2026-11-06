@@ -1,7 +1,8 @@
-import {Pressable, type StyleProp, type ViewStyle} from "react-native";
+import {type StyleProp, type ViewStyle} from "react-native";
 import {useTranslation} from "react-i18next";
 import {ChevronLeft} from "lucide-react-native";
 import {useCSSVariable} from "uniwind";
+import {PressScale} from "@/components/motion/PressScale";
 import {useGoBack} from "@/hooks/useGoBack";
 import {cn} from "@/lib/utils";
 
@@ -18,8 +19,8 @@ export const BackButton = ({className, style}: BackButtonProps) => {
     const foreground = String(useCSSVariable("--color-foreground"));
 
     return (
-        <Pressable onPress={goBack} aria-label={t("back")} className={cn("h-11 w-11 items-center justify-center rounded-full bg-black/50", className)} style={style}>
+        <PressScale onPress={goBack} aria-label={t("back")} className={cn("h-11 w-11 items-center justify-center rounded-full bg-black/50", className)} style={style}>
             <ChevronLeft size={24} strokeWidth={2} color={foreground}/>
-        </Pressable>
+        </PressScale>
     );
 };

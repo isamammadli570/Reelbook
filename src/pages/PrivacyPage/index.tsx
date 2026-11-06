@@ -1,5 +1,6 @@
-import {Linking, Pressable, Text, View} from "react-native";
+import {Linking, Text, View} from "react-native";
 import {useTranslation} from "react-i18next";
+import {PressScale} from "@/components/motion/PressScale";
 import {BackButton} from "@/widgets/BackButton";
 import {PageTitle} from "@/widgets/PageTitle";
 import {Screen} from "@/widgets/Screen";
@@ -30,9 +31,9 @@ export const PrivacyPage = () => {
             ))}
             <Section title={t("privacy.contact.title")} index={4}>
                 <Text className="font-sans text-[15px] leading-6 text-muted-foreground">{t("privacy.contact.body")}</Text>
-                <Pressable role="link" onPress={() => void Linking.openURL(`mailto:${CONTACT_EMAIL}`)} className="self-start" hitSlop={8}>
+                <PressScale dimTo={0.5} scaleTo={0.97} role="link" onPress={() => void Linking.openURL(`mailto:${CONTACT_EMAIL}`)} className="self-start" hitSlop={8}>
                     <Text className="font-sans-semibold text-[15px] text-brand">{CONTACT_EMAIL}</Text>
-                </Pressable>
+                </PressScale>
             </Section>
         </Screen>
     );

@@ -1,9 +1,10 @@
 import {useMemo, useState} from "react";
-import {Pressable, Text, View} from "react-native";
+import {Text, View} from "react-native";
 import {router, useLocalSearchParams} from "expo-router";
 import {useTranslation} from "react-i18next";
 import {Pencil, Trash2} from "lucide-react-native";
 import {useCSSVariable} from "uniwind";
+import {PressScale} from "@/components/motion/PressScale";
 import {Reveal} from "@/components/motion/Reveal";
 import {AccountRequired} from "@/widgets/AccountRequired";
 import {BackButton} from "@/widgets/BackButton";
@@ -13,10 +14,11 @@ import {ListFormSheet} from "@/widgets/ListFormSheet";
 import {PosterGrid} from "@/widgets/PosterGrid";
 import {Screen} from "@/widgets/Screen";
 import {useSession} from "@/hooks/auth/useSession";
-import {useDeleteList, useRemoveFromList, useUpdateList, useUserList} from "@/hooks/lists";
+import {useDeleteList, useRemoveFromList, useRestoreToList, useUpdateList, useUserList} from "@/hooks/lists";
 import {entryToMediaSummary} from "@/helpers/lists";
 import {itemKey} from "@/helpers/library";
 import {hasSupabase} from "@/lib/env";
+import {toast} from "@/lib/toast";
 import {cn} from "@/lib/utils";
 import {buildRoute} from "@/constants/routes";
 
@@ -32,6 +34,7 @@ export const UserListPage = () => {
     const {mutateAsync: updateList} = useUpdateList();
     const {mutateAsync: deleteList, isPending: isDeleting} = useDeleteList();
     const {mutate: removeFromList} = useRemoveFromList();
+    const {mutate: restoreToList} = useRestoreToList();
     const [isEditingDetails, setIsEditingDetails] = useState(false);
     const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
     const [isManaging, setIsManaging] = useState(false);
@@ -55,6 +58,18 @@ export const UserListPage = () => {
         );
     }
 
+    const removeTitle = (key: string) => {
+        const index = list.entries.findIndex((entry) => entry.key === key);
+        const entry = list.entries[index];
+        if (!entry) return;
+        removeFromList({listId: list.id, key}, {
+            onSuccess: () => toast.show({
+                message: t("toast.removed", {title: entry.title}),
+                action: {label: t("toast.undo"), onPress: () => restoreToList({listId: list.id, entry, index})},
+            }),
+        });
+    };
+
     const remove = async () => {
         const isDeleted = await deleteList(list.id).then(() => true, () => false);
         if (isDeleted) {
@@ -68,12 +83,12 @@ export const UserListPage = () => {
             <View className="flex-row items-center justify-between">
                 <BackButton/>
                 <View className="flex-row gap-2">
-                    <Pressable onPress={() => setIsEditingDetails(true)} aria-label={t("edit")} className="h-11 w-11 items-center justify-center rounded-full bg-surface">
+                    <PressScale scaleTo={0.98} onPress={() => setIsEditingDetails(true)} aria-label={t("edit")} className="h-11 w-11 items-center justify-center rounded-full bg-surface">
                         <Pencil size={18} strokeWidth={2} color={foreground}/>
-                    </Pressable>
-                    <Pressable onPress={() => setIsConfirmingDelete(true)} aria-label={t("delete.title")} className="h-11 w-11 items-center justify-center rounded-full bg-surface">
+                    </PressScale>
+                    <PressScale scaleTo={0.98} onPress={() => setIsConfirmingDelete(true)} aria-label={t("delete.title")} className="h-11 w-11 items-center justify-center rounded-full bg-surface">
                         <Trash2 size={18} strokeWidth={2} color={foreground}/>
-                    </Pressable>
+                    </PressScale>
                 </View>
             </View>
 
@@ -84,9 +99,9 @@ export const UserListPage = () => {
             </Reveal>
 
             {list.entries.length > 0 && (
-                <Pressable onPress={() => setIsManaging((value) => !value)} aria-pressed={isManaging} className={cn("self-start rounded-full border px-4 py-2", isManaging ? "border-foreground bg-foreground" : "border-border")}>
+                <PressScale scaleTo={0.98} onPress={() => setIsManaging((value) => !value)} aria-pressed={isManaging} className={cn("self-start rounded-full border px-4 py-2", isManaging ? "border-foreground bg-foreground" : "border-border")}>
                     <Text className={cn("font-sans-medium text-[13px]", isManaging ? "text-background" : "text-foreground")}>{isManaging ? t("manage.done") : t("manage.start")}</Text>
-                </Pressable>
+                </PressScale>
             )}
 
             {posters.length ? (
@@ -95,13 +110,14 @@ export const UserListPage = () => {
                     items={posters}
                     onPress={(media) => router.push(buildRoute.media(media))}
                     renderFooter={isManaging ? (media) => (
-                        <Pressable
-                            onPress={() => removeFromList({listId: list.id, key: itemKey(media.media_type, media.id)})}
+                        <PressScale
+                            scaleTo={0.98}
+                            onPress={() => removeTitle(itemKey(media.media_type, media.id))}
                             aria-label={t("manage.remove")}
                             className="items-center rounded-lg bg-danger-soft py-1.5"
                         >
                             <Text className="font-sans-medium text-xs text-danger">{t("manage.remove")}</Text>
-                        </Pressable>
+                        </PressScale>
                     ) : undefined}
                 />
             ) : (

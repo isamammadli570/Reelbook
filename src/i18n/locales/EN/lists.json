@@ -35,5 +35,9 @@
         "title": "Delete list",
         "description": "\"{{name}}\" will be removed from all your devices. This can’t be undone.",
         "confirm": "Delete"
+    },
+    "toast": {
+        "undo": "Undo",
+        "removed": "“{{title}}” removed from the list"
     }
 }

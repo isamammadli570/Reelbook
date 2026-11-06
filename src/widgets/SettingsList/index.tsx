@@ -1,7 +1,8 @@
 import {Children, Fragment, isValidElement, type ReactNode} from "react";
-import {Pressable, Switch, Text, View} from "react-native";
+import {Switch, Text, View} from "react-native";
 import {ChevronRight, type LucideIcon} from "lucide-react-native";
 import {useCSSVariable} from "uniwind";
+import {PressScale} from "@/components/motion/PressScale";
 import {Reveal} from "@/components/motion/Reveal";
 import {cn} from "@/lib/utils";
 
@@ -88,8 +89,8 @@ export const SettingsRow = ({icon: Icon, tint, label, value, onPress, toggle, is
     if (toggle || !onPress) return <View className="min-h-[52px] flex-row items-center gap-3 px-3.5 py-2">{content}</View>;
 
     return (
-        <Pressable onPress={onPress} role="button" className="min-h-[52px] flex-row items-center gap-3 px-3.5 py-2 active:bg-surface-raised">
+        <PressScale scaleTo={0.98} onPress={onPress} role="button" className="min-h-[52px] flex-row items-center gap-3 px-3.5 py-2 active:bg-surface-raised">
             {content}
-        </Pressable>
+        </PressScale>
     );
 };

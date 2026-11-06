@@ -4,6 +4,8 @@ import {
     addDiaryEntry,
     createLibrary,
     removeDiaryEntry,
+    restoreDiaryEntry,
+    restoreEpisodes,
     setDiaryDate,
     setEpisodesWatched,
     setRating,
@@ -115,6 +117,12 @@ export const logWatch = ({snapshot, watchedAt}: {snapshot: MediaSnapshot; watche
 
 export const deleteWatch = ({snapshot, entryId}: {snapshot: MediaSnapshot; entryId: string}) =>
     modifyLibrary((library) => updateItem(library, snapshot, (item) => removeDiaryEntry(item, entryId), now()));
+
+export const restoreWatch = ({snapshot, entry, rating}: {snapshot: MediaSnapshot; entry: DiaryEntry; rating?: number | null}) =>
+    modifyLibrary((library) => updateItem(library, snapshot, (item) => restoreDiaryEntry(item, entry, rating), now()));
+
+export const restoreWatchedEpisodes = ({snapshot, episodes}: {snapshot: MediaSnapshot; episodes: Record<string, string>}) =>
+    modifyLibrary((library) => updateItem(library, snapshot, (item) => restoreEpisodes(item, episodes), now()));
 
 export const changeWatchDate = ({snapshot, entryId, watchedAt}: {snapshot: MediaSnapshot; entryId: string; watchedAt: string}) =>
     modifyLibrary((library) => updateItem(library, snapshot, (item) => setDiaryDate(item, entryId, watchedAt), now()));

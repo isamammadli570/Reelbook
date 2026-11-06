@@ -61,6 +61,14 @@ export const toggleListEntry = (store: ListsStore, id: string, snapshot: MediaSn
 export const removeListEntry = (store: ListsStore, id: string, key: string, nowIso: string): ListsStore =>
     updateList(store, id, (list) => ({...list, entries: list.entries.filter((entry) => entry.key !== key)}), nowIso);
 
+/** Undoes a removal: the entry goes back at its old position, with its original "added" date. */
+export const restoreListEntry = (store: ListsStore, id: string, entry: ListEntry, index: number, nowIso: string): ListsStore =>
+    updateList(store, id, (list) => {
+        const entries = list.entries.filter((existing) => existing.key !== entry.key);
+        entries.splice(Math.min(Math.max(index, 0), entries.length), 0, entry);
+        return {...list, entries};
+    }, nowIso);
+
 /** The ids of the lists that already hold this title, for ticking them in the "add to list" sheet. */
 export const listIdsContaining = (store: ListsStore, key: string): Set<string> =>
     new Set(Object.values(store.lists).filter((list) => list.entries.some((entry) => entry.key === key)).map((list) => list.id));

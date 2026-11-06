@@ -3,6 +3,7 @@ import {Text, View} from "react-native";
 import {Controller, useForm} from "react-hook-form";
 import {useTranslation} from "react-i18next";
 import {Trash2} from "lucide-react-native";
+import {Reveal} from "@/components/motion/Reveal";
 import {Button} from "@/components/ui/button";
 import {FormInput} from "@/components/form/FormInput";
 import {AccountRequired} from "@/widgets/AccountRequired";
@@ -20,9 +21,13 @@ import {EMAIL_PATTERN, PASSWORD_MIN_LENGTH} from "@/constants/validation";
 type EmailValues = {email: string};
 type PasswordValues = {password: string; repeat: string};
 
-/** A success or error line under a form. */
+/** A success or error line under a form; it fades in, and again when the message changes. */
 const Note = ({text, isError}: {text: string | null; isError?: boolean}) =>
-    text ? <Text className={isError ? "font-sans text-sm text-danger" : "font-sans text-sm text-success"}>{text}</Text> : null;
+    text ? (
+        <Reveal key={text} variant="fade">
+            <Text className={isError ? "font-sans text-sm text-danger" : "font-sans text-sm text-success"}>{text}</Text>
+        </Reveal>
+    ) : null;
 
 /** Change the e-mail or password, or delete the account and everything in it. */
 export const AccountPage = () => {

@@ -10,11 +10,16 @@ import {
     nextRating,
     refreshSnapshot,
     seriesProgress,
+    removeDiaryEntry,
+    restoreDiaryEntry,
+    restoreEpisodes,
     setDiaryDate,
+    snapshotOf,
     setRating,
     setReview,
     setEpisodesWatched,
     toggleEpisode,
+    toggleFavorite,
     toggleFollowing,
     toggleWatchlist,
     upNextItems,
@@ -137,6 +142,37 @@ describe("setDiaryDate", () => {
     });
 });
 
+describe("removeDiaryEntry", () => {
+    it("clears the rating with the last viewing, but keeps favourite, watchlist and review", () => {
+        const watched = itemOf(movie, (current) => addDiaryEntry({...toggleFavorite(toggleWatchlist(current)), rating: 4, review: {text: "Good", updatedAt: NOW}}, NOW));
+        const removed = removeDiaryEntry(watched, watched.diary[0].id);
+        expect(removed).toMatchObject({rating: null, isFavorite: true, review: {text: "Good"}});
+    });
+
+    it("keeps the rating while another viewing is left, and undo brings both back", () => {
+        const twice = itemOf(movie, (current) => addDiaryEntry(addDiaryEntry({...current, rating: 4}, "2026-10-01T20:00:00.000Z"), NOW));
+        expect(removeDiaryEntry(twice, twice.diary[0].id).rating).toBe(4);
+        const once = itemOf(movie, (current) => addDiaryEntry({...current, rating: 3.5}, NOW));
+        const restored = restoreDiaryEntry(removeDiaryEntry(once, once.diary[0].id), once.diary[0], once.rating);
+        expect(restored).toMatchObject({rating: 3.5, diary: once.diary});
+    });
+});
+
+describe("undo", () => {
+    it("puts a deleted viewing back with its own id, date and rating, in date order", () => {
+        const watched = itemOf(movie, (current) => addDiaryEntry(addDiaryEntry({...current, rating: 4}, "2026-10-01T20:00:00.000Z"), NOW));
+        const removed = watched.diary[1];
+        const restored = restoreDiaryEntry(removeDiaryEntry(watched, removed.id), removed);
+        expect(restored.diary).toEqual(watched.diary);
+    });
+
+    it("brings unmarked episodes back with the dates they were first marked on", () => {
+        const marked = itemOf(series, (current) => setEpisodesWatched(current, 1, [1, 2], true, "2026-10-01T20:00:00.000Z"));
+        const cleared = setEpisodesWatched(marked, 1, [1, 2], false, NOW);
+        expect(restoreEpisodes(cleared, marked.episodes).episodes).toEqual(marked.episodes);
+    });
+});
+
 describe("episodes", () => {
     it("marking an episode follows the series and toggles back off", () => {
         const item = itemOf(series, (current) => toggleEpisode(current, {season: 1, episode: 1}, NOW));
@@ -202,5 +238,15 @@ describe("upNextItems", () => {
         library = updateItem(library, other, (current) => toggleEpisode(current, {season: 1, episode: 1}, NOW), "2026-11-06T10:00:00.000Z");
 
         expect(upNextItems(library).map((entry) => entry.item.title)).toEqual(["Andor", "Severance"]);
+    });
+});
+
+describe("snapshotOf", () => {
+    it("keeps only the title's details, never the diary or rating", () => {
+        const watched = itemOf(movie, (current) => addDiaryEntry({...current, rating: 4}, NOW));
+        const snapshot = snapshotOf(watched);
+        expect(snapshot).not.toHaveProperty("diary");
+        expect(snapshot).not.toHaveProperty("rating");
+        expect(snapshot).toMatchObject({id: movie.id, title: movie.title, mediaType: "movie"});
     });
 });

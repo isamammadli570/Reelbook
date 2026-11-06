@@ -1,8 +1,10 @@
 import {useState} from "react";
-import {Pressable, ScrollView, Text, View} from "react-native";
+import {ScrollView, Text, View} from "react-native";
 import {useTranslation} from "react-i18next";
 import {Check, Plus} from "lucide-react-native";
 import {useCSSVariable} from "uniwind";
+import {PopOnActivate} from "@/components/motion/PopOnActivate";
+import {PressScale} from "@/components/motion/PressScale";
 import {BottomSheet} from "@/widgets/BottomSheet";
 import {ListFormSheet} from "@/widgets/ListFormSheet";
 import {useCreateList, useListIdsContaining, useToggleInList, useUserLists} from "@/hooks/lists";
@@ -46,16 +48,17 @@ export const AddToListSheet = ({snapshot, isOpen, onClose}: AddToListSheetProps)
             <BottomSheet isOpen={isOpen && !isCreating} onClose={onClose} title={t("addTo.title")}>
                 <Text className="font-sans text-sm text-muted-foreground" numberOfLines={1}>{snapshot.title}</Text>
                 <ScrollView className="-mx-1" contentContainerClassName="gap-1 px-1">
-                    <Pressable onPress={() => setIsCreating(true)} className="flex-row items-center gap-3 rounded-xl px-3 py-3 active:bg-surface-raised">
+                    <PressScale scaleTo={0.98} onPress={() => setIsCreating(true)} className="flex-row items-center gap-3 rounded-xl px-3 py-3 active:bg-surface-raised">
                         <View className="h-9 w-9 items-center justify-center rounded-lg border border-dashed border-border">
                             <Plus size={18} strokeWidth={2} color={muted}/>
                         </View>
                         <Text className="font-sans-medium text-[15px] text-foreground">{t("addTo.newList")}</Text>
-                    </Pressable>
+                    </PressScale>
                     {lists.map((list) => {
                         const isListed = containing.has(list.id);
                         return (
-                            <Pressable
+                            <PressScale
+                                scaleTo={0.98}
                                 key={list.id}
                                 role="checkbox"
                                 aria-checked={isListed}
@@ -65,14 +68,16 @@ export const AddToListSheet = ({snapshot, isOpen, onClose}: AddToListSheetProps)
                                 }}
                                 className="flex-row items-center gap-3 rounded-xl px-3 py-3 active:bg-surface-raised"
                             >
-                                <View className={cn("h-9 w-9 items-center justify-center rounded-lg", isListed ? "bg-brand" : "bg-surface-raised")}>
-                                    {isListed && <Check size={18} strokeWidth={3} color={brandInk}/>}
-                                </View>
+                                <PopOnActivate active={isListed}>
+                                    <View className={cn("h-9 w-9 items-center justify-center rounded-lg", isListed ? "bg-brand" : "bg-surface-raised")}>
+                                        {isListed && <Check size={18} strokeWidth={3} color={brandInk}/>}
+                                    </View>
+                                </PopOnActivate>
                                 <View className="min-w-0 flex-1">
                                     <Text className="font-sans-medium text-[15px] text-foreground" numberOfLines={1}>{list.name}</Text>
                                     <Text className="font-sans text-xs text-muted-foreground">{t("count", {count: list.entries.length})}</Text>
                                 </View>
-                            </Pressable>
+                            </PressScale>
                         );
                     })}
                 </ScrollView>

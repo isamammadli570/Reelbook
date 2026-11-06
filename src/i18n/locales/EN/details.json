@@ -18,7 +18,6 @@
     "similarMovies": "Similar movies",
     "similarSeries": "Similar series",
     "directedBy": "Directed by {{names}}",
-    "createdBy": "Created by {{names}}",
     "episodes": "Episodes",
     "season": "Season {{number}}",
     "specials": "Specials",
@@ -56,7 +55,9 @@
         "title": "Your diary",
         "delete": "Delete entry",
         "firstTime": "First time",
-        "rewatch": "Rewatch"
+        "rewatch": "Rewatch",
+        "actions": "{{title}}: options",
+        "unmarkEpisode": "Unmark episode"
     },
     "progress": {
         "title": "Your progress",
@@ -105,5 +106,15 @@
         "previousMonth": "Previous month",
         "nextMonth": "Next month"
     },
-    "spoilerName": "Episode {{number}}"
+    "spoilerName": "Episode {{number}}",
+    "toast": {
+        "undo": "Undo",
+        "logged": "Added to your diary · {{date}}",
+        "watchDeleted": "Entry deleted",
+        "dateChanged": "Date changed · {{date}}",
+        "seasonUnmarked": "Season {{number}} unmarked",
+        "reviewSaved": "Review saved",
+        "reviewRemoved": "Review removed",
+        "episodeUnmarked": "{{code}} unmarked"
+    }
 }

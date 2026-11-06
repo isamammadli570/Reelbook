@@ -1,15 +1,10 @@
 {
-    "title": "Profile",
     "defaultName": "Film lover",
-    "language": "Language",
     "reviewsEmpty": {
         "title": "No reviews yet",
         "description": "Reviews you write on movie and series pages show up here."
     },
     "backup": {
-        "title": "Backup",
-        "export": "Export",
-        "import": "Restore",
         "imported": "Your data has been restored.",
         "invalid": "This file is not a Reelbook backup, or its version does not match.",
         "exportFailed": "Couldn’t export the backup.",

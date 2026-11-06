@@ -1,10 +1,10 @@
 import {useState} from "react";
-import {Alert} from "react-native";
 import {router} from "expo-router";
 import {useQueryClient} from "@tanstack/react-query";
 import {useTranslation} from "react-i18next";
 import {getCurrentSession, signOut} from "@/api/auth.api";
 import {flushAndClearDevice} from "@/services/sync";
+import {toast} from "@/lib/toast";
 import {QUERY_KEYS} from "@/constants/other";
 import {ROUTES} from "@/constants/routes";
 
@@ -25,7 +25,7 @@ export const useSignOut = () => {
             void queryClient.invalidateQueries({queryKey: [QUERY_KEYS.LISTS]});
             router.replace(ROUTES.HOME);
         } catch {
-            Alert.alert(t("signOut.title"), t("signOut.failed"));
+            toast.error(t("signOut.failed"));
         } finally {
             setIsSigningOut(false);
         }

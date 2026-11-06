@@ -1,10 +1,10 @@
-import {Alert} from "react-native";
 import {useQueryClient} from "@tanstack/react-query";
 import {useTranslation} from "react-i18next";
 import {exportBackup, importBackup} from "@/api/backup.api";
+import {toast} from "@/lib/toast";
 import {QUERY_KEYS} from "@/constants/other";
 
-/** Export to a file through the share sheet, and restore from one; the outcome is reported in an alert. */
+/** Export to a file (shared on a phone, downloaded on the web), and restore from one; the outcome is reported in a toast. */
 export const useBackupActions = () => {
     const {t} = useTranslation("profile");
     const queryClient = useQueryClient();
@@ -13,7 +13,7 @@ export const useBackupActions = () => {
         try {
             await exportBackup();
         } catch {
-            Alert.alert(t("backup.title"), t("backup.exportFailed"));
+            toast.error(t("backup.exportFailed"));
         }
     };
 
@@ -23,12 +23,12 @@ export const useBackupActions = () => {
             if (result.status === "imported") {
                 void queryClient.invalidateQueries({queryKey: [QUERY_KEYS.LIBRARY]});
                 void queryClient.invalidateQueries({queryKey: [QUERY_KEYS.PROFILE]});
-                Alert.alert(t("backup.title"), t("backup.imported"));
+                toast.success(t("backup.imported"));
             } else if (result.status === "invalid") {
-                Alert.alert(t("backup.title"), t("backup.invalid"));
+                toast.error(t("backup.invalid"));
             }
         } catch {
-            Alert.alert(t("backup.title"), t("backup.importFailed"));
+            toast.error(t("backup.importFailed"));
         }
     };
 

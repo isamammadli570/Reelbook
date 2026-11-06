@@ -18,7 +18,6 @@
     "similarMovies": "Похожие фильмы",
     "similarSeries": "Похожие сериалы",
     "directedBy": "Режиссёр: {{names}}",
-    "createdBy": "Создатель: {{names}}",
     "episodes": "Эпизоды",
     "season": "Сезон {{number}}",
     "specials": "Спецвыпуски",
@@ -58,7 +57,9 @@
         "title": "Твой дневник",
         "delete": "Удалить запись",
         "firstTime": "Впервые",
-        "rewatch": "Пересмотр"
+        "rewatch": "Пересмотр",
+        "actions": "{{title}}: действия",
+        "unmarkEpisode": "Снять отметку с эпизода"
     },
     "progress": {
         "title": "Твой прогресс",
@@ -107,5 +108,15 @@
         "previousMonth": "Предыдущий месяц",
         "nextMonth": "Следующий месяц"
     },
-    "spoilerName": "Эпизод {{number}}"
+    "spoilerName": "Эпизод {{number}}",
+    "toast": {
+        "undo": "Отменить",
+        "logged": "Добавлено в дневник · {{date}}",
+        "watchDeleted": "Запись удалена",
+        "dateChanged": "Дата изменена · {{date}}",
+        "seasonUnmarked": "Отметки сезона {{number}} сняты",
+        "reviewSaved": "Рецензия сохранена",
+        "reviewRemoved": "Рецензия удалена",
+        "episodeUnmarked": "Отметка с {{code}} снята"
+    }
 }

@@ -1,7 +1,8 @@
-import {Pressable, Text, View} from "react-native";
+import {Text, View} from "react-native";
 import {router} from "expo-router";
 import {ChevronRight} from "lucide-react-native";
 import {useCSSVariable} from "uniwind";
+import {PressScale} from "@/components/motion/PressScale";
 import {Reveal} from "@/components/motion/Reveal";
 import {cn} from "@/lib/utils";
 
@@ -19,7 +20,8 @@ export const ShelfMenu = ({links, index = 0}: ShelfMenuProps) => {
     return (
         <Reveal index={index} variant="rise" className="overflow-hidden rounded-2xl bg-surface">
             {links.map((link, position) => (
-                <Pressable
+                <PressScale
+                    scaleTo={0.98}
                     key={link.key}
                     onPress={() => router.push(link.href)}
                     role="link"
@@ -31,7 +33,7 @@ export const ShelfMenu = ({links, index = 0}: ShelfMenuProps) => {
                         <Text className="font-sans-medium text-[15px] text-muted-foreground">{link.count}</Text>
                         <ChevronRight size={18} strokeWidth={2} color={muted}/>
                     </View>
-                </Pressable>
+                </PressScale>
             ))}
         </Reveal>
     );

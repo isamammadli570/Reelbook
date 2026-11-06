@@ -1,7 +1,8 @@
-import {Pressable, View} from "react-native";
+import {View} from "react-native";
 import {useTranslation} from "react-i18next";
 import {Star, StarHalf} from "lucide-react-native";
 import {useCSSVariable} from "uniwind";
+import {PressScale} from "@/components/motion/PressScale";
 import {PopOnActivate} from "@/components/motion/PopOnActivate";
 
 const STARS = [1, 2, 3, 4, 5];
@@ -23,7 +24,7 @@ export const StarRating = ({value, onChange, size = 36}: StarRatingProps) => {
                 const isFull = value !== null && value >= star;
                 const isHalf = value === star - 0.5;
                 return (
-                    <Pressable key={star} role="radio" aria-checked={isFull || isHalf} aria-label={t("rating.stars", {count: star})} onPress={() => onChange(star)} hitSlop={4}>
+                    <PressScale dimTo={0.5} scaleTo={0.97} key={star} role="radio" aria-checked={isFull || isHalf} aria-label={t("rating.stars", {count: star})} onPress={() => onChange(star)} hitSlop={4}>
                         <PopOnActivate active={isFull || isHalf}>
                             <Star size={size} strokeWidth={1.5} color={isFull || isHalf ? brand : empty} fill={isFull ? brand : empty}/>
                             {isHalf && (
@@ -32,7 +33,7 @@ export const StarRating = ({value, onChange, size = 36}: StarRatingProps) => {
                                 </View>
                             )}
                         </PopOnActivate>
-                    </Pressable>
+                    </PressScale>
                 );
             })}
         </View>

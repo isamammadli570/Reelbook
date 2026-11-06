@@ -1,5 +1,5 @@
 import {describe, expect, it} from "vitest";
-import {diaryMonths, recentTitles, watchRating} from "@/helpers/activity";
+import {diaryMonths, diaryRows, recentTitles, watchRating} from "@/helpers/activity";
 import type {LibraryItem} from "@/api/library.api";
 import type {Watch} from "@/helpers/stats";
 
@@ -52,5 +52,20 @@ describe("diaryMonths", () => {
         const film = item(1, "movie");
         const months = diaryMonths([watch(film, "2026-11-06T20:00:00"), watch(film, "2026-11-01T20:00:00"), watch(film, "2026-10-30T20:00:00")]);
         expect(months.map((month) => [month.key, month.watches.length])).toEqual([["2026-11", 2], ["2026-10", 1]]);
+    });
+});
+
+describe("diaryRows", () => {
+    it("puts a heading before each month and shows the day once per day", () => {
+        const film = item(1, "movie");
+        const show = item(2, "tv");
+        const rows = diaryRows([
+            watch(film, "2026-11-06T21:00:00"),
+            watch(show, "2026-11-06T20:00:00"),
+            watch(show, "2026-11-01T20:00:00"),
+            watch(film, "2026-10-30T20:00:00"),
+        ]);
+        expect(rows.map((row) => (row.kind === "month" ? row.month : row.isFirstOfDay))).toEqual(["2026-11", true, false, true, "2026-10", true]);
+        expect(new Set(rows.map((row) => row.key)).size).toBe(rows.length);
     });
 });

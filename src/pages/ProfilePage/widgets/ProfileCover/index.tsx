@@ -1,10 +1,13 @@
-import {Pressable, Text, View} from "react-native";
+import {Text, View} from "react-native";
 import {useSafeAreaInsets} from "react-native-safe-area-context";
 import {LinearGradient} from "expo-linear-gradient";
 import {useTranslation} from "react-i18next";
 import {EllipsisVertical} from "lucide-react-native";
 import {useCSSVariable} from "uniwind";
+import {PressScale} from "@/components/motion/PressScale";
 import {Reveal} from "@/components/motion/Reveal";
+import {useParallax} from "@/components/motion/ScrollContext";
+import {AnimatedView} from "@/components/ui/animated";
 import {Image} from "@/components/ui/image";
 import {Avatar} from "@/widgets/Avatar";
 import {withAlpha} from "@/helpers/details";
@@ -28,20 +31,27 @@ export const ProfileCover = ({profile, onOpenMenu}: ProfileCoverProps) => {
     // Only what the user chose: with no cover the plain tinted band shows, exactly as on the edit page.
     const cover = profile.coverUrl ?? imageUrl(profile.coverPath, IMAGE_SIZE.BACKDROP);
     const name = profile.name || t("defaultName");
+    const parallax = useParallax(COVER_HEIGHT + insets.top);
 
     return (
         <View>
-            <Reveal variant="fade" className="w-full bg-brand-soft" style={{height: COVER_HEIGHT + insets.top}}>
-                {cover && <Image source={cover} className="h-full w-full" contentFit="cover" transition={300}/>}
+            <Reveal variant="fade" className="w-full" style={{height: COVER_HEIGHT + insets.top}}>
+                <AnimatedView className="absolute inset-0 overflow-hidden bg-brand-soft" style={parallax.frame}>
+                    {cover && (
+                        <AnimatedView className="h-full w-full" style={parallax.image}>
+                            <Image source={cover} className="h-full w-full" contentFit="cover" transition={300}/>
+                        </AnimatedView>
+                    )}
+                </AnimatedView>
                 <LinearGradient colors={[withAlpha(background, 0.35), withAlpha(background, 0), background]} locations={[0, 0.4, 1]} style={{position: "absolute", inset: 0}}/>
-                <Pressable
+                <PressScale
                     onPress={onOpenMenu}
                     aria-label={t("menu.open")}
                     className="absolute right-5 h-11 w-11 items-center justify-center rounded-full bg-black/50"
                     style={{top: insets.top + 8}}
                 >
                     <EllipsisVertical size={22} strokeWidth={2} color={foreground}/>
-                </Pressable>
+                </PressScale>
             </Reveal>
 
             <View className="gap-3 px-5" style={{marginTop: -AVATAR_SIZE / 2}}>

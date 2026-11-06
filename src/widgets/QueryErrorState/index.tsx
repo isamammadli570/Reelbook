@@ -1,5 +1,6 @@
-import {Pressable, Text} from "react-native";
+import {Text} from "react-native";
 import {useTranslation} from "react-i18next";
+import {PressScale} from "@/components/motion/PressScale";
 import {EmptyState} from "@/widgets/EmptyState";
 
 type QueryErrorStateProps = {
@@ -16,9 +17,9 @@ export const QueryErrorState = ({error, onRetry}: QueryErrorStateProps) => {
             title={t("errors.load")}
             description={error?.message}
             action={(
-                <Pressable onPress={onRetry} className="h-11 items-center justify-center rounded-xl bg-foreground px-5">
+                <PressScale onPress={onRetry} className="h-11 items-center justify-center rounded-xl bg-foreground px-5">
                     <Text className="font-sans-semibold text-sm text-background">{t("actions.retry")}</Text>
-                </Pressable>
+                </PressScale>
             )}
         />
     );

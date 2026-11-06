@@ -9,7 +9,7 @@ const FILLS = ["bg-brand", "bg-brand/70", "bg-brand/45"];
 
 type GenreBarsProps = {genres: {name: string; percent: number}[]};
 
-/** The top genres by share of watch time. */
+/** The top genres by share of watch time; the bars fill one after another. */
 export const GenreBars = ({genres}: GenreBarsProps) => {
     const {t, i18n} = useTranslation("stats");
     if (!genres.length) return null;
@@ -23,7 +23,7 @@ export const GenreBars = ({genres}: GenreBarsProps) => {
                             <Text className="font-sans-medium text-[13px] text-foreground">{translateGenre(genre.name, i18n.language)}</Text>
                             <Text className="font-sans text-[13px] text-muted-foreground">{genre.percent}%</Text>
                         </View>
-                        <ProgressBar percent={genre.percent} className="h-2 bg-surface" fillClassName={FILLS[index] ?? FILLS.at(-1)}/>
+                        <ProgressBar percent={genre.percent} delay={index * 90} className="h-2 bg-surface" fillClassName={FILLS[index] ?? FILLS.at(-1)}/>
                     </View>
                 ))}
             </View>

@@ -6,12 +6,14 @@ import {
     deleteUserList,
     getLists,
     removeFromList,
+    restoreToList,
     toggleInList,
     updateUserList,
     type ListsStore,
 } from "@/api/lists.api";
 import {createListId, listIdsContaining, sortedLists} from "@/helpers/lists";
 import {ensureAccount} from "@/lib/accountGate";
+import {reportSaveError} from "@/lib/saveError";
 import {QUERY_KEYS} from "@/constants/other";
 import {buildRoute} from "@/constants/routes";
 
@@ -51,6 +53,7 @@ const useListsMutation = <TVariables>(mutationFn: (variables: TVariables) => Pro
             return mutationFn(variables);
         },
         onSuccess: (store) => queryClient.setQueryData([QUERY_KEYS.LISTS], store),
+        onError: reportSaveError,
     });
 };
 
@@ -59,6 +62,7 @@ export const useUpdateList = () => useListsMutation(updateUserList);
 export const useDeleteList = () => useListsMutation(deleteUserList);
 export const useToggleInList = () => useListsMutation(toggleInList);
 export const useRemoveFromList = () => useListsMutation(removeFromList);
+export const useRestoreToList = () => useListsMutation(restoreToList);
 
 /** Creates a list and opens it, so the user can start filling it; resolves to whether it was created. */
 export const useCreateAndOpenList = () => {

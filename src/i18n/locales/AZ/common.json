@@ -17,8 +17,8 @@
     },
     "actions": {
         "retry": "Yenidən cəhd et",
-        "seeAll": "Hamısı",
-        "close": "Bağla"
+        "close": "Bağla",
+        "clear": "Təmizlə"
     },
     "apiErrors": {
         "generic": "Nəsə alınmadı. Yenidən cəhd et.",
@@ -84,5 +84,9 @@
         "C.a.",
         "C.",
         "Ş."
-    ]
+    ],
+    "toast": {
+        "saveFailed": "Saxlamaq alınmadı. Yenidən cəhd et.",
+        "syncFailed": "Sinxronizasiya alınmadı. Dəyişikliklər cihazda saxlanılıb, sonra yenidən göndəriləcək."
+    }
 }

@@ -3,6 +3,8 @@ import {useQuery} from "@tanstack/react-query";
 import {
     changeWatchDate,
     deleteWatch,
+    restoreWatch,
+    restoreWatchedEpisodes,
     saveReview,
     getLibrary,
     logWatch,
@@ -82,6 +84,8 @@ export const useToggleFollowing = () => useLibraryMutation(toggleFollowingItem);
 export const useRateItem = () => useLibraryMutation(rateItem);
 export const useLogWatch = () => useLibraryMutation(logWatch);
 export const useDeleteWatch = () => useLibraryMutation(deleteWatch);
+export const useRestoreWatch = () => useLibraryMutation(restoreWatch);
+export const useRestoreEpisodes = () => useLibraryMutation(restoreWatchedEpisodes);
 export const useChangeWatchDate = () => useLibraryMutation(changeWatchDate);
 export const useToggleEpisode = () => useLibraryMutation(toggleEpisodeWatched);
 export const useSetSeasonWatched = () => useLibraryMutation(setSeasonWatched);

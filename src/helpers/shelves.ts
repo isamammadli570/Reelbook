@@ -83,3 +83,24 @@ const STATUS_ORDER: SeriesStatus[] = [SERIES_STATUS.WATCHING, SERIES_STATUS.NOT_
 /** Series split into watching, not started and completed, keeping each group's order; empty groups are left out. */
 export const groupByStatus = (items: LibraryItem[]): {status: SeriesStatus; items: LibraryItem[]}[] =>
     STATUS_ORDER.map((status) => ({status, items: items.filter((item) => seriesStatus(item) === status)})).filter((group) => group.items.length > 0);
+
+export type ShelfRow =
+    | {kind: "title"; key: string; status: SeriesStatus}
+    | {kind: "posters"; key: string; items: LibraryItem[]};
+
+const chunk = <T>(items: T[], size: number): T[][] =>
+    Array.from({length: Math.ceil(items.length / size)}, (_, index) => items.slice(index * size, index * size + size));
+
+/**
+ * A shelf flattened for a virtual list: rows of `columns` posters, and with `isGrouped` a heading row before each
+ * watch status. Only the rows on screen are rendered, so a shelf of hundreds of titles scrolls smoothly.
+ */
+export const shelfRows = (items: LibraryItem[], columns: number, isGrouped: boolean): ShelfRow[] => {
+    const postersOf = (list: LibraryItem[], prefix: string): ShelfRow[] =>
+        chunk(list, columns).map((row) => ({kind: "posters", key: `${prefix}${row.map((item) => `${item.mediaType}:${item.id}`).join(",")}`, items: row}));
+    if (!isGrouped) return postersOf(items, "");
+    return groupByStatus(items).flatMap((group): ShelfRow[] => [
+        {kind: "title", key: `title-${group.status}`, status: group.status},
+        ...postersOf(group.items, `${group.status}-`),
+    ]);
+};

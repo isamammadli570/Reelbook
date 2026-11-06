@@ -1,6 +1,7 @@
-import {Pressable, Text, View} from "react-native";
+import {Text, View} from "react-native";
 import {router} from "expo-router";
 import {useTranslation} from "react-i18next";
+import {PressScale} from "@/components/motion/PressScale";
 import {Image} from "@/components/ui/image";
 import {Section} from "@/widgets/Section";
 import {useDateFormat} from "@/hooks/useDateFormat";
@@ -20,7 +21,7 @@ const HighlightCard = ({item, label, value}: HighlightCardProps) => {
     const poster = imageUrl(item.posterPath, IMAGE_SIZE.POSTER);
 
     return (
-        <Pressable onPress={() => router.push(buildRoute.series(item.id))} className="flex-row items-center gap-3.5 rounded-2xl bg-surface p-2.5">
+        <PressScale scaleTo={0.98} onPress={() => router.push(buildRoute.series(item.id))} className="flex-row items-center gap-3.5 rounded-2xl bg-surface p-2.5">
             <View className="h-[72px] w-12 overflow-hidden rounded-lg bg-surface-raised">
                 {poster && <Image source={poster} className="h-full w-full" contentFit="cover"/>}
             </View>
@@ -29,7 +30,7 @@ const HighlightCard = ({item, label, value}: HighlightCardProps) => {
                 <Text className="font-sans-medium text-base text-foreground" numberOfLines={1}>{item.title}</Text>
                 <Text className="font-sans text-xs text-muted-foreground" numberOfLines={1}>{value}</Text>
             </View>
-        </Pressable>
+        </PressScale>
     );
 };
 

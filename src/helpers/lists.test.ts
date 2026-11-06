@@ -1,5 +1,5 @@
 import {describe, expect, it} from "vitest";
-import {createList, createListsStore, deleteList, listIdsContaining, removeListEntry, sortedLists, toggleListEntry, updateListDetails} from "@/helpers/lists";
+import {createList, createListsStore, deleteList, listIdsContaining, removeListEntry, restoreListEntry, sortedLists, toggleListEntry, updateListDetails} from "@/helpers/lists";
 import type {MediaSnapshot} from "@/api/library.api";
 
 const T1 = "2026-11-06T10:00:00.000Z";
@@ -54,5 +54,17 @@ describe("lists", () => {
         const store = createListsStore();
         expect(toggleListEntry(store, "missing", dune, T1)).toBe(store);
         expect(deleteList(store, "missing", T1)).toBe(store);
+    });
+});
+
+describe("restoreListEntry", () => {
+    it("puts a removed title back at its old place with its original date", () => {
+        let store = createList(createListsStore(), "a", {name: "Weekend", description: ""}, T1);
+        store = toggleListEntry(store, "a", dune, T1);
+        store = toggleListEntry(store, "a", dark, T2);
+        const before = store.lists.a.entries;
+        const removed = before[1];
+        const after = restoreListEntry(removeListEntry(store, "a", removed.key, T3), "a", removed, 1, T3);
+        expect(after.lists.a.entries).toEqual(before);
     });
 });

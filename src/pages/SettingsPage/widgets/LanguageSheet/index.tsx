@@ -1,7 +1,8 @@
-import {Pressable, Text, View} from "react-native";
+import {Text, View} from "react-native";
 import {useTranslation} from "react-i18next";
 import {Check} from "lucide-react-native";
 import {useCSSVariable} from "uniwind";
+import {PressScale} from "@/components/motion/PressScale";
 import {BottomSheet} from "@/widgets/BottomSheet";
 import {useLanguage} from "@/hooks/useLanguage";
 import {haptics} from "@/lib/haptics";
@@ -25,7 +26,8 @@ export const LanguageSheet = ({isOpen, onClose}: LanguageSheetProps) => {
                 {SUPPORTED_LANGUAGES.map((value, index) => {
                     const isSelected = value === language;
                     return (
-                        <Pressable
+                        <PressScale
+                            scaleTo={0.98}
                             key={value}
                             role="radio"
                             aria-checked={isSelected}
@@ -38,7 +40,7 @@ export const LanguageSheet = ({isOpen, onClose}: LanguageSheetProps) => {
                         >
                             <Text className="font-sans-medium text-[15px] text-foreground">{LANGUAGE_LABELS[value]}</Text>
                             {isSelected && <Check size={18} strokeWidth={2.5} color={foreground}/>}
-                        </Pressable>
+                        </PressScale>
                     );
                 })}
             </View>

@@ -1,6 +1,9 @@
 import {useCallback, useMemo, useState} from "react";
-import {Pressable, ScrollView, Text, View} from "react-native";
+import {ScrollView, Text, View} from "react-native";
 import {useTranslation} from "react-i18next";
+import {PressScale} from "@/components/motion/PressScale";
+import {Reveal} from "@/components/motion/Reveal";
+import {SlidingHighlight, SlidingLabel, useSlidingHighlight} from "@/components/motion/SlidingHighlight";
 import {Skeleton} from "@/components/ui/skeleton";
 import {EmptyState} from "@/widgets/EmptyState";
 import {QueryErrorState} from "@/widgets/QueryErrorState";
@@ -8,10 +11,11 @@ import {Section} from "@/widgets/Section";
 import {EpisodeMap, type EpisodeCell} from "@/pages/SeriesPage/widgets/EpisodeMap";
 import {EpisodeRow} from "@/pages/SeriesPage/widgets/EpisodeRow";
 import {useGetSeason} from "@/hooks/details";
-import {useSetSeasonWatched, useToggleEpisode} from "@/hooks/library";
+import {useRestoreEpisodes, useSetSeasonWatched, useToggleEpisode} from "@/hooks/library";
 import {defaultSeasonNumber, isReleased, orderSeasons} from "@/helpers/details";
-import {isEpisodeWatched, nextEpisode} from "@/helpers/library";
+import {episodeKey, isEpisodeWatched, nextEpisode} from "@/helpers/library";
 import {haptics} from "@/lib/haptics";
+import {toast} from "@/lib/toast";
 import {cn} from "@/lib/utils";
 import type {LibraryItem, MediaSnapshot} from "@/api/library.api";
 import type {Episode, SeasonSummary} from "@/api/series.api";
@@ -31,6 +35,8 @@ export const SeasonSection = ({seriesId, seasons, snapshot, item}: SeasonSection
     const {data: season, isLoading, isError, error, refetch} = useGetSeason(seriesId, seasonNumber);
     const {mutate: toggleEpisode} = useToggleEpisode();
     const {mutate: setSeasonWatched} = useSetSeasonWatched();
+    const {mutate: restoreEpisodes} = useRestoreEpisodes();
+    const highlight = useSlidingHighlight(Math.max(0, ordered.findIndex((summary) => summary.season_number === seasonNumber)));
 
     const cells = useMemo<EpisodeCell[]>(() => {
         const next = item ? nextEpisode(item) : null;
@@ -56,7 +62,20 @@ export const SeasonSection = ({seriesId, seasons, snapshot, item}: SeasonSection
     const toggleSeason = () => {
         if (seasonNumber === null) return;
         haptics.success();
-        setSeasonWatched({snapshot, season: seasonNumber, episodes: releasedCells.map((cell) => cell.episode.episode_number), isWatched: !isSeasonWatched});
+        const numbers = releasedCells.map((cell) => cell.episode.episode_number);
+        // Keep the dates being cleared, so undo brings them back as they were rather than as today.
+        const cleared = isSeasonWatched
+            ? Object.fromEntries(Object.entries(item?.episodes ?? {}).filter(([key]) => numbers.some((number) => key === episodeKey({season: seasonNumber, episode: number}))))
+            : null;
+        setSeasonWatched({snapshot, season: seasonNumber, episodes: numbers, isWatched: !isSeasonWatched}, {
+            onSuccess: () => {
+                if (!cleared) return;
+                toast.show({
+                    message: t("toast.seasonUnmarked", {number: seasonNumber}),
+                    action: {label: t("toast.undo"), onPress: () => restoreEpisodes({snapshot, episodes: cleared})},
+                });
+            },
+        });
     };
 
     if (!ordered.length) return null;
@@ -69,12 +88,15 @@ export const SeasonSection = ({seriesId, seasons, snapshot, item}: SeasonSection
             <>
                 <EpisodeMap cells={cells} onToggle={toggle}/>
                 {releasedCells.length > 0 && (
-                    <Pressable onPress={toggleSeason} className="h-10 items-center justify-center rounded-xl border border-border">
+                    <PressScale onPress={toggleSeason} className="h-10 items-center justify-center rounded-xl border border-border">
                         <Text className="font-sans-medium text-[13px] text-foreground">{isSeasonWatched ? t("episodeActions.unmarkSeason") : t("episodeActions.markSeason")}</Text>
-                    </Pressable>
+                    </PressScale>
                 )}
-                {cells.map((cell) => (
-                    <EpisodeRow key={cell.episode.id} episode={cell.episode} isWatched={cell.isWatched} isReleased={cell.isReleased} onToggle={toggle}/>
+                {cells.map((cell, index) => (
+                    // Rows are keyed by episode, so a newly opened season rises in row after row.
+                    <Reveal key={cell.episode.id} index={index} variant="rise">
+                        <EpisodeRow episode={cell.episode} isWatched={cell.isWatched} isReleased={cell.isReleased} onToggle={toggle}/>
+                    </Reveal>
                 ))}
             </>
         );
@@ -83,19 +105,22 @@ export const SeasonSection = ({seriesId, seasons, snapshot, item}: SeasonSection
     return (
         <Section title={t("episodes")}>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} className="-mx-5" contentContainerClassName="gap-2 px-5">
-                {ordered.map((summary) => {
+                {/* One pill slides between seasons, as in the tab bar. */}
+                <SlidingHighlight style={highlight.style} className="rounded-full bg-foreground"/>
+                {ordered.map((summary, index) => {
                     const isSelected = summary.season_number === seasonNumber;
                     return (
-                        <Pressable
+                        <PressScale
                             key={summary.id}
                             onPress={() => setSeasonNumber(summary.season_number)}
+                            onLayout={highlight.measure(index)}
                             aria-selected={isSelected}
-                            className={cn("h-9 justify-center rounded-full border px-4", isSelected ? "border-foreground bg-foreground" : "border-border")}
+                            className={cn("h-9 justify-center rounded-full border px-4", isSelected ? "border-transparent" : "border-border")}
                         >
-                            <Text className={cn("font-sans-medium text-[13px]", isSelected ? "text-background" : "text-muted-foreground")}>
+                            <SlidingLabel x={highlight.x} box={highlight.boxes[index]} restColor="--color-muted-foreground" activeColor="--color-background" className="font-sans-medium text-[13px]">
                                 {summary.season_number === 0 ? t("specials") : t("season", {number: summary.season_number})}
-                            </Text>
-                        </Pressable>
+                            </SlidingLabel>
+                        </PressScale>
                     );
                 })}
             </ScrollView>

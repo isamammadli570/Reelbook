@@ -2,9 +2,8 @@ import {Text, View, useWindowDimensions} from "react-native";
 import {useTranslation} from "react-i18next";
 import {PopOnActivate} from "@/components/motion/PopOnActivate";
 import {PressScale} from "@/components/motion/PressScale";
-import {AnimatedView} from "@/components/ui/animated";
+import {Reveal} from "@/components/motion/Reveal";
 import {SCREEN_GUTTER} from "@/hooks/usePosterWidth";
-import {enteringFor} from "@/lib/motion";
 import {cn} from "@/lib/utils";
 import {MAX_CONTENT_WIDTH} from "@/constants/other";
 import type {Episode} from "@/api/series.api";
@@ -39,7 +38,7 @@ export const EpisodeMap = ({cells, onToggle}: EpisodeMapProps) => {
                 const code = t("episodeCode", {season: episode.season_number, episode: episode.episode_number});
                 return (
                     // The entrance sits on a wrapper so that its transform does not overwrite the press scale.
-                    <AnimatedView key={episode.id} entering={enteringFor("pop", index)} style={{width: size, height: size}}>
+                    <Reveal key={episode.id} variant="pop" index={index} style={{width: size, height: size}}>
                         <PopOnActivate active={isWatched}>
                             <PressScale
                                 role="checkbox"
@@ -58,7 +57,7 @@ export const EpisodeMap = ({cells, onToggle}: EpisodeMapProps) => {
                                 <Text className={cn("font-sans-medium text-[11px]", isWatched ? "text-background" : "text-muted-foreground")}>{episode.episode_number}</Text>
                             </PressScale>
                         </PopOnActivate>
-                    </AnimatedView>
+                    </Reveal>
                 );
             })}
         </View>

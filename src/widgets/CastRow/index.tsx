@@ -1,8 +1,7 @@
 import {ScrollView, Text, View} from "react-native";
 import {router} from "expo-router";
 import {PressScale} from "@/components/motion/PressScale";
-import {AnimatedView} from "@/components/ui/animated";
-import {enteringFor} from "@/lib/motion";
+import {Reveal} from "@/components/motion/Reveal";
 import {Image} from "@/components/ui/image";
 import {imageUrl} from "@/helpers/media";
 import {initials} from "@/helpers/person";
@@ -22,7 +21,7 @@ export const CastRow = ({cast}: CastRowProps) => (
             const photo = imageUrl(member.profile_path, IMAGE_SIZE.PROFILE);
             return (
                 // The entrance sits on a wrapper so that its transform does not overwrite the press scale.
-                <AnimatedView key={member.id} entering={enteringFor("fade", index)}>
+                <Reveal key={member.id} variant="fade" index={index}>
                     <PressScale
                         role="link"
                         aria-label={member.name}
@@ -37,7 +36,7 @@ export const CastRow = ({cast}: CastRowProps) => (
                         <Text className="text-center font-sans-medium text-[11px] leading-[14px] text-foreground" numberOfLines={2}>{member.name}</Text>
                         {member.character ? <Text className="text-center font-sans text-[11px] leading-[14px] text-muted-foreground" numberOfLines={1}>{member.character}</Text> : null}
                     </PressScale>
-                </AnimatedView>
+                </Reveal>
             );
         })}
     </ScrollView>

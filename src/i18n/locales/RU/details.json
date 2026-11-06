@@ -40,7 +40,7 @@
         "watchlistRemove": "Убрать из списка",
         "favoriteAdd": "В избранное",
         "favoriteRemove": "Убрать из избранного",
-        "follow": "Начать смотреть",
+        "follow": "Смотреть",
         "following": "Смотрю"
     },
     "rating": {
@@ -118,5 +118,35 @@
         "reviewSaved": "Рецензия сохранена",
         "reviewRemoved": "Рецензия удалена",
         "episodeUnmarked": "Отметка с {{code}} снята"
+    },
+    "collection": {
+        "eyebrow": "Коллекция",
+        "progress_one": "{{count}} фильм · просмотрено {{watched}}",
+        "progress_few": "{{count}} фильма · просмотрено {{watched}}",
+        "progress_many": "{{count}} фильмов · просмотрено {{watched}}",
+        "progress_other": "{{count}} фильма · просмотрено {{watched}}",
+        "films_one": "{{count}} фильм",
+        "films_few": "{{count}} фильма",
+        "films_many": "{{count}} фильмов",
+        "films_other": "{{count}} фильма",
+        "filmsTitle": "Фильмы"
+    },
+    "castEpisodes_one": "{{count}} эпизод",
+    "castEpisodes_few": "{{count}} эпизода",
+    "castEpisodes_many": "{{count}} эпизодов",
+    "castEpisodes_other": "{{count}} эпизода",
+    "episodeSheet": {
+        "open": "Об эпизоде {{code}}",
+        "spoilerHidden": "Описание может быть спойлером, поэтому скрыто.",
+        "show": "Показать",
+        "director": "Режиссёр:",
+        "writer": "Сценарий:",
+        "guests": "Приглашённые актёры"
+    },
+    "links": {
+        "title": "Ссылки",
+        "homepage": "Официальный сайт",
+        "open": "Открыть на {{site}}",
+        "openHomepage": "Открыть официальный сайт"
     }
 }

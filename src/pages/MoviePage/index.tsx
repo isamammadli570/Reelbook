@@ -14,8 +14,10 @@ import {ReviewSection} from "@/widgets/ReviewSection";
 import {StatStrip} from "@/widgets/StatStrip";
 import {TrailerButton} from "@/widgets/TrailerButton";
 import {WhereToWatch} from "@/widgets/WhereToWatch";
+import {ExternalLinks} from "@/widgets/ExternalLinks";
 import {MovieActions} from "@/pages/MoviePage/widgets/MovieActions";
 import {MovieDiary} from "@/pages/MoviePage/widgets/MovieDiary";
+import {CollectionCard} from "@/pages/MoviePage/widgets/CollectionCard";
 import {useGetMovie} from "@/hooks/details";
 import {useLibraryItem, useSyncSnapshot} from "@/hooks/library";
 import {useFormatRuntime} from "@/hooks/useFormatRuntime";
@@ -23,6 +25,8 @@ import {directorNames, formatScore} from "@/helpers/details";
 import {movieSnapshot} from "@/helpers/library";
 import {translateGenre} from "@/helpers/genres";
 import {mediaYear} from "@/helpers/media";
+import {movieCertification, pickLogo} from "@/helpers/titleExtras";
+import {watchRegions} from "@/lib/region";
 import {MEDIA_TYPE} from "@/constants/other";
 
 /** A movie: backdrop and poster, key numbers, overview, cast and similar movies. */
@@ -58,6 +62,8 @@ export const MoviePage = () => {
                 backdropPath={movie.backdrop_path}
                 posterPath={movie.poster_path}
                 eyebrow={[t("common:mediaType.movie"), year].filter(Boolean).join(" · ")}
+                badge={movieCertification(movie.release_dates, watchRegions(i18n.language))}
+                logoPath={pickLogo(movie.images?.logos, i18n.language)?.file_path}
                 meta={meta}
                 action={<TrailerButton videos={movie.videos.results}/>}
             />
@@ -76,7 +82,9 @@ export const MoviePage = () => {
                         <CastRow cast={movie.credits.cast}/>
                     </Section>
                 )}
+                {movie.belongs_to_collection && <CollectionCard collection={movie.belongs_to_collection}/>}
                 <Recommendations title={t("similarMovies")} items={movie.recommendations.results}/>
+                <ExternalLinks mediaType="movie" tmdbId={movie.id} externalIds={movie.external_ids} homepage={movie.homepage}/>
             </DetailBody>
         </DetailScreen>
     );

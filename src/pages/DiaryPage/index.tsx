@@ -64,7 +64,7 @@ const DiaryRow = ({watch, isFirstOfDay, onOpenActions}: DiaryRowProps) => {
             </View>
             <View className="min-w-0 flex-1 gap-0.5">
                 <Text className="font-sans-semibold text-[15px] text-foreground" numberOfLines={1}>{item.title}</Text>
-                {detail && <Text className={watch.kind === MEDIA_TYPE.TV ? "font-sans text-[13px] text-muted-foreground" : "font-sans text-[13px] text-brand"}>{detail}</Text>}
+                {detail ? <Text className={watch.kind === MEDIA_TYPE.TV ? "font-sans text-[13px] text-muted-foreground" : "font-sans text-[13px] text-brand"}>{detail}</Text> : null}
             </View>
             <PressScale
                 onPress={() => onOpenActions(watch)}

@@ -21,6 +21,7 @@ export const IMAGE_SIZE = {
     BACKDROP: "w780",
     PROFILE: "w185",
     LOGO: "w92",
+    LOGO_LARGE: "w500",
 } as const;
 export type ImageSize = (typeof IMAGE_SIZE)[keyof typeof IMAGE_SIZE];
 
@@ -41,6 +42,12 @@ export const QUERY_KEYS = {
     SEARCH: "search",
     NEW_RELEASES: "newReleases",
     GENRE: "genre",
+    DISCOVER: "discover",
+    STREAMING_SERVICES: "streamingServices",
+    UPCOMING: "upcoming",
+    AIRING_TODAY: "airingToday",
+    TOP_RATED: "topRated",
+    COLLECTION: "collection",
     LISTS: "lists",
     PERSON: "person",
     EPISODE_REMINDERS: "episodeReminders",

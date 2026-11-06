@@ -10,6 +10,7 @@ import {QueryErrorState} from "@/widgets/QueryErrorState";
 import {Section} from "@/widgets/Section";
 import {EpisodeMap, type EpisodeCell} from "@/pages/SeriesPage/widgets/EpisodeMap";
 import {EpisodeRow} from "@/pages/SeriesPage/widgets/EpisodeRow";
+import {EpisodeSheet} from "@/pages/SeriesPage/widgets/EpisodeSheet";
 import {useGetSeason} from "@/hooks/details";
 import {useRestoreEpisodes, useSetSeasonWatched, useToggleEpisode} from "@/hooks/library";
 import {defaultSeasonNumber, isReleased, orderSeasons} from "@/helpers/details";
@@ -51,6 +52,9 @@ export const SeasonSection = ({seriesId, seasons, snapshot, item}: SeasonSection
         });
     }, [season, item]);
 
+    // The open episode's cell is read fresh, so marking it in the sheet updates the sheet's button too.
+    const [openEpisode, setOpenEpisode] = useState<Episode | null>(null);
+    const openCell = openEpisode ? cells.find((cell) => cell.episode.id === openEpisode.id) : undefined;
     const releasedCells = cells.filter((cell) => cell.isReleased);
     const isSeasonWatched = releasedCells.length > 0 && releasedCells.every((cell) => cell.isWatched);
 
@@ -95,7 +99,7 @@ export const SeasonSection = ({seriesId, seasons, snapshot, item}: SeasonSection
                 {cells.map((cell, index) => (
                     // Rows are keyed by episode, so a newly opened season rises in row after row.
                     <Reveal key={cell.episode.id} index={index} variant="rise">
-                        <EpisodeRow episode={cell.episode} isWatched={cell.isWatched} isReleased={cell.isReleased} onToggle={toggle}/>
+                        <EpisodeRow episode={cell.episode} isWatched={cell.isWatched} isReleased={cell.isReleased} onToggle={toggle} onOpen={setOpenEpisode}/>
                     </Reveal>
                 ))}
             </>
@@ -125,6 +129,13 @@ export const SeasonSection = ({seriesId, seasons, snapshot, item}: SeasonSection
                 })}
             </ScrollView>
             <View className="gap-2.5">{renderEpisodes()}</View>
+            <EpisodeSheet
+                episode={openEpisode}
+                isWatched={Boolean(openCell?.isWatched)}
+                isReleased={Boolean(openCell?.isReleased)}
+                onClose={() => setOpenEpisode(null)}
+                onToggle={toggle}
+            />
         </Section>
     );
 };

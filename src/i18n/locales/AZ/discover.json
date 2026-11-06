@@ -8,10 +8,61 @@
     "genres": {
         "drama": "Dram",
         "comedy": "Komediya",
+        "action": "Döyüş",
+        "thriller": "Triller",
+        "scifi": "Elmi fantastika",
+        "horror": "Qorxu",
+        "fantasy": "Fantaziya",
+        "romance": "Romantika",
+        "crime": "Kriminal",
+        "mystery": "Detektiv",
+        "adventure": "Macəra",
         "animation": "Animasiya",
         "documentary": "Sənədli",
-        "crime": "Kriminal",
-        "scifi": "Sci-fi"
+        "family": "Ailə"
     },
-    "people": "İnsanlar"
+    "people": "İnsanlar",
+    "allGenres": "Bütün janrlar",
+    "fewerGenres": "Daha az",
+    "filters": {
+        "title": "Filtrlər",
+        "sort": "Sıralama",
+        "sorts": {
+            "popularity": "Populyar",
+            "rating": "Ən yüksək reytinq",
+            "newest": "Ən yeni"
+        },
+        "service": "Platforma",
+        "language": "Ölkə və dil",
+        "languages": {
+            "tr": "Türk",
+            "ko": "Koreya",
+            "ja": "Yapon",
+            "hi": "Hind",
+            "es": "İspan",
+            "fr": "Fransız",
+            "en": "İngilis",
+            "ru": "Rus"
+        },
+        "decade": "Dövr",
+        "decades": {
+            "0": "Daha köhnə",
+            "1990": "1990-cı illər",
+            "2000": "2000-ci illər",
+            "2010": "2010-cu illər",
+            "2020": "2020-ci illər"
+        },
+        "rating": "Minimum reytinq",
+        "reset": "Sıfırla",
+        "show": "Göstər",
+        "noResults": "Bu filtrlərə uyğun heç nə tapılmadı",
+        "noResultsHint": "Bir neçə filtri götür və ya başqa janr seç.",
+        "decadeHint": "Bir neçəsini seçə bilərsən: aradakı illər də daxil olur.",
+        "clearAll": "Hamısını sil"
+    },
+    "lists": {
+        "upcoming": "Tezliklə kinoteatrlarda",
+        "airingToday": "Bu gün yayımda",
+        "topRated": "Ən yüksək reytinqli"
+    }
 }

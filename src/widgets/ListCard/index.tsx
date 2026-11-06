@@ -3,10 +3,9 @@ import {Text, View} from "react-native";
 import {router} from "expo-router";
 import {useTranslation} from "react-i18next";
 import {PressScale} from "@/components/motion/PressScale";
+import {Reveal} from "@/components/motion/Reveal";
 import {Image} from "@/components/ui/image";
-import {AnimatedView} from "@/components/ui/animated";
 import {imageUrl} from "@/helpers/media";
-import {enteringFor} from "@/lib/motion";
 import {buildRoute} from "@/constants/routes";
 import {IMAGE_SIZE} from "@/constants/other";
 import type {UserList} from "@/api/lists.api";
@@ -27,7 +26,7 @@ export const ListCard = memo(({list, width, index = 0}: ListCardProps) => {
     const covers = list.entries.slice(0, STACK_SIZE);
 
     return (
-        <AnimatedView entering={enteringFor("rise", index)} style={{width}}>
+        <Reveal variant="rise" index={index} style={{width}}>
             <PressScale onPress={() => router.push(buildRoute.userList(list.id))} aria-label={list.name} className="gap-2.5 rounded-2xl bg-surface p-2.5">
                 <View className="flex-row" style={{height: posterWidth * 1.5}}>
                     {Array.from({length: STACK_SIZE}, (_, slot) => {
@@ -49,7 +48,7 @@ export const ListCard = memo(({list, width, index = 0}: ListCardProps) => {
                     <Text className="font-sans text-xs text-muted-foreground">{t("count", {count: list.entries.length})}</Text>
                 </View>
             </PressScale>
-        </AnimatedView>
+        </Reveal>
     );
 });
 ListCard.displayName = "ListCard";

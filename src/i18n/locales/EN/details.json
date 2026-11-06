@@ -40,7 +40,7 @@
         "watchlistRemove": "Remove from watchlist",
         "favoriteAdd": "Add to favourites",
         "favoriteRemove": "Remove from favourites",
-        "follow": "Start watching",
+        "follow": "Watch",
         "following": "Watching"
     },
     "rating": {
@@ -116,5 +116,29 @@
         "reviewSaved": "Review saved",
         "reviewRemoved": "Review removed",
         "episodeUnmarked": "{{code}} unmarked"
+    },
+    "collection": {
+        "eyebrow": "Collection",
+        "progress_one": "{{count}} film · {{watched}} watched",
+        "progress_other": "{{count}} films · {{watched}} watched",
+        "films_one": "{{count}} film",
+        "films_other": "{{count}} films",
+        "filmsTitle": "Films"
+    },
+    "castEpisodes_one": "{{count}} episode",
+    "castEpisodes_other": "{{count}} episodes",
+    "episodeSheet": {
+        "open": "About {{code}}",
+        "spoilerHidden": "The overview may spoil it, so it's hidden.",
+        "show": "Show",
+        "director": "Directed by",
+        "writer": "Written by",
+        "guests": "Guest stars"
+    },
+    "links": {
+        "title": "Links",
+        "homepage": "Official site",
+        "open": "Open on {{site}}",
+        "openHomepage": "Open the official site"
     }
 }

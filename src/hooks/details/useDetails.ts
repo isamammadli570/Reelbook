@@ -1,5 +1,5 @@
 import {useQuery} from "@tanstack/react-query";
-import {getMovie} from "@/api/movies.api";
+import {getCollection, getMovie} from "@/api/movies.api";
 import {getSeason, getSeries} from "@/api/series.api";
 import {getPerson} from "@/api/people.api";
 import {hasTmdbToken} from "@/lib/env";
@@ -34,4 +34,12 @@ export const useGetPerson = (personId: number) =>
         queryKey: [QUERY_KEYS.PERSON, personId],
         queryFn: () => getPerson(personId),
         enabled: hasTmdbToken && isValidId(personId),
+    });
+
+/** A franchise's films; `null` while the movie has none, so the request is never made. */
+export const useGetCollection = (collectionId: number | null) =>
+    useQuery({
+        queryKey: [QUERY_KEYS.COLLECTION, collectionId],
+        queryFn: () => getCollection(collectionId ?? 0),
+        enabled: hasTmdbToken && collectionId !== null && isValidId(collectionId),
     });

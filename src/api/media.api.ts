@@ -53,16 +53,34 @@ export const getNewReleases = async (mediaType: MediaType): Promise<MediaSummary
     return toMedia(page.results, mediaType);
 };
 
-/** Popular titles of one genre; the vote floor keeps obscure entries out. */
-export const getByGenre = async (mediaType: MediaType, genreId: number): Promise<MediaSummary[]> => {
-    const path = mediaType === MEDIA_TYPE.MOVIE ? API_ENDPOINTS.DISCOVER_MOVIE : API_ENDPOINTS.DISCOVER_TV;
-    const page = await api.get<Paged<Omit<MediaSummary, "media_type">>>(path, {
-        params: {with_genres: genreId, sort_by: "popularity.desc", "vote_count.gte": 50},
-    });
-    return toMedia(page.results, mediaType);
-};
-
 export const getTrending = async (filter: MediaFilter, timeWindow: TimeWindow = TIME_WINDOW.WEEK): Promise<Paged<MediaSummary>> => {
     const page = await api.get<Paged<MixedResult>>(`${API_ENDPOINTS.TRENDING}/${segment(filter)}/${segment(timeWindow)}`);
     return {...page, results: page.results.filter(isMedia)};
+};
+
+/** Movies due in cinemas soon, for the region the user is in. */
+export const getUpcoming = async (region: string): Promise<MediaSummary[]> => {
+    const page = await api.get<Paged<Omit<MediaSummary, "media_type">>>(API_ENDPOINTS.UPCOMING, {params: {region}});
+    return toMedia(page.results, MEDIA_TYPE.MOVIE);
+};
+
+/** Series with an episode out today. */
+export const getAiringToday = async (): Promise<MediaSummary[]> => {
+    const page = await api.get<Paged<Omit<MediaSummary, "media_type">>>(API_ENDPOINTS.AIRING_TODAY);
+    return toMedia(page.results, MEDIA_TYPE.TV);
+};
+
+/** Titles matching the discover filters; `params` comes from `discoverParams`. */
+export const discoverTitles = async (mediaType: MediaType, params: Record<string, string | number>): Promise<MediaSummary[]> => {
+    const path = mediaType === MEDIA_TYPE.MOVIE ? API_ENDPOINTS.DISCOVER_MOVIE : API_ENDPOINTS.DISCOVER_TV;
+    const page = await api.get<Paged<Omit<MediaSummary, "media_type">>>(path, {params});
+    return toMedia(page.results, mediaType);
+};
+
+export type StreamingService = {provider_id: number; provider_name: string; logo_path: string | null; display_priority: number};
+
+/** The streaming services TMDB lists for a country, most watched first. */
+export const getStreamingServices = async (mediaType: MediaType, region: string): Promise<StreamingService[]> => {
+    const response = await api.get<{results: StreamingService[]}>(`${API_ENDPOINTS.WATCH_PROVIDERS}/${segment(mediaType)}`, {params: {watch_region: region}});
+    return response.results.sort((a, b) => a.display_priority - b.display_priority);
 };

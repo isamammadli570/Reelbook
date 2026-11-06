@@ -8,10 +8,61 @@
     "genres": {
         "drama": "Drama",
         "comedy": "Comedy",
+        "action": "Action",
+        "thriller": "Thriller",
+        "scifi": "Sci-fi",
+        "horror": "Horror",
+        "fantasy": "Fantasy",
+        "romance": "Romance",
+        "crime": "Crime",
+        "mystery": "Mystery",
+        "adventure": "Adventure",
         "animation": "Animation",
         "documentary": "Documentary",
-        "crime": "Crime",
-        "scifi": "Sci-fi"
+        "family": "Family"
     },
-    "people": "People"
+    "people": "People",
+    "allGenres": "All genres",
+    "fewerGenres": "Show fewer",
+    "filters": {
+        "title": "Filters",
+        "sort": "Sort by",
+        "sorts": {
+            "popularity": "Popular",
+            "rating": "Highest rated",
+            "newest": "Newest"
+        },
+        "service": "Streaming service",
+        "language": "Country and language",
+        "languages": {
+            "tr": "Turkish",
+            "ko": "Korean",
+            "ja": "Japanese",
+            "hi": "Hindi",
+            "es": "Spanish",
+            "fr": "French",
+            "en": "English",
+            "ru": "Russian"
+        },
+        "decade": "Era",
+        "decades": {
+            "0": "Older",
+            "1990": "1990s",
+            "2000": "2000s",
+            "2010": "2010s",
+            "2020": "2020s"
+        },
+        "rating": "Minimum rating",
+        "reset": "Reset",
+        "show": "Show",
+        "noResults": "Nothing matches these filters",
+        "noResultsHint": "Remove a filter or two, or try another genre.",
+        "decadeHint": "Pick several: the years in between are included too.",
+        "clearAll": "Clear all"
+    },
+    "lists": {
+        "upcoming": "Coming to cinemas",
+        "airingToday": "On today",
+        "topRated": "Highest rated"
+    }
 }

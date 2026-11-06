@@ -1,4 +1,4 @@
-import type {ReactNode} from "react";
+import {useState, type ReactNode} from "react";
 import {Text, View} from "react-native";
 import {Reveal} from "@/components/motion/Reveal";
 import {useParallax} from "@/components/motion/ScrollContext";
@@ -15,6 +15,8 @@ import {IMAGE_SIZE} from "@/constants/other";
 const BACKDROP_HEIGHT = 320;
 const POSTER_WIDTH = 112;
 const POSTER_HEIGHT = 168;
+/** Tall enough to read as the title, short enough to leave the meta line beside the poster. */
+const LOGO_HEIGHT = 72;
 
 type DetailHeroProps = {
     title: string;
@@ -24,15 +26,25 @@ type DetailHeroProps = {
     meta?: string;
     /** Sits over the backdrop's top right, across from the back button (the trailer). */
     action?: ReactNode;
+    /** The age rating, such as "R" or "TV-MA", drawn as a small outlined label after the eyebrow. */
+    badge?: string | null;
+    /** The title's own logo, shown in place of its name; the name stays for screen readers and as a fallback. */
+    logoPath?: string | null;
 };
 
-/** Backdrop fading into the page, with the poster overlapping it and the title beside the poster. */
-export const DetailHero = ({title, backdropPath, posterPath, eyebrow, meta, action}: DetailHeroProps) => {
+/**
+ * Backdrop fading into the page, with the poster overlapping it and the title beside the poster:
+ * the title's own logo where TMDB has one, else its name in the serif face.
+ */
+export const DetailHero = ({title, backdropPath, posterPath, eyebrow, meta, action, badge, logoPath}: DetailHeroProps) => {
     const insets = useSafeAreaInsets();
     const background = String(useCSSVariable("--color-background"));
     const backdrop = imageUrl(backdropPath, IMAGE_SIZE.BACKDROP);
     const poster = imageUrl(posterPath, IMAGE_SIZE.POSTER);
     const parallax = useParallax(BACKDROP_HEIGHT);
+    const logo = imageUrl(logoPath, IMAGE_SIZE.LOGO_LARGE);
+    // A logo that does not load falls back to the written title.
+    const [hasLogoFailed, setHasLogoFailed] = useState(false);
 
     return (
         <View>
@@ -61,9 +73,31 @@ export const DetailHero = ({title, backdropPath, posterPath, eyebrow, meta, acti
                         : <Text className="p-2.5 font-serif text-xl text-foreground">{title}</Text>}
                 </Reveal>
                 <View className="min-w-0 flex-1 gap-1.5 pb-1">
-                    {eyebrow && <Text className="font-sans-semibold text-xs uppercase tracking-wider text-brand">{eyebrow}</Text>}
-                    <Text role="heading" aria-level={1} className="font-serif text-[34px] leading-[34px] text-foreground" numberOfLines={3}>{title}</Text>
-                    {meta && <Text className="font-sans text-[13px] text-muted-foreground" numberOfLines={2}>{meta}</Text>}
+                    {(eyebrow || badge) && (
+                        <View className="flex-row items-center gap-2">
+                            {eyebrow ? <Text className="font-sans-semibold text-xs uppercase tracking-wider text-brand">{eyebrow}</Text> : null}
+                            {badge && (
+                                <View className="rounded-md border border-muted-foreground px-1.5" aria-label={badge}>
+                                    <Text className="font-sans-semibold text-[11px] leading-[16px] text-muted-foreground">{badge}</Text>
+                                </View>
+                            )}
+                        </View>
+                    )}
+                    {logo && !hasLogoFailed ? (
+                        <Reveal variant="fade" index={2} role="heading" aria-level={1} aria-label={title} style={{height: LOGO_HEIGHT}}>
+                            {/* The height sits on the wrapper: a number in the image's own style clashes with its classes on the web. */}
+                            <Image
+                                source={logo}
+                                className="h-full w-full"
+                                contentFit="contain"
+                                contentPosition="left"
+                                onError={() => setHasLogoFailed(true)}
+                            />
+                        </Reveal>
+                    ) : (
+                        <Text role="heading" aria-level={1} className="font-serif text-[34px] leading-[34px] text-foreground" numberOfLines={3}>{title}</Text>
+                    )}
+                    {meta ? <Text className="font-sans text-[13px] text-muted-foreground" numberOfLines={2}>{meta}</Text> : null}
                 </View>
             </View>
         </View>

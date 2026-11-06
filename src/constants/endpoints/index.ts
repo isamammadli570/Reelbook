@@ -11,4 +11,9 @@ export const API_ENDPOINTS = {
     DISCOVER_MOVIE: "/discover/movie",
     DISCOVER_TV: "/discover/tv",
     PERSON: "/person",
+    COLLECTION: "/collection",
+    UPCOMING: "/movie/upcoming",
+    AIRING_TODAY: "/tv/airing_today",
+    WATCH_PROVIDERS: "/watch/providers",
+    FIND: "/find",
 } as const;

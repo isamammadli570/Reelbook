@@ -15,6 +15,7 @@ import {ReviewSection} from "@/widgets/ReviewSection";
 import {StatStrip} from "@/widgets/StatStrip";
 import {TrailerButton} from "@/widgets/TrailerButton";
 import {WhereToWatch} from "@/widgets/WhereToWatch";
+import {ExternalLinks} from "@/widgets/ExternalLinks";
 import {SeasonSection} from "@/pages/SeriesPage/widgets/SeasonSection";
 import {SeriesActions} from "@/pages/SeriesPage/widgets/SeriesActions";
 import {SeriesProgress} from "@/pages/SeriesPage/widgets/SeriesProgress";
@@ -26,6 +27,8 @@ import {formatScore} from "@/helpers/details";
 import {seriesSnapshot} from "@/helpers/library";
 import {translateGenre} from "@/helpers/genres";
 import {mediaYear} from "@/helpers/media";
+import {pickLogo, seriesCast, seriesCertification} from "@/helpers/titleExtras";
+import {watchRegions} from "@/lib/region";
 import {MEDIA_TYPE, SERIES_STATUS_KEY} from "@/constants/other";
 
 /** A series: backdrop and poster, key numbers, overview, seasons with episodes, cast and similar series. */
@@ -40,6 +43,11 @@ export const SeriesPage = () => {
     // Memoised so episode rows keep stable toggle callbacks.
     const snapshot = useMemo(() => (series ? seriesSnapshot(series) : null), [series]);
     useSyncSnapshot(snapshot, item !== undefined);
+
+    const cast = useMemo(() => {
+        const whole = seriesCast(series?.aggregate_credits, (count) => t("castEpisodes", {count}));
+        return whole.length ? whole : series?.credits.cast ?? [];
+    }, [series, t]);
 
     if (isLoading) return <DetailSkeleton/>;
     if (isError || !series || !snapshot) return <DetailErrorState error={error} onRetry={() => void refetch()}/>;
@@ -66,6 +74,8 @@ export const SeriesPage = () => {
                 backdropPath={series.backdrop_path}
                 posterPath={series.poster_path}
                 eyebrow={[t("common:mediaType.tv"), network ?? year].filter(Boolean).join(" · ")}
+                badge={seriesCertification(series.content_ratings, watchRegions(i18n.language))}
+                logoPath={pickLogo(series.images?.logos, i18n.language)?.file_path}
                 meta={meta}
                 action={<TrailerButton videos={series.videos.results}/>}
             />
@@ -81,12 +91,14 @@ export const SeriesPage = () => {
                 <WhereToWatch results={series["watch/providers"].results}/>
                 <ReviewSection snapshot={snapshot} item={item}/>
                 <SeasonSection seriesId={seriesId} seasons={series.seasons} snapshot={snapshot} item={item}/>
-                {series.credits.cast.length > 0 && (
+                {/* Every season's cast, with episode counts, rather than only the latest season's. */}
+                {cast.length > 0 && (
                     <Section title={t("cast")}>
-                        <CastRow cast={series.credits.cast}/>
+                        <CastRow cast={cast}/>
                     </Section>
                 )}
                 <Recommendations title={t("similarSeries")} items={series.recommendations.results}/>
+                <ExternalLinks mediaType="tv" tmdbId={series.id} externalIds={series.external_ids} homepage={series.homepage}/>
             </DetailBody>
         </DetailScreen>
     );

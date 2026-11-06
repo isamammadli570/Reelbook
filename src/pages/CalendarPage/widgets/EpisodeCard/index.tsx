@@ -29,7 +29,7 @@ export const EpisodeCard = ({episode}: EpisodeCardProps) => {
                 <Text className="font-sans-medium text-[11px] text-brand">{t("episodeCode", {season: episode.season, episode: episode.episode})}</Text>
                 <Text className="font-sans-medium text-[15px] text-foreground" numberOfLines={1}>{episode.title}</Text>
                 {!isHidingSpoilers && <Text className="font-sans text-xs text-muted-foreground" numberOfLines={1}>{episode.episodeName}</Text>}
-                {meta && <Text className="font-sans text-[11px] text-muted-foreground" numberOfLines={1}>{meta}</Text>}
+                {meta ? <Text className="font-sans text-[11px] text-muted-foreground" numberOfLines={1}>{meta}</Text> : null}
             </View>
         </PressScale>
     );

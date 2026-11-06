@@ -34,7 +34,7 @@ export const SettingsGroup = ({title, footer, children, index = 0}: SettingsGrou
 
     return (
         <Reveal index={index} variant="rise" className="gap-2">
-            {title && <Text className="px-1 font-sans-medium text-xs uppercase tracking-wider text-muted-foreground">{title}</Text>}
+            {title ? <Text className="px-1 font-sans-medium text-xs uppercase tracking-wider text-muted-foreground">{title}</Text> : null}
             <View className="overflow-hidden rounded-2xl bg-surface">
                 {rows.map((row, position) => (
                     <Fragment key={row.key ?? position}>
@@ -43,7 +43,7 @@ export const SettingsGroup = ({title, footer, children, index = 0}: SettingsGrou
                     </Fragment>
                 ))}
             </View>
-            {footer && <Text className="px-1 font-sans text-xs leading-[18px] text-muted-foreground">{footer}</Text>}
+            {footer ? <Text className="px-1 font-sans text-xs leading-[18px] text-muted-foreground">{footer}</Text> : null}
         </Reveal>
     );
 };
@@ -71,7 +71,7 @@ export const SettingsRow = ({icon: Icon, tint, label, value, onPress, toggle, is
                 <Icon size={18} strokeWidth={2} color="#FFFFFF"/>
             </View>
             <Text className={cn("min-w-0 flex-1 font-sans-medium text-[15px]", isDanger ? "text-danger" : "text-foreground")} numberOfLines={1}>{label}</Text>
-            {value && <Text className="max-w-[45%] font-sans text-[15px] text-muted-foreground" numberOfLines={1}>{value}</Text>}
+            {value ? <Text className="max-w-[45%] font-sans text-[15px] text-muted-foreground" numberOfLines={1}>{value}</Text> : null}
             {toggle ? (
                 <Switch
                     value={toggle.value}

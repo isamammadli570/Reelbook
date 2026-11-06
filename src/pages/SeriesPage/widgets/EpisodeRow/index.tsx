@@ -19,13 +19,15 @@ type EpisodeRowProps = {
     isWatched: boolean;
     isReleased: boolean;
     onToggle: (episode: Episode) => void;
+    /** Opens the episode's details. */
+    onOpen: (episode: Episode) => void;
 };
 
 /**
  * One episode: still frame, "S2 · E7", title, air date and length, with a watched toggle once it has aired.
  * With spoilers hidden, an episode not yet watched shows a blurred still and "Episode 7" instead of its title.
  */
-export const EpisodeRow = memo(({episode, isWatched, isReleased, onToggle}: EpisodeRowProps) => {
+export const EpisodeRow = memo(({episode, isWatched, isReleased, onToggle, onOpen}: EpisodeRowProps) => {
     const {t} = useTranslation("details");
     const formatRuntime = useFormatRuntime();
     const {shortDate} = useDateFormat();
@@ -38,14 +40,16 @@ export const EpisodeRow = memo(({episode, isWatched, isReleased, onToggle}: Epis
 
     return (
         <View className={cn("flex-row items-center gap-3 rounded-2xl bg-surface p-2", !isReleased && "opacity-60")}>
-            <View className="h-16 w-28 overflow-hidden rounded-xl bg-surface-raised">
-                {still && <Image source={still} className="h-full w-full" contentFit="cover" transition={200} blurRadius={isHidden ? 24 : 0}/>}
-            </View>
-            <View className="min-w-0 flex-1 gap-0.5">
-                <Text className="font-sans-medium text-[11px] text-brand">{code}</Text>
-                <Text className="font-sans-medium text-sm text-foreground" numberOfLines={1}>{isHidden ? t("spoilerName", {number: episode.episode_number}) : episode.name}</Text>
-                <Text className="font-sans text-[11px] text-muted-foreground" numberOfLines={1}>{isReleased ? meta : `${meta} · ${t("episodeActions.notAired")}`}</Text>
-            </View>
+            <PressScale scaleTo={0.98} onPress={() => onOpen(episode)} aria-label={t("episodeSheet.open", {code})} className="min-w-0 flex-1 flex-row items-center gap-3">
+                <View className="h-16 w-28 overflow-hidden rounded-xl bg-surface-raised">
+                    {still && <Image source={still} className="h-full w-full" contentFit="cover" transition={200} blurRadius={isHidden ? 24 : 0}/>}
+                </View>
+                <View className="min-w-0 flex-1 gap-0.5">
+                    <Text className="font-sans-medium text-[11px] text-brand">{code}</Text>
+                    <Text className="font-sans-medium text-sm text-foreground" numberOfLines={1}>{isHidden ? t("spoilerName", {number: episode.episode_number}) : episode.name}</Text>
+                    <Text className="font-sans text-[11px] text-muted-foreground" numberOfLines={1}>{isReleased ? meta : `${meta} · ${t("episodeActions.notAired")}`}</Text>
+                </View>
+            </PressScale>
             {isReleased && (
                 <PressScale
                     role="checkbox"

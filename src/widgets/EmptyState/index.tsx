@@ -16,7 +16,7 @@ export const EmptyState = ({title, description, icon, action, className}: EmptyS
     <Reveal variant="fade" className={cn("items-center gap-2 rounded-2xl border border-border bg-surface px-6 py-8", className)}>
         {icon}
         <Text className="text-center font-sans-semibold text-[15px] text-foreground">{title}</Text>
-        {description && <Text className="text-center font-sans text-[13px] leading-5 text-muted-foreground">{description}</Text>}
+        {description ? <Text className="text-center font-sans text-[13px] leading-5 text-muted-foreground">{description}</Text> : null}
         {action && <View className="mt-2">{action}</View>}
     </Reveal>
 );

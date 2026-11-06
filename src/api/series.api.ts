@@ -4,6 +4,8 @@ import {MEDIA_TYPE} from "@/constants/other";
 import type {MediaSummary, Paged} from "@/api/media.api";
 import type {Credits, Genre} from "@/api/people.api";
 import {VIDEO_LANGUAGES, WATCH_APPEND, type WatchExtras} from "@/api/watch.api";
+import {EXTERNAL_IDS_APPEND, type ExternalIds} from "@/api/externalIds.api";
+import {IMAGE_LANGUAGES, SERIES_EXTRAS_APPEND, type AggregateCredits, type ContentRatings, type TitleImages} from "@/api/titleExtras.api";
 
 export type SeasonSummary = {
     id: number;
@@ -46,12 +48,24 @@ export type SeriesDetails = {
     last_episode_to_air: EpisodeSummary | null;
     credits: Credits;
     recommendations: Paged<MediaSummary>;
+    content_ratings: ContentRatings;
+    aggregate_credits: AggregateCredits;
+    images: TitleImages;
+    external_ids: ExternalIds;
+    /** The official site, or an empty string. */
+    homepage: string | null;
 } & WatchExtras;
+
+/** Someone who appears in one episode only, or worked on it. */
+export type EpisodePerson = {id: number; name: string; profile_path: string | null; character?: string; job?: string};
 
 export type Episode = EpisodeSummary & {
     overview: string;
     still_path: string | null;
     vote_average: number;
+    vote_count?: number;
+    guest_stars?: EpisodePerson[];
+    crew?: EpisodePerson[];
 };
 
 export type SeasonDetails = {
@@ -65,7 +79,11 @@ export type SeasonDetails = {
 /** One request for the series page: details, season list, cast and recommendations. */
 export const getSeries = async (seriesId: number): Promise<SeriesDetails> => {
     const series = await api.get<SeriesDetails>(`${API_ENDPOINTS.TV}/${segment(seriesId)}`, {
-        params: {append_to_response: `credits,recommendations,${WATCH_APPEND}`, include_video_language: VIDEO_LANGUAGES},
+        params: {
+            append_to_response: `credits,recommendations,${WATCH_APPEND},${SERIES_EXTRAS_APPEND},${EXTERNAL_IDS_APPEND}`,
+            include_video_language: VIDEO_LANGUAGES,
+            include_image_language: IMAGE_LANGUAGES,
+        },
     });
     const recommendations = series.recommendations.results.map((item) => ({...item, media_type: MEDIA_TYPE.TV}));
     return {...series, recommendations: {...series.recommendations, results: recommendations}};

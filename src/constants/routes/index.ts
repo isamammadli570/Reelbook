@@ -18,6 +18,7 @@ export const ROUTES = {
     DIARY: "/diary",
     ACCOUNT: "/account",
     PRIVACY: "/privacy",
+    COLLECTION: "/collection/[id]",
 } as const;
 
 export const buildRoute = {
@@ -26,5 +27,6 @@ export const buildRoute = {
     shelf: (shelf: string) => `/list/${shelf}`,
     userList: (listId: string) => `/lists/${listId}`,
     person: (personId: number) => `/person/${personId}`,
+    collection: (collectionId: number) => `/collection/${collectionId}`,
     media: (media: {id: number; media_type: "movie" | "tv"}) => (media.media_type === "tv" ? buildRoute.series(media.id) : buildRoute.movie(media.id)),
 };

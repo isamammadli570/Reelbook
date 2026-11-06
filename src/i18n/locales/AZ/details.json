@@ -40,7 +40,7 @@
         "watchlistRemove": "Watchlist-dən çıxar",
         "favoriteAdd": "Sevimlilərə əlavə et",
         "favoriteRemove": "Sevimlilərdən çıxar",
-        "follow": "İzləməyə başla",
+        "follow": "İzlə",
         "following": "İzləyirəm"
     },
     "rating": {
@@ -116,5 +116,29 @@
         "reviewSaved": "Rəy saxlanıldı",
         "reviewRemoved": "Rəy silindi",
         "episodeUnmarked": "{{code}} işarəsi götürüldü"
+    },
+    "collection": {
+        "eyebrow": "Kolleksiya",
+        "progress_one": "{{count}} film · {{watched}} izlənib",
+        "progress_other": "{{count}} film · {{watched}} izlənib",
+        "films_one": "{{count}} film",
+        "films_other": "{{count}} film",
+        "filmsTitle": "Filmlər"
+    },
+    "castEpisodes_one": "{{count}} epizod",
+    "castEpisodes_other": "{{count}} epizod",
+    "episodeSheet": {
+        "open": "{{code}} haqqında",
+        "spoilerHidden": "Təsvir spoyler ola bilər, ona görə gizlədilib.",
+        "show": "Göstər",
+        "director": "Rejissor:",
+        "writer": "Ssenari:",
+        "guests": "Qonaq aktyorlar"
+    },
+    "links": {
+        "title": "Keçidlər",
+        "homepage": "Rəsmi sayt",
+        "open": "{{site}} saytında aç",
+        "openHomepage": "Rəsmi saytı aç"
     }
 }

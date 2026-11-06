@@ -2,11 +2,10 @@ import {memo, type ReactNode} from "react";
 import {Text, View} from "react-native";
 import {useTranslation} from "react-i18next";
 import {PressScale} from "@/components/motion/PressScale";
-import {AnimatedView} from "@/components/ui/animated";
+import {Reveal} from "@/components/motion/Reveal";
 import {Image} from "@/components/ui/image";
 import {imageUrl, mediaTitle, mediaYear} from "@/helpers/media";
 import {IMAGE_SIZE} from "@/constants/other";
-import {enteringFor} from "@/lib/motion";
 import type {MediaSummary} from "@/api/media.api";
 
 type PosterCardProps = {
@@ -30,7 +29,7 @@ export const PosterCard = memo(({media, width, rank, index = 0, footer, isCompac
 
     return (
         // The entrance lives on a wrapper: an entering transform would overwrite the press scale on the card itself.
-        <AnimatedView entering={enteringFor("rise", index)} style={{width}}>
+        <Reveal variant="rise" index={index} style={{width}}>
         <PressScale onPress={() => onPress?.(media)} aria-label={title} className="gap-1.5">
             <View className="aspect-[2/3] w-full overflow-hidden rounded-[10px] border border-border bg-surface">
                 {poster ? (
@@ -49,7 +48,7 @@ export const PosterCard = memo(({media, width, rank, index = 0, footer, isCompac
             {!isCompact && <Text className="font-sans-medium text-xs text-foreground" numberOfLines={1}>{title}</Text>}
             {footer ?? (isCompact ? null : <Text className="font-sans text-[11px] text-muted-foreground" numberOfLines={1}>{meta}</Text>)}
         </PressScale>
-        </AnimatedView>
+        </Reveal>
     );
 });
 PosterCard.displayName = "PosterCard";

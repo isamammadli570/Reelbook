@@ -1,0 +1,83 @@
+{
+    "follow": "Подписаться",
+    "followingButton": "Ты подписан(а)",
+    "followFailed": "Не получилось. Проверь интернет и попробуй ещё раз.",
+    "sharingFailed": "Не удалось применить настройку. Попробуй ещё раз.",
+    "someone": "Кто-то",
+    "stars_one": "{{count}} звезда",
+    "stars_few": "{{count}} звезды",
+    "stars_many": "{{count}} звёзд",
+    "stars_other": "{{count}} звезды",
+    "did": {
+        "watch": "посмотрел(а)",
+        "review": "написал(а) рецензию",
+        "episodes_one": "посмотрел(а) {{count}} серию",
+        "episodes_few": "посмотрел(а) {{count}} серии",
+        "episodes_many": "посмотрел(а) {{count}} серий",
+        "episodes_other": "посмотрел(а) {{count}} серии"
+    },
+    "time": {
+        "now": "только что",
+        "minutes_one": "{{count}} мин назад",
+        "minutes_few": "{{count}} мин назад",
+        "minutes_many": "{{count}} мин назад",
+        "minutes_other": "{{count}} мин назад",
+        "hours_one": "{{count}} ч назад",
+        "hours_few": "{{count}} ч назад",
+        "hours_many": "{{count}} ч назад",
+        "hours_other": "{{count}} ч назад",
+        "days_one": "{{count}} день назад",
+        "days_few": "{{count}} дня назад",
+        "days_many": "{{count}} дней назад",
+        "days_other": "{{count}} дня назад",
+        "weeks_one": "{{count}} неделю назад",
+        "weeks_few": "{{count}} недели назад",
+        "weeks_many": "{{count}} недель назад",
+        "weeks_other": "{{count}} недели назад"
+    },
+    "counts": {
+        "followers_one": "{{count}} подписчик",
+        "followers_few": "{{count}} подписчика",
+        "followers_many": "{{count}} подписчиков",
+        "followers_other": "{{count}} подписчика",
+        "following_one": "{{count}} подписка",
+        "following_few": "{{count}} подписки",
+        "following_many": "{{count}} подписок",
+        "following_other": "{{count}} подписки"
+    },
+    "friends": {
+        "title": "Друзья",
+        "eyebrow": "Люди",
+        "guest": "Войди, чтобы находить друзей и подписываться на них.",
+        "searchLabel": "Поиск людей",
+        "searchPlaceholder": "@имя пользователя или имя",
+        "noResults": "Никого не нашлось",
+        "noResultsHint": "Введи @имя полностью или часть имени.",
+        "tabs": {
+            "following": "Подписки",
+            "followers": "Подписчики"
+        },
+        "empty": {
+            "following": "Ты пока ни на кого не подписан(а)",
+            "followers": "Подписчиков пока нет"
+        },
+        "emptyHint": "Найди @имя друга выше и подпишись."
+    },
+    "feed": {
+        "title": "Что смотрят друзья",
+        "homeTitle": "Друзья",
+        "eyebrow": "Лента",
+        "seeAll": "Все",
+        "emptyTitle": "Лента пока пуста",
+        "emptyHint": "Подпишись на друзей: здесь появится, что они смотрят, их оценки и рецензии.",
+        "findFriends": "Найти друзей"
+    },
+    "user": {
+        "activity": "Недавняя активность",
+        "notFound": "Пользователь не найден",
+        "notFoundHint": "Аккаунта @{{username}} нет.",
+        "private": "Активность скрыта",
+        "privateHint": "Этот человек не делится тем, что смотрит.",
+        "noActivity": "Пока ничего не посмотрено"
+    }
+}

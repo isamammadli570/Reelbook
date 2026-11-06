@@ -43,7 +43,13 @@ export type ListsStore = {
 
 /* ------------------------------ storage ------------------------------ */
 
-export const getLists = async (): Promise<ListsStore> => (await storage.get<ListsStore>(STORAGE_KEYS.LISTS)) ?? createListsStore();
+/** The lists as last read or written; this module is their only writer, as with the library. */
+let cached: ListsStore | null = null;
+
+export const getLists = async (): Promise<ListsStore> => {
+    cached ??= (await storage.get<ListsStore>(STORAGE_KEYS.LISTS)) ?? createListsStore();
+    return cached;
+};
 
 // Writes run one after another so quick taps never overwrite each other's read-modify-write.
 let writeQueue: Promise<unknown> = Promise.resolve();
@@ -51,6 +57,7 @@ let writeQueue: Promise<unknown> = Promise.resolve();
 const modifyLists = (change: (store: ListsStore) => ListsStore): Promise<ListsStore> => {
     const run = writeQueue.then(async () => {
         const next = change(await getLists());
+        cached = next;
         await storage.set(STORAGE_KEYS.LISTS, next);
         return next;
     });

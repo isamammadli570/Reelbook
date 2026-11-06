@@ -11,20 +11,28 @@ import {BackButton} from "@/widgets/BackButton";
 import {ConfirmSheet} from "@/widgets/ConfirmSheet";
 import {EmptyState} from "@/widgets/EmptyState";
 import {ListFormSheet} from "@/widgets/ListFormSheet";
+import {ListScreen} from "@/widgets/ListScreen";
 import {PosterGrid} from "@/widgets/PosterGrid";
 import {Screen} from "@/widgets/Screen";
 import {useSession} from "@/hooks/auth/useSession";
 import {useDeleteList, useRemoveFromList, useRestoreToList, useUpdateList, useUserList} from "@/hooks/lists";
 import {entryToMediaSummary} from "@/helpers/lists";
 import {itemKey} from "@/helpers/library";
+import {chunk} from "@/helpers/shelves";
 import {hasSupabase} from "@/lib/env";
 import {toast} from "@/lib/toast";
 import {cn} from "@/lib/utils";
 import {buildRoute} from "@/constants/routes";
+import type {MediaSummary} from "@/api/media.api";
 
 const GRID_COLUMNS = 3;
 
-/** One list: its name and description, its titles three across, and editing, removing titles and deleting it. */
+const openMedia = (media: MediaSummary) => router.push(buildRoute.media(media));
+
+/**
+ * One list: its name and description, its titles three across, and editing, removing titles and deleting it.
+ * Only the rows near the screen are drawn, so a long list scrolls as smoothly as a short one.
+ */
 export const UserListPage = () => {
     const {id} = useLocalSearchParams<{id: string}>();
     const {t} = useTranslation("lists");
@@ -38,7 +46,8 @@ export const UserListPage = () => {
     const [isEditingDetails, setIsEditingDetails] = useState(false);
     const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
     const [isManaging, setIsManaging] = useState(false);
-    const posters = useMemo(() => (list?.entries ?? []).map(entryToMediaSummary), [list]);
+    // Rows of three for a virtual list: a list imported from Letterboxd can hold hundreds of films.
+    const rows = useMemo(() => chunk((list?.entries ?? []).map(entryToMediaSummary), GRID_COLUMNS), [list]);
 
     if (hasSupabase && !session && !isSessionLoading) {
         return (
@@ -78,8 +87,19 @@ export const UserListPage = () => {
         }
     };
 
-    return (
-        <Screen>
+    const renderFooter = isManaging ? (media: MediaSummary) => (
+        <PressScale
+            scaleTo={0.98}
+            onPress={() => removeTitle(itemKey(media.media_type, media.id))}
+            aria-label={t("manage.remove")}
+            className="items-center rounded-lg bg-danger-soft py-1.5"
+        >
+            <Text className="font-sans-medium text-xs text-danger">{t("manage.remove")}</Text>
+        </PressScale>
+    ) : undefined;
+
+    const header = (
+        <>
             <View className="flex-row items-center justify-between">
                 <BackButton/>
                 <View className="flex-row gap-2">
@@ -103,27 +123,20 @@ export const UserListPage = () => {
                     <Text className={cn("font-sans-medium text-[13px]", isManaging ? "text-background" : "text-foreground")}>{isManaging ? t("manage.done") : t("manage.start")}</Text>
                 </PressScale>
             )}
+        </>
+    );
 
-            {posters.length ? (
-                <PosterGrid
-                    columns={GRID_COLUMNS}
-                    items={posters}
-                    onPress={(media) => router.push(buildRoute.media(media))}
-                    renderFooter={isManaging ? (media) => (
-                        <PressScale
-                            scaleTo={0.98}
-                            onPress={() => removeTitle(itemKey(media.media_type, media.id))}
-                            aria-label={t("manage.remove")}
-                            className="items-center rounded-lg bg-danger-soft py-1.5"
-                        >
-                            <Text className="font-sans-medium text-xs text-danger">{t("manage.remove")}</Text>
-                        </PressScale>
-                    ) : undefined}
-                />
-            ) : (
-                <EmptyState title={t("emptyListTitle")} description={t("emptyList")}/>
+    return (
+        <ListScreen
+            header={header}
+            rows={rows}
+            extraData={isManaging}
+            rowKey={(row) => row.map((media) => `${media.media_type}:${media.id}`).join(",")}
+            empty={<EmptyState title={t("emptyListTitle")} description={t("emptyList")}/>}
+            renderRow={(row) => (
+                <PosterGrid columns={GRID_COLUMNS} items={row} onPress={openMedia} renderFooter={renderFooter}/>
             )}
-
+        >
             <ListFormSheet
                 isOpen={isEditingDetails}
                 onClose={() => setIsEditingDetails(false)}
@@ -142,6 +155,6 @@ export const UserListPage = () => {
                 isBusy={isDeleting}
                 onConfirm={() => void remove()}
             />
-        </Screen>
+        </ListScreen>
     );
 };

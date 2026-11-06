@@ -3,7 +3,7 @@ import {Alert, Linking, Platform, Text, View} from "react-native";
 import Constants from "expo-constants";
 import {router} from "expo-router";
 import {useTranslation} from "react-i18next";
-import {Bell, CircleUserRound, Download, EyeOff, Globe, LogOut, ShieldCheck, Upload, Vibrate, FileUp} from "lucide-react-native";
+import {Bell, CircleUserRound, Download, EyeOff, FileUp, Globe, Link2, LogOut, ShieldCheck, Upload, Users, Vibrate} from "lucide-react-native";
 import {AccountRequired} from "@/widgets/AccountRequired";
 import {BackButton} from "@/widgets/BackButton";
 import {PageTitle} from "@/widgets/PageTitle";
@@ -15,6 +15,8 @@ import {useSession} from "@/hooks/auth/useSession";
 import {useSignOut} from "@/hooks/auth/useSignOut";
 import {useRemindersEnabled, useSetRemindersEnabled} from "@/hooks/reminders";
 import {useBackupActions} from "@/hooks/useBackupActions";
+import {useGetProfile, useSaveProfile} from "@/hooks/profile";
+import {useApplySharing} from "@/hooks/social";
 import {useLanguage} from "@/hooks/useLanguage";
 import {hasSupabase} from "@/lib/env";
 import {haptics} from "@/lib/haptics";
@@ -34,6 +36,17 @@ export const SettingsPage = () => {
     const {signOut, isSigningOut} = useSignOut();
     const {language} = useLanguage();
     const {runExport, runImport, isExporting, isImporting} = useBackupActions();
+    const {data: profile} = useGetProfile();
+    const {mutateAsync: saveProfile} = useSaveProfile();
+    const {mutate: applySharing, isPending: isApplyingSharing} = useApplySharing();
+
+    // The profile (and so the setting) syncs on its own; publishing or taking down the activity follows it.
+    const toggleSharing = async (share: boolean) => {
+        if (!profile) return;
+        haptics.tap();
+        await saveProfile({...profile, shareActivity: share});
+        applySharing(share);
+    };
     const {data: isRemindersOn = false} = useRemindersEnabled();
     const {mutate: setReminders, isPending: isSettingReminders} = useSetRemindersEnabled();
     const [isHapticsOn, setHaptics] = usePreference("haptics");
@@ -96,6 +109,18 @@ export const SettingsPage = () => {
                 ? <Text className="-mt-4 px-1 font-sans text-xs leading-[18px] text-muted-foreground">{t("reminders.description", {hour: `${REMINDER_HOUR}:00`})}</Text>
                 : <Text className="-mt-4 px-1 font-sans text-xs leading-[18px] text-muted-foreground">{t("reminders.webOnly")}</Text>}
 
+            {isSignedIn && (
+                <SettingsGroup title={t("groups.friends")} footer={t("sharing.hint")} index={2}>
+                    <SettingsRow
+                        icon={Users}
+                        tint="green"
+                        label={t("sharing.label")}
+                        isLoading={isApplyingSharing}
+                        toggle={{value: profile?.shareActivity ?? true, onChange: (value) => void toggleSharing(value), isDisabled: isApplyingSharing}}
+                    />
+                </SettingsGroup>
+            )}
+
             <SettingsGroup footer={t("app.hideSpoilersHint")} index={2}>
                 <SettingsRow
                     icon={EyeOff}
@@ -113,6 +138,7 @@ export const SettingsPage = () => {
 
             <SettingsGroup title={t("groups.data")} footer={isSignedIn ? t("data.hint") : undefined} index={3}>
                 <SettingsRow icon={FileUp} tint="green" label={t("letterboxd.row")} onPress={() => router.push(ROUTES.IMPORT_LETTERBOXD)}/>
+                {isSignedIn && <SettingsRow icon={Link2} tint="red" label={t("trakt.row")} onPress={() => router.push(ROUTES.IMPORT_TRAKT)}/>}
                 {isSignedIn && <SettingsRow icon={Upload} tint="orange" label={t("data.export")} isLoading={isExporting} onPress={() => void runExport()}/>}
                 {isSignedIn && <SettingsRow icon={Download} tint="blue" label={t("data.import")} isLoading={isImporting} onPress={() => void runImport()}/>}
             </SettingsGroup>

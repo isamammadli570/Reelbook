@@ -64,5 +64,12 @@
         "upcoming": "Tezliklə kinoteatrlarda",
         "airingToday": "Bu gün yayımda",
         "topRated": "Ən yüksək reytinqli"
+    },
+    "recent": {
+        "title": "Son axtarışlar",
+        "clear": "Təmizlə",
+        "clearAll": "Son axtarışları təmizlə",
+        "searchAgain": "“{{term}}” üçün yenidən axtar",
+        "remove": "“{{term}}” axtarışını sil"
     }
 }

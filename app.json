@@ -10,7 +10,8 @@
     "backgroundColor": "#0E0E10",
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.isamammadli.reelbook"
+      "bundleIdentifier": "com.isamammadli.reelbook",
+      "infoPlist": {}
     },
     "android": {
       "package": "com.isamammadli.reelbook",
@@ -59,6 +60,17 @@
         }
       ],
       "expo-web-browser"
-    ]
+    ],
+    "extra": {
+      "router": {
+        "asyncRoutes": {
+          "web": true
+        }
+      },
+      "eas": {
+        "projectId": "268ce1df-4d81-4db2-9696-5c35b5e3173e"
+      }
+    },
+    "owner": "jesus.seraph"
   }
 }

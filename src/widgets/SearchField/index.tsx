@@ -12,10 +12,12 @@ type SearchFieldProps = {
     onChangeText: (value: string) => void;
     label: string;
     placeholder: string;
+    /** The keyboard's search key was pressed. */
+    onSubmit?: () => void;
 };
 
 /** Search box with a leading icon; its border brightens on focus and a clear button fades in once there is text. */
-export const SearchField = ({value, onChangeText, label, placeholder}: SearchFieldProps) => {
+export const SearchField = ({value, onChangeText, label, placeholder, onSubmit}: SearchFieldProps) => {
     const {t} = useTranslation();
     const muted = String(useCSSVariable("--color-subtle-foreground"));
     const ring = useFocusRing();
@@ -34,6 +36,7 @@ export const SearchField = ({value, onChangeText, label, placeholder}: SearchFie
                 autoCorrect={false}
                 autoCapitalize="none"
                 returnKeyType="search"
+                onSubmitEditing={onSubmit}
                 className="flex-1 font-sans text-[15px] text-foreground"
             />
             {value.length > 0 && (

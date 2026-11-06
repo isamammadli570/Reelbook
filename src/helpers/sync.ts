@@ -21,10 +21,11 @@ export const mergeVersioned = <T extends {updatedAt: string}>(
     localValues: Record<string, T>,
     localRemoved: Record<string, string>,
     remote: Record<string, Versioned<T>>,
-): {values: Record<string, T>; removed: Record<string, string>; outbox: Record<string, Versioned<T>>} => {
+): {values: Record<string, T>; removed: Record<string, string>; outbox: Record<string, Versioned<T>>; changed: boolean} => {
     const values = {...localValues};
     const removed = {...localRemoved};
     const outbox: Record<string, Versioned<T>> = {};
+    let changed = false;
 
     const keys = new Set([...Object.keys(localValues), ...Object.keys(removed), ...Object.keys(remote)]);
     keys.forEach((key) => {
@@ -37,6 +38,8 @@ export const mergeVersioned = <T extends {updatedAt: string}>(
         const remoteVersion = remote[key] ?? null;
         const winner = newer(localVersion, remoteVersion);
         if (!winner) return;
+        // Only a version from the server can change what the device holds.
+        if (winner !== localVersion) changed = true;
 
         if (winner.value) {
             values[key] = winner.value;
@@ -52,15 +55,28 @@ export const mergeVersioned = <T extends {updatedAt: string}>(
         }
     });
 
-    return {values, removed, outbox};
+    return {values, removed, outbox, changed};
 };
 
 /** The library flavour of `mergeVersioned`, keeping the library's own field names. */
-export const mergeLibrary = (local: Library, remote: Record<string, RemoteEntry>): {library: Library; outbox: Record<string, RemoteEntry>} => {
+export const mergeLibrary = (local: Library, remote: Record<string, RemoteEntry>): {library: Library; outbox: Record<string, RemoteEntry>; changed: boolean} => {
     const remoteVersions = Object.fromEntries(Object.entries(remote).map(([key, entry]) => [key, {updatedAt: entry.updatedAt, value: entry.item}]));
-    const {values, removed, outbox} = mergeVersioned(local.items, local.removed ?? {}, remoteVersions);
+    const {values, removed, outbox, changed} = mergeVersioned(local.items, local.removed ?? {}, remoteVersions);
     return {
+        changed,
         library: {items: values, removed},
         outbox: Object.fromEntries(Object.entries(outbox).map(([key, entry]) => [key, {updatedAt: entry.updatedAt, item: entry.value}])),
     };
 };
+
+/**
+ * Which records the server holds a newer version of than this device (or one the device has never seen).
+ * Only their contents need downloading; for the rest the device's copy wins the merge anyway.
+ */
+export const staleKeys = (localValues: Record<string, {updatedAt: string}>, localRemoved: Record<string, string>, remote: Record<string, string>): string[] =>
+    Object.entries(remote)
+        .filter(([key, updatedAt]) => {
+            const local = localValues[key]?.updatedAt ?? localRemoved[key];
+            return !local || updatedAt > local;
+        })
+        .map(([key]) => key);

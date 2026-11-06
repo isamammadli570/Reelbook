@@ -27,7 +27,8 @@
         "you": "You",
         "app": "App",
         "data": "Your data",
-        "about": "About"
+        "about": "About",
+        "friends": "Friends"
     },
     "app": {
         "language": "Language",
@@ -81,7 +82,11 @@
             },
             {
                 "title": "No ads, no tracking",
-                "body": "Reelbook has no ads, analytics or tracking tools. Your data isn't sold or shared with anyone. Your profile isn't shown to other users."
+                "body": "Reelbook has no ads, analytics or tracking tools. Your data is never sold or shared with third parties."
+            },
+            {
+                "title": "Friends and sharing",
+                "body": "Other people with an account can find you by your @username or name, see your profile (name, @username, photo, cover, bio) and follow you. While “Share my activity” is on they also see the viewings in your diary, the stars you gave them, your reviews and how many episodes you watched. Your lists, watchlist and email are never shown. Turn sharing off in Settings and your activity is hidden at once and removed from the server."
             },
             {
                 "title": "Notifications",
@@ -141,5 +146,56 @@
         },
         "listsFound": "Plus {{count}} lists ({{entries}} films) will be added to your lists.",
         "doneLists": "{{count}} lists are now in Lists too."
+    },
+    "sharing": {
+        "label": "Share my activity",
+        "hint": "People who follow you see what you watch, your stars and reviews in their feed. Turning it off hides all of it at once. Your profile (name, @username, photo, bio) shows in search either way."
+    },
+    "trakt": {
+        "row": "Import from Trakt",
+        "title": "Import from Trakt",
+        "guest": "Sign in to import from Trakt.",
+        "steps": {
+            "connect": "Tap “Connect to Trakt” — a short code will appear.",
+            "code": "Open trakt.tv/activate, enter the code and allow Reelbook. Your Trakt password never reaches Reelbook.",
+            "preview": "Your history, ratings, watchlist and lists are read; you see a preview first."
+        },
+        "keepsYours": "Nothing you have is removed: viewings on days already logged are skipped, and your own ratings and marked episodes stay. The Trakt connection is only for this import and is revoked at the end.",
+        "connect": "Connect to Trakt",
+        "enterCode": "Enter this code at trakt.tv/activate:",
+        "codeLabel": "Code: {{code}}",
+        "openTrakt": "Open trakt.tv/activate",
+        "waiting": "Waiting for your approval…",
+        "cancel": "Cancel",
+        "parts": {
+            "history": "Reading your film history…",
+            "shows": "Reading your shows…",
+            "ratings": "Reading your ratings…",
+            "watchlist": "Reading your watchlist…",
+            "lists": "Reading your lists…"
+        },
+        "matching": "Finding titles on TMDB…",
+        "progress": "{{done}} / {{total}} titles",
+        "import": "Import",
+        "listsFound": "Plus {{count}} lists will be added to your lists.",
+        "missing": "Not found ({{count}})",
+        "missingHint": "Trakt has no TMDB id for these, or TMDB didn't answer. You can add them from search.",
+        "doneBody": "{{films}} films and {{series}} shows were added to your library.",
+        "failed": "The import did not go through. Please try again.",
+        "stats": {
+            "films": "Films",
+            "viewings": "Viewings",
+            "ratings": "Ratings",
+            "series": "Shows",
+            "episodes": "Episodes",
+            "watchlist": "Watchlist"
+        },
+        "errors": {
+            "not_configured": "Trakt import isn't set up yet: the “trakt” server function or its keys are missing.",
+            "unavailable": "Couldn't reach Trakt. Check your connection and try again.",
+            "failed": "Couldn't read your data from Trakt. Please try again.",
+            "denied": "Access wasn't allowed on Trakt.",
+            "expired": "The code expired. Tap “Connect to Trakt” again."
+        }
     }
 }

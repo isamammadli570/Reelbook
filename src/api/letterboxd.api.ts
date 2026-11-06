@@ -2,13 +2,11 @@ import {Platform} from "react-native";
 import {File} from "expo-file-system";
 import * as DocumentPicker from "expo-document-picker";
 import {strFromU8, unzipSync} from "fflate";
-import {api, ApiError, segment} from "@/api/client";
+import {api} from "@/api/client";
+import {getMovieSnapshot, withRetry} from "@/api/importSnapshots.api";
 import {mergeIntoLibrary, type MediaSnapshot} from "@/api/library.api";
 import type {Paged} from "@/api/media.api";
-import type {Credits, Genre} from "@/api/people.api";
-import {moviePeople} from "@/helpers/library";
 import {API_ENDPOINTS} from "@/constants/endpoints";
-import {MEDIA_TYPE} from "@/constants/other";
 import {mergeIntoLists} from "@/api/lists.api";
 import {
     isLetterboxdListFile,
@@ -52,32 +50,6 @@ export const pickLetterboxdExport = async (): Promise<PickedExport> => {
     return Object.keys(files).length ? {status: "picked", files} : {status: "invalid"};
 };
 
-type MovieBasics = {
-    id: number;
-    title: string;
-    poster_path: string | null;
-    backdrop_path: string | null;
-    release_date: string;
-    genres: Genre[];
-    runtime: number | null;
-    credits: Credits;
-};
-
-const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
-/** TMDB answers 429 when asked too fast; a short pause and another try is what it asks for. */
-const withRetry = async <T>(request: () => Promise<T>, attempts = 3): Promise<T> => {
-    try {
-        return await request();
-    } catch (error) {
-        if (attempts > 1 && error instanceof ApiError && (error.status === 429 || error.isNetworkError)) {
-            await wait(1500);
-            return withRetry(request, attempts - 1);
-        }
-        throw error;
-    }
-};
-
 const searchMovies = (query: string, year: number | null) =>
     withRetry(() => api.get<Paged<MovieCandidate>>(API_ENDPOINTS.SEARCH_MOVIE, {params: {query, include_adult: false, ...(year ? {primary_release_year: year} : {})}}));
 
@@ -88,19 +60,7 @@ export const findLetterboxdFilm = async (film: LetterboxdFilm): Promise<MediaSna
     match ??= pickMatch((await searchMovies(film.name, null)).results, film.name, film.year);
     if (!match) return null;
 
-    const movie = await withRetry(() => api.get<MovieBasics>(`${API_ENDPOINTS.MOVIE}/${segment(match.id)}`, {params: {append_to_response: "credits"}}));
-    return {
-        id: movie.id,
-        mediaType: MEDIA_TYPE.MOVIE,
-        title: movie.title,
-        posterPath: movie.poster_path,
-        backdropPath: movie.backdrop_path,
-        year: (movie.release_date ?? "").slice(0, 4),
-        genres: movie.genres.map((genre) => genre.name),
-        runtime: movie.runtime,
-        series: null,
-        people: moviePeople(movie.credits),
-    };
+    return getMovieSnapshot(match.id);
 };
 
 /** Requests at once: quick enough for a big diary while staying under TMDB's rate limit. */

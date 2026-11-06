@@ -88,7 +88,16 @@ export type Library = {
 
 /* ------------------------------ storage ------------------------------ */
 
-export const getLibrary = async (): Promise<Library> => (await storage.get<Library>(STORAGE_KEYS.LIBRARY)) ?? createLibrary();
+/**
+ * The library as last read or written. This module is the library's only writer, so after the first read the
+ * copy in memory is always current, and a write no longer parses the whole stored JSON before changing it.
+ */
+let cached: Library | null = null;
+
+export const getLibrary = async (): Promise<Library> => {
+    cached ??= (await storage.get<Library>(STORAGE_KEYS.LIBRARY)) ?? createLibrary();
+    return cached;
+};
 
 // Writes run one after another so two quick taps never overwrite each other's read-modify-write.
 let writeQueue: Promise<unknown> = Promise.resolve();
@@ -96,6 +105,7 @@ let writeQueue: Promise<unknown> = Promise.resolve();
 const modifyLibrary = (change: (library: Library) => Library): Promise<Library> => {
     const run = writeQueue.then(async () => {
         const next = change(await getLibrary());
+        cached = next;
         await storage.set(STORAGE_KEYS.LIBRARY, next);
         return next;
     });

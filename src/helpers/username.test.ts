@@ -1,5 +1,5 @@
 import {describe, expect, it} from "vitest";
-import {isValidUsername, normalizeUsername} from "@/helpers/username";
+import {isValidUsername, normalizeUsername, suggestUsername} from "@/helpers/username";
 
 describe("normalizeUsername", () => {
     it("trims, drops a leading @ and lowercases", () => {
@@ -19,5 +19,26 @@ describe("isValidUsername", () => {
         expect(isValidUsername("a".repeat(21))).toBe(false);
         expect(isValidUsername("isa m")).toBe(false);
         expect(isValidUsername("isə")).toBe(false);
+    });
+});
+
+describe("suggestUsername", () => {
+    it("makes a handle from the name, in Latin letters", () => {
+        expect(suggestUsername("İsa Məmmədli", "x@gmail.com")).toBe("isa_memmedli");
+        expect(suggestUsername("Анна Каренина", null)).toBe("anna_karenina");
+        expect(suggestUsername("Zoë O'Brien", null)).toBe("zoe_o_brien");
+    });
+
+    it("falls back to the email, and keeps within 20 characters", () => {
+        expect(suggestUsername("", "isa.m+films@gmail.com")).toBe("isa_m_films");
+        expect(suggestUsername("A", "jo@x.com")).toBe("");
+        expect(suggestUsername("Maximilian Alexander Longname", null)).toBe("maximilian_alexander");
+    });
+
+    it("always suggests something the rules accept", () => {
+        ["İsa Məmmədli", "Анна", "Zoë O'Brien", "Maximilian Alexander Longname"].forEach((name) => {
+            const handle = suggestUsername(name, "someone@mail.com");
+            expect(isValidUsername(handle)).toBe(true);
+        });
     });
 });

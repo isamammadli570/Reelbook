@@ -12,9 +12,11 @@ import {QueryErrorState} from "@/widgets/QueryErrorState";
 import {Screen} from "@/widgets/Screen";
 import {Section} from "@/widgets/Section";
 import {GenreTiles} from "@/pages/DiscoverPage/widgets/GenreTiles";
-import {SearchField} from "@/pages/DiscoverPage/widgets/SearchField";
+import {SearchField} from "@/widgets/SearchField";
 import {FilterButton, FilterChips} from "@/pages/DiscoverPage/widgets/FilterBar";
 import {FilterSheet} from "@/pages/DiscoverPage/widgets/FilterSheet";
+import {RecentSearches} from "@/pages/DiscoverPage/widgets/RecentSearches";
+import {rememberSearch} from "@/lib/recentSearches";
 import {useAiringToday, useDiscoverTitles, useNewReleases, useSearch, useStreamingServices, useTopRated, useUpcoming} from "@/hooks/discover";
 import {useDebouncedValue} from "@/hooks/useDebouncedValue";
 import {useDepartmentLabel} from "@/hooks/useDepartmentLabel";
@@ -69,6 +71,15 @@ export const DiscoverPage = () => {
         if (filters.providerIds.length) setFilters({...filters, providerIds: []});
     };
 
+    // A search is worth remembering once it led somewhere: a result opened, or the search key pressed.
+    const remember = () => {
+        if (isSearching) rememberSearch(searchTerm);
+    };
+    const openResult = (media: MediaSummary) => {
+        remember();
+        openMedia(media);
+    };
+
     const options = Object.values(MEDIA_FILTER).map((value) => ({value, label: t(`common:mediaFilter.${value}`)}));
 
     const renderContent = () => {
@@ -79,12 +90,12 @@ export const DiscoverPage = () => {
                 <>
                     {people.length > 0 && (
                         <Section title={t("people")}>
-                            <CastRow cast={people}/>
+                            <CastRow cast={people} onOpen={remember}/>
                         </Section>
                     )}
                     {(search.isLoading || searchResults.length > 0) && (
                         <Section title={t("results")} index={1}>
-                            <PosterGrid items={searchResults} isLoading={search.isLoading} onPress={openMedia}/>
+                            <PosterGrid items={searchResults} isLoading={search.isLoading} onPress={openResult}/>
                         </Section>
                     )}
                 </>
@@ -118,7 +129,8 @@ export const DiscoverPage = () => {
     return (
         <Screen>
             <PageTitle title={t("title")}/>
-            <SearchField value={query} onChangeText={setQuery} label={t("searchLabel")} placeholder={t("searchPlaceholder")}/>
+            <SearchField value={query} onChangeText={setQuery} onSubmit={() => rememberSearch(query)} label={t("searchLabel")} placeholder={t("searchPlaceholder")}/>
+            {!query && <RecentSearches onPick={setQuery}/>}
             <View className="flex-row items-center gap-2">
                 <SegmentedControl options={options} value={filter} onChange={changeFilter} label={t("title")} className="flex-1"/>
                 {!isSearching && <FilterButton filters={filters} onOpen={() => setIsFilterOpen(true)}/>}

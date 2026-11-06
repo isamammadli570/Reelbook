@@ -50,6 +50,10 @@ export const parseBackup = (text: string): Backup | null => {
             coverUrl: typeof profile.coverUrl === "string" ? profile.coverUrl : null,
             avatarColor: typeof profile.avatarColor === "string" ? profile.avatarColor : DEFAULT_AVATAR_COLOR,
             avatarUrl: typeof profile.avatarUrl === "string" ? profile.avatarUrl : null,
+            shareActivity: typeof profile.shareActivity === "boolean" ? profile.shareActivity : true,
         },
     };
 };
+
+/** Whether a backup carries a profile at all: one converted from another app has none to restore. */
+export const hasProfile = (profile: Profile): boolean => Boolean(profile.name || profile.username || profile.bio || profile.avatarUrl || profile.coverUrl || profile.coverPath);

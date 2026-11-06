@@ -96,6 +96,7 @@ export const ListPage = () => {
         <ListScreen
             header={header}
             rows={rows}
+            extraData={byKey}
             rowKey={(row) => row.key}
             empty={<EmptyState title={t(`empty.${shelf}`)}/>}
             renderRow={(row) => row.kind === "title"

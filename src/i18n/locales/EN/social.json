@@ -1,0 +1,67 @@
+{
+    "follow": "Follow",
+    "followingButton": "Following",
+    "followFailed": "That didn't work. Check your connection and try again.",
+    "sharingFailed": "The sharing setting couldn't be applied. Try again.",
+    "someone": "Someone",
+    "stars_one": "{{count}} star",
+    "stars_other": "{{count}} stars",
+    "did": {
+        "watch": "watched",
+        "review": "wrote a review",
+        "episodes_one": "watched {{count}} episode",
+        "episodes_other": "watched {{count}} episodes"
+    },
+    "time": {
+        "now": "just now",
+        "minutes_one": "{{count}} min ago",
+        "minutes_other": "{{count}} min ago",
+        "hours_one": "{{count}} h ago",
+        "hours_other": "{{count}} h ago",
+        "days_one": "{{count}} day ago",
+        "days_other": "{{count}} days ago",
+        "weeks_one": "{{count}} week ago",
+        "weeks_other": "{{count}} weeks ago"
+    },
+    "counts": {
+        "followers_one": "{{count}} follower",
+        "followers_other": "{{count}} followers",
+        "following_one": "{{count}} following",
+        "following_other": "{{count}} following"
+    },
+    "friends": {
+        "title": "Friends",
+        "eyebrow": "People",
+        "guest": "Sign in to find and follow friends.",
+        "searchLabel": "Search people",
+        "searchPlaceholder": "@username or name",
+        "noResults": "No one found",
+        "noResultsHint": "Type the full @username, or part of their name.",
+        "tabs": {
+            "following": "Following",
+            "followers": "Followers"
+        },
+        "empty": {
+            "following": "You're not following anyone yet",
+            "followers": "No followers yet"
+        },
+        "emptyHint": "Search for a friend's @username above and follow them."
+    },
+    "feed": {
+        "title": "What friends are watching",
+        "homeTitle": "Friends",
+        "eyebrow": "Feed",
+        "seeAll": "See all",
+        "emptyTitle": "Your feed is empty",
+        "emptyHint": "Follow friends: what they watch, their stars and reviews will show up here.",
+        "findFriends": "Find friends"
+    },
+    "user": {
+        "activity": "Recent activity",
+        "notFound": "User not found",
+        "notFoundHint": "There is no account called @{{username}}.",
+        "private": "Activity is private",
+        "privateHint": "This person doesn't share what they watch.",
+        "noActivity": "Nothing watched yet"
+    }
+}

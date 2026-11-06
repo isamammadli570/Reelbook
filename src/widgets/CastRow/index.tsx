@@ -12,10 +12,14 @@ import type {CastMember} from "@/api/people.api";
 /** Anyone with a portrait: a cast member with their character, or a search result with their department. */
 export type PersonChip = Pick<CastMember, "id" | "name" | "profile_path"> & {character?: string};
 
-type CastRowProps = {cast: PersonChip[]};
+type CastRowProps = {
+    cast: PersonChip[];
+    /** Called as a person is opened, before the page changes. */
+    onOpen?: (person: PersonChip) => void;
+};
 
 /** Horizontally scrolling round portraits; each opens that person's page. */
-export const CastRow = ({cast}: CastRowProps) => (
+export const CastRow = ({cast, onOpen}: CastRowProps) => (
     <ScrollView horizontal showsHorizontalScrollIndicator={false} className="-mx-5" contentContainerClassName="gap-3.5 px-5">
         {cast.slice(0, CAST_LIMIT).map((member, index) => {
             const photo = imageUrl(member.profile_path, IMAGE_SIZE.PROFILE);
@@ -25,7 +29,10 @@ export const CastRow = ({cast}: CastRowProps) => (
                     <PressScale
                         role="link"
                         aria-label={member.name}
-                        onPress={() => router.push(buildRoute.person(member.id))}
+                        onPress={() => {
+                            onOpen?.(member);
+                            router.push(buildRoute.person(member.id));
+                        }}
                         className="w-[72px] items-center gap-1.5"
                     >
                         <View className="h-[72px] w-[72px] items-center justify-center overflow-hidden rounded-full bg-surface">

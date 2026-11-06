@@ -5,6 +5,7 @@ import {useTranslation} from "react-i18next";
 import {AccountRequired} from "@/widgets/AccountRequired";
 import {Screen} from "@/widgets/Screen";
 import {FavoritesRow} from "@/pages/ProfilePage/widgets/FavoritesRow";
+import {FriendsRow} from "@/pages/ProfilePage/widgets/FriendsRow";
 import {ProfileCover} from "@/pages/ProfilePage/widgets/ProfileCover";
 import {ProfileMenu} from "@/pages/ProfilePage/widgets/ProfileMenu";
 import {RecentRow} from "@/pages/ProfilePage/widgets/RecentRow";
@@ -57,6 +58,7 @@ export const ProfilePage = () => {
                 ) : (
                     <>
                         <WatchStats summary={summary}/>
+                        <FriendsRow/>
                         <FavoritesRow index={0} items={favorites}/>
                         <RecentRow index={1} watches={watches}/>
                         <ShelfMenu index={2} links={shelfLinks}/>

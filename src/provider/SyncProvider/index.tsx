@@ -1,5 +1,8 @@
 import {useEffect, useRef, useState, type ReactNode} from "react";
 import {useQueryClient} from "@tanstack/react-query";
+import {router} from "expo-router";
+import {getProfile} from "@/api/profile.api";
+import {ROUTES} from "@/constants/routes";
 import i18n from "@/i18n";
 import {getCurrentSession} from "@/api/auth.api";
 import {useGetLibrary} from "@/hooks/library";
@@ -7,7 +10,7 @@ import {useGetLists} from "@/hooks/lists";
 import {useGetProfile} from "@/hooks/profile";
 import {supabase} from "@/lib/supabase";
 import {toast} from "@/lib/toast";
-import {pushProfileChange, syncLibrary, syncLists, syncProfileOnSignIn} from "@/services/sync";
+import {ensureActivityPublished, pushProfileChange, syncLibrary, syncLists, syncProfileOnSignIn} from "@/services/sync";
 import {QUERY_KEYS} from "@/constants/other";
 
 /** Changes are uploaded a moment after the user stops editing, so a burst of taps makes one sync. */
@@ -73,7 +76,19 @@ export const SyncProvider = ({children}: SyncProviderProps) => {
             });
             const libraryChanged = await syncLibrary(userId);
             if (profileChanged) void queryClient.invalidateQueries({queryKey: [QUERY_KEYS.PROFILE]});
+            // An account with no @handle yet (one made with Google) is asked for one each time the app opens
+            // signed in, until it has one. Checked after the merge above, so a handle set on another device counts.
+            // Asking is a nicety: if navigation is not ready yet, it is skipped rather than reported as a failed sync.
+            if (!(await getProfile()).username) {
+                try {
+                    router.push(ROUTES.CHOOSE_USERNAME);
+                } catch {
+                    // Asked again next time.
+                }
+            }
             if (libraryChanged) void queryClient.invalidateQueries({queryKey: [QUERY_KEYS.LIBRARY]});
+            // Friends see the history from before sharing existed; done once per account on this device.
+            await ensureActivityPublished(userId);
         });
         // A separate task, so lists failing (say, before their table exists) never block the library.
         enqueue(async () => {

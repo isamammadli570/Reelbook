@@ -68,4 +68,15 @@ describe("diaryRows", () => {
         expect(rows.map((row) => (row.kind === "month" ? row.month : row.isFirstOfDay))).toEqual(["2026-11", true, false, true, "2026-10", true]);
         expect(new Set(rows.map((row) => row.key)).size).toBe(rows.length);
     });
+
+    it("gives a unique key to a whole season marked at the same moment, and to identical viewings", () => {
+        const show = item(71024, "tv");
+        const film = item(1, "movie");
+        const at = "2026-08-15T15:47:22.346Z";
+        const episode = (number: number): Watch => ({...watch(show, at), episode: {season: 1, episode: number}});
+        const rows = diaryRows([episode(1), episode(2), episode(3), watch(film, at), watch(film, at)]);
+        const keys = rows.map((row) => row.key);
+        expect(new Set(keys).size).toBe(keys.length);
+        expect(keys).toContain("tv-71024-s1e2-2026-08-15T15:47:22.346Z");
+    });
 });

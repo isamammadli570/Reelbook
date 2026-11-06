@@ -64,5 +64,12 @@
         "upcoming": "Coming to cinemas",
         "airingToday": "On today",
         "topRated": "Highest rated"
+    },
+    "recent": {
+        "title": "Recent searches",
+        "clear": "Clear",
+        "clearAll": "Clear recent searches",
+        "searchAgain": "Search “{{term}}” again",
+        "remove": "Remove “{{term}}”"
     }
 }

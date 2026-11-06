@@ -46,14 +46,27 @@ const localDay = (iso: string): string => {
     return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
 };
 
-/** The diary flattened for a virtual list: a heading row per month, then its viewings; the day shows once per day. */
-export const diaryRows = (watches: Watch[]): DiaryRow[] =>
-    diaryMonths(watches).flatMap((month): DiaryRow[] => [
+/**
+ * The diary flattened for a virtual list: a heading row per month, then its viewings; the day shows once per day.
+ * Each row's key names the episode too: imports often mark a whole season at the same moment, and a time alone
+ * would give those rows the same key. Anything still alike (two viewings at the same instant) gets a counter.
+ */
+export const diaryRows = (watches: Watch[]): DiaryRow[] => {
+    const used = new Map<string, number>();
+    const keyOf = (watch: Watch): string => {
+        const episode = watch.episode ? `s${watch.episode.season}e${watch.episode.episode}-` : "";
+        const base = `${watch.item.mediaType}-${watch.item.id}-${episode}${watch.watchedAt}`;
+        const seen = used.get(base) ?? 0;
+        used.set(base, seen + 1);
+        return seen ? `${base}-${seen}` : base;
+    };
+    return diaryMonths(watches).flatMap((month): DiaryRow[] => [
         {kind: "month", key: `month-${month.key}`, month: month.key},
         ...month.watches.map((watch, position): DiaryRow => ({
             kind: "watch",
-            key: `${watch.item.mediaType}-${watch.item.id}-${watch.watchedAt}`,
+            key: keyOf(watch),
             watch,
             isFirstOfDay: position === 0 || localDay(month.watches[position - 1].watchedAt) !== localDay(watch.watchedAt),
         })),
     ]);
+};

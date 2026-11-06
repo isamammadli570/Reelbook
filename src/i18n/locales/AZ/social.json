@@ -1,0 +1,67 @@
+{
+    "follow": "İzlə",
+    "followingButton": "İzləyirsən",
+    "followFailed": "Alınmadı. İnterneti yoxla və bir daha cəhd et.",
+    "sharingFailed": "Paylaşım ayarı tətbiq olunmadı. Bir daha cəhd et.",
+    "someone": "Kimsə",
+    "stars_one": "{{count}} ulduz",
+    "stars_other": "{{count}} ulduz",
+    "did": {
+        "watch": "izlədi",
+        "review": "rəy yazdı",
+        "episodes_one": "{{count}} epizod izlədi",
+        "episodes_other": "{{count}} epizod izlədi"
+    },
+    "time": {
+        "now": "indicə",
+        "minutes_one": "{{count}} dəq əvvəl",
+        "minutes_other": "{{count}} dəq əvvəl",
+        "hours_one": "{{count}} saat əvvəl",
+        "hours_other": "{{count}} saat əvvəl",
+        "days_one": "{{count}} gün əvvəl",
+        "days_other": "{{count}} gün əvvəl",
+        "weeks_one": "{{count}} həftə əvvəl",
+        "weeks_other": "{{count}} həftə əvvəl"
+    },
+    "counts": {
+        "followers_one": "{{count}} izləyici",
+        "followers_other": "{{count}} izləyici",
+        "following_one": "{{count}} izlənilən",
+        "following_other": "{{count}} izlənilən"
+    },
+    "friends": {
+        "title": "Dostlar",
+        "eyebrow": "İnsanlar",
+        "guest": "Dostları tapmaq və izləmək üçün hesaba daxil ol.",
+        "searchLabel": "İstifadəçi axtar",
+        "searchPlaceholder": "@istifadəçi adı və ya ad",
+        "noResults": "Heç kim tapılmadı",
+        "noResultsHint": "@adı tam yaz və ya adın bir hissəsini yoxla.",
+        "tabs": {
+            "following": "İzlədiklərin",
+            "followers": "İzləyicilərin"
+        },
+        "empty": {
+            "following": "Hələ heç kimi izləmirsən",
+            "followers": "Hələ izləyicin yoxdur"
+        },
+        "emptyHint": "Yuxarıda dostunun @adını axtar və izlə."
+    },
+    "feed": {
+        "title": "Dostlar nə izləyir",
+        "homeTitle": "Dostlar",
+        "eyebrow": "Lent",
+        "seeAll": "Hamısı",
+        "emptyTitle": "Lent hələ boşdur",
+        "emptyHint": "Dostlarını izlə: nə izlədikləri, ulduzları və rəyləri burada görünəcək.",
+        "findFriends": "Dost tap"
+    },
+    "user": {
+        "activity": "Son aktivlik",
+        "notFound": "İstifadəçi tapılmadı",
+        "notFoundHint": "@{{username}} adlı hesab yoxdur.",
+        "private": "Aktivlik gizlidir",
+        "privateHint": "Bu istifadəçi nə izlədiyini paylaşmır.",
+        "noActivity": "Hələ heç nə izləməyib"
+    }
+}

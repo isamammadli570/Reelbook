@@ -4,7 +4,7 @@ import * as DocumentPicker from "expo-document-picker";
 import * as Sharing from "expo-sharing";
 import {getLibrary, replaceLibrary, type Library} from "@/api/library.api";
 import {getProfile, saveProfile, type Profile} from "@/api/profile.api";
-import {createBackup, parseBackup} from "@/helpers/backup";
+import {createBackup, hasProfile, parseBackup} from "@/helpers/backup";
 
 const isWeb = Platform.OS === "web";
 
@@ -49,6 +49,8 @@ export const importBackup = async (): Promise<ImportResult> => {
     const backup = parseBackup(text);
     if (!backup) return {status: "invalid"};
 
-    const [library, profile] = await Promise.all([replaceLibrary(backup.library), saveProfile(backup.profile)]);
+    // A backup made elsewhere (converted from another app) has no profile; then the one here stays as it is.
+    const profile = hasProfile(backup.profile) ? await saveProfile(backup.profile) : await getProfile();
+    const library = await replaceLibrary(backup.library);
     return {status: "imported", library, profile};
 };

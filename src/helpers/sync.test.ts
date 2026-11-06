@@ -1,5 +1,5 @@
 import {describe, expect, it} from "vitest";
-import {mergeLibrary, type RemoteEntry} from "@/helpers/sync";
+import {mergeLibrary, staleKeys, type RemoteEntry} from "@/helpers/sync";
 import {createLibrary, itemKey, setReview, updateItem} from "@/helpers/library";
 import type {MediaSnapshot} from "@/api/library.api";
 
@@ -59,5 +59,30 @@ describe("mergeLibrary", () => {
         const remoteItem = local.items[KEY];
         const {outbox} = mergeLibrary(local, {[KEY]: {updatedAt: EARLY, item: remoteItem}});
         expect(outbox).toEqual({});
+    });
+});
+
+describe("what a sync downloads", () => {
+    it("says the device changed only when a server version won", () => {
+        const local = localWithReview("mine", LATE);
+        expect(mergeLibrary(local, {[KEY]: {updatedAt: EARLY, item: null}}).changed).toBe(false);
+        const remoteItem = localWithReview("theirs", LATE).items[KEY];
+        const newer = "2026-11-03T10:00:00.000Z";
+        expect(mergeLibrary(local, {[KEY]: {updatedAt: newer, item: {...remoteItem, updatedAt: newer}}}).changed).toBe(true);
+    });
+
+    it("asks only for titles newer on the server or unknown here", () => {
+        const local = {a: {updatedAt: LATE}, b: {updatedAt: EARLY}};
+        const removed = {c: LATE};
+        const remote = {a: EARLY, b: LATE, c: EARLY, d: EARLY};
+        expect(staleKeys(local, removed, remote)).toEqual(["b", "d"]);
+    });
+
+    it("never applies a placeholder for a title it did not download", () => {
+        // The device's newer copy wins over the stand-in null the sync passes for undownloaded titles.
+        const local = localWithReview("kept", LATE);
+        const {library, changed} = mergeLibrary(local, {[KEY]: {updatedAt: LATE, item: null}});
+        expect(changed).toBe(false);
+        expect(library.items[KEY].review?.text).toBe("kept");
     });
 });

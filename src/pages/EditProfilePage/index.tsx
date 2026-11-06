@@ -143,7 +143,7 @@ export const EditProfilePage = () => {
             setCoverError(t("edit.photoUploadFailed"));
             return;
         }
-        const isSaved = await saveProfile({...values, username, coverPath, coverUrl, avatarColor, avatarUrl}).then(() => true, () => false);
+        const isSaved = await saveProfile({...profile, ...values, username, coverPath, coverUrl, avatarColor, avatarUrl}).then(() => true, () => false);
         if (isSaved) router.back();
     });
 

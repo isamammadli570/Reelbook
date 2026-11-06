@@ -35,6 +35,10 @@ export const Screen = ({children, isEdgeToEdge}: ScreenProps) => {
                 style={{flex: 1, backgroundColor: background}}
                 contentContainerStyle={{alignItems: "center"}}
                 showsVerticalScrollIndicator={false}
+                // With the keyboard open (searching), the first tap on a result opens it instead of only closing the
+                // keyboard; scrolling the results tucks the keyboard away.
+                keyboardShouldPersistTaps="handled"
+                keyboardDismissMode="on-drag"
             >
                 <View
                     className={cn("w-full gap-6", !isEdgeToEdge && "px-5")}

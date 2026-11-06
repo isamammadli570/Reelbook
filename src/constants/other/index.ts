@@ -51,6 +51,8 @@ export const QUERY_KEYS = {
     LISTS: "lists",
     PERSON: "person",
     EPISODE_REMINDERS: "episodeReminders",
+    /** Everything about other people; one prefix, so following someone can refresh it all at once. */
+    SOCIAL: "social",
 } as const;
 
 export const LIST_LIMITS = {
@@ -68,6 +70,9 @@ export const STORAGE_KEYS = {
     LANGUAGE: "settings:language",
     EPISODE_REMINDERS: "settings:episodeReminders",
     PREFERENCES: "settings:preferences",
+    RECENT_SEARCHES: "search:recent",
+    /** Followed by a user id: their whole library has been published as activity once. */
+    ACTIVITY_PUBLISHED: "activity:published:",
 } as const;
 
 export const REVIEW_MAX_LENGTH = 1000;

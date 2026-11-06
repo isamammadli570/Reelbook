@@ -16,9 +16,11 @@ export type Profile = {
     avatarColor: string;
     /** Public address of the uploaded photo; the coloured initial shows when there is none. */
     avatarUrl: string | null;
+    /** Whether people who follow this user see what they watch, rate and review. */
+    shareActivity: boolean;
 };
 
-export const EMPTY_PROFILE: Profile = {name: "", username: "", bio: "", coverPath: null, coverUrl: null, avatarColor: DEFAULT_AVATAR_COLOR, avatarUrl: null};
+export const EMPTY_PROFILE: Profile = {name: "", username: "", bio: "", coverPath: null, coverUrl: null, avatarColor: DEFAULT_AVATAR_COLOR, avatarUrl: null, shareActivity: true};
 
 export const getProfile = async (): Promise<Profile> => ({...EMPTY_PROFILE, ...(await storage.get<Partial<Profile>>(STORAGE_KEYS.PROFILE))});
 
@@ -31,6 +33,7 @@ export const saveProfile = async (profile: Profile): Promise<Profile> => {
         coverUrl: profile.coverUrl ?? null,
         avatarColor: profile.avatarColor || DEFAULT_AVATAR_COLOR,
         avatarUrl: profile.avatarUrl ?? null,
+        shareActivity: profile.shareActivity ?? true,
     };
     await storage.set(STORAGE_KEYS.PROFILE, next);
     return next;

@@ -20,7 +20,12 @@ export const ROUTES = {
     PRIVACY: "/privacy",
     COLLECTION: "/collection/[id]",
     IMPORT_LETTERBOXD: "/import-letterboxd",
+    IMPORT_TRAKT: "/import-trakt",
     AUTH_CALLBACK: "/auth-callback",
+    CHOOSE_USERNAME: "/choose-username",
+    FRIENDS: "/friends",
+    FEED: "/feed",
+    USER: "/user/[username]",
 } as const;
 
 export const buildRoute = {
@@ -30,5 +35,6 @@ export const buildRoute = {
     userList: (listId: string) => `/lists/${listId}`,
     person: (personId: number) => `/person/${personId}`,
     collection: (collectionId: number) => `/collection/${collectionId}`,
+    user: (username: string) => `/user/${encodeURIComponent(username)}`,
     media: (media: {id: number; media_type: "movie" | "tv"}) => (media.media_type === "tv" ? buildRoute.series(media.id) : buildRoute.movie(media.id)),
 };

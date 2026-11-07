@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+<!-- Reelbook mark: an open book (two amber pages) with a cream play button across the spine and a bookmark. No background. -->
+<path d="M525 405V694C531 690 545 680 576 669C620 666 690 668 706 668C730 667 745 650 745 626V319C745 296 728 275 708 275H597C560 275 525 305 525 348Z" fill="#F5A524"/>
+<path d="M500 694C490 686 465 668 435 668H320C298 668 279 650 279 626V317C279 295 298 275 321 275H428C466 275 500 307 500 348Z" fill="#F5A524"/>
+<path d="M448 395L598 478L448 564Z" fill="#F4F2EE"/>
+<path d="M612 691H671V749L641 724L612 749Z" fill="#F5A524"/>
+</svg>

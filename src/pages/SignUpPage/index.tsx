@@ -11,7 +11,7 @@ import {AuthLayout} from "@/widgets/AuthLayout";
 import {GoogleButton, OrDivider} from "@/widgets/GoogleButton";
 import {EmptyState} from "@/widgets/EmptyState";
 import {signUp} from "@/api/auth.api";
-import {getProfile, saveProfile} from "@/api/profile.api";
+import {editProfile, getProfile} from "@/api/profile.api";
 import {isValidUsername, normalizeUsername} from "@/helpers/username";
 import {ROUTES} from "@/constants/routes";
 import {EMAIL_PATTERN, PASSWORD_MIN_LENGTH} from "@/constants/validation";
@@ -43,7 +43,7 @@ export const SignUpPage = () => {
         }
 
         // The handle shows on the profile straight away; sync uploads it with the rest of the profile.
-        await saveProfile({...(await getProfile()), username: handle});
+        await editProfile({...(await getProfile()), username: handle});
         if (result.needsConfirmation) setIsAwaitingConfirmation(true);
         else router.replace(ROUTES.HOME);
     });

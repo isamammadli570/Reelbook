@@ -1,4 +1,5 @@
 import {useEffect, useRef, useState, type ReactNode} from "react";
+import {AppState} from "react-native";
 import {useQueryClient} from "@tanstack/react-query";
 import {router} from "expo-router";
 import {getProfile} from "@/api/profile.api";
@@ -7,27 +8,28 @@ import i18n from "@/i18n";
 import {getCurrentSession} from "@/api/auth.api";
 import {useGetLibrary} from "@/hooks/library";
 import {useGetLists} from "@/hooks/lists";
-import {useGetProfile} from "@/hooks/profile";
 import {supabase} from "@/lib/supabase";
 import {toast} from "@/lib/toast";
-import {ensureActivityPublished, pushProfileChange, syncLibrary, syncLists, syncProfileOnSignIn} from "@/services/sync";
+import {ensureActivityPublished, syncLibrary, syncLists, syncProfile} from "@/services/sync";
 import {QUERY_KEYS} from "@/constants/other";
 
 /** Changes are uploaded a moment after the user stops editing, so a burst of taps makes one sync. */
 const SYNC_DELAY_MS = 1500;
+/** Coming back to the app fetches what other devices changed, at most this often. */
+const REFRESH_INTERVAL_MS = 30_000;
 
 type SyncProviderProps = {children: ReactNode};
 
 /**
  * Keeps the device and the account in step while signed in: it follows the session, merges the library
- * on sign-in and after each change, and uploads profile edits. Signed out, it does nothing.
+ * on sign-in, after each change and when the app comes back to the front, so edits made on another device
+ * show up without a restart. Profile edits are sent by the edit itself. Signed out, it does nothing.
  * When a sync fails, the changes stay on the device for the next try, and a toast says so once.
  */
 export const SyncProvider = ({children}: SyncProviderProps) => {
     const queryClient = useQueryClient();
     const [userId, setUserId] = useState<string | null>(null);
     const {data: library} = useGetLibrary();
-    const {data: profile} = useGetProfile();
     const {data: lists} = useGetLists();
     const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
     // Runs syncs one at a time so two of them never read and write the library at once.
@@ -69,7 +71,7 @@ export const SyncProvider = ({children}: SyncProviderProps) => {
             // A handle from the sign-up form; a name and photo from Google, which calls them differently.
             const metadata: Record<string, unknown> = session?.user.user_metadata ?? {};
             const text = (...keys: string[]) => keys.map((key) => metadata[key]).find((value): value is string => typeof value === "string" && value.trim() !== "") ?? null;
-            const profileChanged = await syncProfileOnSignIn(userId, {
+            const profileChanged = await syncProfile(userId, {
                 username: text("username"),
                 name: text("full_name", "name"),
                 avatarUrl: text("avatar_url", "picture"),
@@ -119,12 +121,26 @@ export const SyncProvider = ({children}: SyncProviderProps) => {
         return () => clearTimeout(handle);
     }, [lists, userId, queryClient]);
 
-    // Profile edits: upload after a short pause.
+    // Back to the front (phone unlocked, tab shown again): pick up what other devices changed meanwhile.
+    // Profile edits no longer upload on every load, which is what let a stale device undo a newer edit.
+    const lastRefresh = useRef(0);
     useEffect(() => {
-        if (!userId || !profile) return;
-        const handle = setTimeout(() => enqueue(() => pushProfileChange(userId)), SYNC_DELAY_MS);
-        return () => clearTimeout(handle);
-    }, [profile, userId]);
+        if (!userId) return;
+        // Signing in has just synced everything, so the first refresh waits a full interval.
+        lastRefresh.current = Date.now();
+        const subscription = AppState.addEventListener("change", (state) => {
+            if (state !== "active" || Date.now() - lastRefresh.current < REFRESH_INTERVAL_MS) return;
+            lastRefresh.current = Date.now();
+            enqueue(async () => {
+                if (await syncProfile(userId)) void queryClient.invalidateQueries({queryKey: [QUERY_KEYS.PROFILE]});
+                if (await syncLibrary(userId)) void queryClient.invalidateQueries({queryKey: [QUERY_KEYS.LIBRARY]});
+            });
+            enqueue(async () => {
+                if (await syncLists(userId)) void queryClient.invalidateQueries({queryKey: [QUERY_KEYS.LISTS]});
+            });
+        });
+        return () => subscription.remove();
+    }, [userId, queryClient]);
 
     return <>{children}</>;
 };

@@ -4,7 +4,7 @@ import {createLibrary} from "@/helpers/library";
 import type {Profile} from "@/api/profile.api";
 
 const NOW = "2026-11-05T20:00:00.000Z";
-const PROFILE: Profile = {name: "İsa", username: "isa", bio: "Film", coverPath: "/cover.jpg", coverUrl: null, avatarColor: "teal", avatarUrl: null, shareActivity: true};
+const PROFILE: Profile = {name: "İsa", username: "isa", bio: "Film", coverPath: "/cover.jpg", coverUrl: null, avatarColor: "teal", avatarUrl: null, shareActivity: true, updatedAt: "2026-11-01T10:00:00.000Z"};
 
 describe("backup round trip", () => {
     it("reads back what was exported", () => {
@@ -27,7 +27,7 @@ describe("parseBackup", () => {
 
     it("fills missing profile fields with defaults, so older backups still import", () => {
         const backup = parseBackup(JSON.stringify({version: BACKUP_VERSION, library: {items: {}}, profile: {name: 5}}));
-        expect(backup?.profile).toEqual({name: "", username: "", bio: "", coverPath: null, coverUrl: null, avatarColor: "amber", avatarUrl: null, shareActivity: true});
+        expect(backup?.profile).toEqual({name: "", username: "", bio: "", coverPath: null, coverUrl: null, avatarColor: "amber", avatarUrl: null, shareActivity: true, updatedAt: ""});
     });
 });
 

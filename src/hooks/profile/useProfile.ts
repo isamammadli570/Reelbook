@@ -1,5 +1,6 @@
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
-import {getProfile, saveProfile, type Profile} from "@/api/profile.api";
+import {editProfile, getProfile, type Profile} from "@/api/profile.api";
+import {pushProfileNow} from "@/services/sync";
 import {ensureAccount} from "@/lib/accountGate";
 import {reportSaveError} from "@/lib/saveError";
 import {QUERY_KEYS} from "@/constants/other";
@@ -19,9 +20,13 @@ export const useSaveProfile = () => {
     return useMutation<Profile, Error, Profile>({
         mutationFn: async (profile) => {
             await ensureAccount();
-            return saveProfile(profile);
+            return editProfile(profile);
         },
-        onSuccess: (profile) => queryClient.setQueryData([QUERY_KEYS.PROFILE], profile),
+        onSuccess: (profile) => {
+            queryClient.setQueryData([QUERY_KEYS.PROFILE], profile);
+            // Straight to the server; if that fails, the next sync sends it, since this edit is the newer one.
+            void pushProfileNow();
+        },
         onError: reportSaveError,
     });
 };

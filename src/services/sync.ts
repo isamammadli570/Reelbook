@@ -1,6 +1,8 @@
 import {getLibrary, replaceLibrary, type LibraryItem} from "@/api/library.api";
 import {getLists, replaceLists} from "@/api/lists.api";
+import {getCurrentSession} from "@/api/auth.api";
 import {EMPTY_PROFILE, getProfile, saveProfile} from "@/api/profile.api";
+import {mergeProfile, type AccountDetails} from "@/helpers/profileSync";
 import {
     pullRemoteLibraryEntries,
     pullRemoteLibraryVersions,
@@ -91,37 +93,23 @@ export const syncLists = async (userId: string): Promise<boolean> => {
 };
 
 /**
- * On sign-in: a device with an empty profile takes the server's; otherwise the device's profile is uploaded.
- * A username chosen at sign-up travels in the account metadata until the first profile upload.
+ * Brings the profile in step with the server: whichever side holds the newer edit wins (see `mergeProfile`).
+ * Runs on sign-in and whenever the app comes back to the front. Returns `true` when this device's profile changed.
  */
-/** What the account itself knows: the handle chosen at sign-up, or the name and photo a Google account brings. */
-export type AccountDetails = {username: string | null; name: string | null; avatarUrl: string | null};
-
-export const syncProfileOnSignIn = async (userId: string, account: AccountDetails): Promise<boolean> => {
+export const syncProfile = async (userId: string, account: AccountDetails = {username: null, name: null, avatarUrl: null}): Promise<boolean> => {
     const local = await getProfile();
     const remote = await pullRemoteProfile(userId);
-
-    const isLocalEmpty = !local.name && !local.bio && !local.username;
-    if (remote && isLocalEmpty) {
-        await saveProfile(remote);
-        return true;
-    }
-
-    const username = local.username || remote?.username || account.username || "";
-    // Photos set on another device carry over to one that has none yet.
-    const next = await saveProfile({
-        ...local,
-        username,
-        name: local.name || remote?.name || account.name || "",
-        avatarUrl: local.avatarUrl ?? remote?.avatarUrl ?? account.avatarUrl ?? null,
-        coverUrl: local.coverUrl ?? remote?.coverUrl ?? null,
-    });
-    await pushRemoteProfile(userId, next);
-    return next.username !== local.username || next.name !== local.name || next.avatarUrl !== local.avatarUrl;
+    const {profile, shouldPush, changed} = mergeProfile(local, remote, account, new Date().toISOString());
+    if (changed) await saveProfile(profile);
+    if (shouldPush) await pushRemoteProfile(userId, profile);
+    return changed;
 };
 
-export const pushProfileChange = async (userId: string): Promise<void> => {
-    await pushRemoteProfile(userId, await getProfile());
+/** Sends a profile edit right away when signed in; a failure is left for the next sync to retry. */
+export const pushProfileNow = async (): Promise<void> => {
+    const session = await getCurrentSession().catch(() => null);
+    if (!session) return;
+    await pushRemoteProfile(session.user.id, await getProfile()).catch(() => undefined);
 };
 
 /**
@@ -131,7 +119,7 @@ export const pushProfileChange = async (userId: string): Promise<void> => {
 export const flushAndClearDevice = async (userId: string): Promise<void> => {
     await syncLibrary(userId);
     await syncLists(userId);
-    await pushProfileChange(userId);
+    await syncProfile(userId);
     await clearDevice();
 };
 

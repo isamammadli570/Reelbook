@@ -85,11 +85,11 @@ export const pushRemoteLists = async (userId: string, entries: Record<string, Ve
     if (error) throw error;
 };
 
-type ProfileRow = {name: string; bio: string; username: string | null; cover_path: string | null; cover_url: string | null; avatar_color: string | null; avatar_url: string | null; share_activity?: boolean | null};
+type ProfileRow = {name: string; bio: string; username: string | null; cover_path: string | null; cover_url: string | null; avatar_color: string | null; avatar_url: string | null; share_activity?: boolean | null; updated_at?: string | null};
 
 /** Before the social migration runs, `share_activity` does not exist; profiles then sync without it. */
 const isMissingShareColumn = (error: {message?: string} | null): boolean => Boolean(error?.message?.includes("share_activity"));
-const PROFILE_COLUMNS = "name, bio, username, cover_path, cover_url, avatar_color, avatar_url";
+const PROFILE_COLUMNS = "name, bio, username, cover_path, cover_url, avatar_color, avatar_url, updated_at";
 
 export const pullRemoteProfile = async (userId: string): Promise<Profile | null> => {
     const ask = (columns: string) => client().from("profiles").select(columns).eq("user_id", userId).maybeSingle<ProfileRow>();
@@ -106,6 +106,7 @@ export const pullRemoteProfile = async (userId: string): Promise<Profile | null>
         avatarColor: data.avatar_color ?? DEFAULT_AVATAR_COLOR,
         avatarUrl: data.avatar_url,
         shareActivity: data.share_activity ?? true,
+        updatedAt: data.updated_at ? normalise(data.updated_at) : "",
     };
 };
 
@@ -120,7 +121,8 @@ export const pushRemoteProfile = async (userId: string, profile: Profile): Promi
         cover_url: profile.coverUrl,
         avatar_color: profile.avatarColor,
         avatar_url: profile.avatarUrl,
-        updated_at: new Date().toISOString(),
+        // The edit time, so another device can tell whose change is newer.
+        updated_at: profile.updatedAt || new Date().toISOString(),
     };
     let {error} = await client().from("profiles").upsert({...row, share_activity: profile.shareActivity}, {onConflict: "user_id"});
     if (isMissingShareColumn(error)) ({error} = await client().from("profiles").upsert(row, {onConflict: "user_id"}));

@@ -51,6 +51,7 @@ export const parseBackup = (text: string): Backup | null => {
             avatarColor: typeof profile.avatarColor === "string" ? profile.avatarColor : DEFAULT_AVATAR_COLOR,
             avatarUrl: typeof profile.avatarUrl === "string" ? profile.avatarUrl : null,
             shareActivity: typeof profile.shareActivity === "boolean" ? profile.shareActivity : true,
+            updatedAt: typeof profile.updatedAt === "string" ? profile.updatedAt : "",
         },
     };
 };

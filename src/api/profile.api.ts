@@ -18,9 +18,14 @@ export type Profile = {
     avatarUrl: string | null;
     /** Whether people who follow this user see what they watch, rate and review. */
     shareActivity: boolean;
+    /**
+     * When the person last edited the profile on any device (ISO), or "" if never. Sync keeps the newer
+     * edit; it is not touched by syncing, only by editing.
+     */
+    updatedAt: string;
 };
 
-export const EMPTY_PROFILE: Profile = {name: "", username: "", bio: "", coverPath: null, coverUrl: null, avatarColor: DEFAULT_AVATAR_COLOR, avatarUrl: null, shareActivity: true};
+export const EMPTY_PROFILE: Profile = {name: "", username: "", bio: "", coverPath: null, coverUrl: null, avatarColor: DEFAULT_AVATAR_COLOR, avatarUrl: null, shareActivity: true, updatedAt: ""};
 
 export const getProfile = async (): Promise<Profile> => ({...EMPTY_PROFILE, ...(await storage.get<Partial<Profile>>(STORAGE_KEYS.PROFILE))});
 
@@ -34,7 +39,11 @@ export const saveProfile = async (profile: Profile): Promise<Profile> => {
         avatarColor: profile.avatarColor || DEFAULT_AVATAR_COLOR,
         avatarUrl: profile.avatarUrl ?? null,
         shareActivity: profile.shareActivity ?? true,
+        updatedAt: profile.updatedAt ?? "",
     };
     await storage.set(STORAGE_KEYS.PROFILE, next);
     return next;
 };
+
+/** Saves a change the person made, stamping it so it wins over older copies on other devices. */
+export const editProfile = (profile: Profile): Promise<Profile> => saveProfile({...profile, updatedAt: new Date().toISOString()});

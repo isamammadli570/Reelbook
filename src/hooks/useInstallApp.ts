@@ -16,7 +16,15 @@ let deferredPrompt: InstallPromptEvent | null = null;
 const listeners = new Set<() => void>();
 const notify = () => listeners.forEach((listener) => listener());
 
-if (isWeb) {
+let isWatching = false;
+
+/**
+ * Starts catching the install prompt. Call it once at app start (the root layout does): Settings loads lazily,
+ * long after the browser has fired the event, so listening only there would miss it.
+ */
+export const watchInstallPrompt = () => {
+    if (!isWeb || isWatching) return;
+    isWatching = true;
     window.addEventListener("beforeinstallprompt", (event) => {
         event.preventDefault();
         deferredPrompt = event as InstallPromptEvent;
@@ -26,7 +34,14 @@ if (isWeb) {
         deferredPrompt = null;
         notify();
     });
-}
+    // The service worker (public/sw.js) is part of what makes browsers offer the install. Left out in dev,
+    // where a cached page would only get in the way of reloads.
+    if (!__DEV__ && "serviceWorker" in navigator) {
+        void navigator.serviceWorker.register("/sw.js").catch(() => undefined);
+    }
+};
+
+watchInstallPrompt();
 
 const isStandalone = () => isWeb && (window.matchMedia("(display-mode: standalone)").matches || (navigator as Navigator & {standalone?: boolean}).standalone === true);
 

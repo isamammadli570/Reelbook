@@ -12,6 +12,10 @@ import {RemindersProvider} from "@/provider/RemindersProvider";
 import {SyncProvider} from "@/provider/SyncProvider";
 import {AccountPrompt} from "@/widgets/AccountPrompt";
 import {ToastHost} from "@/widgets/ToastHost";
+import {watchInstallPrompt} from "@/hooks/useInstallApp";
+
+// The browser fires its install prompt early; catch it before any screen (Settings loads lazily) is open.
+watchInstallPrompt();
 
 // Expo Router requires route files to default-export their component.
 export default function RootLayout() {

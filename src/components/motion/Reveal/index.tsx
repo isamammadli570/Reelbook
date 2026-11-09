@@ -8,6 +8,8 @@ type RevealProps = ComponentProps<typeof AnimatedView> & {
     /** Position in its list, so siblings enter one after another. */
     index?: number;
     variant?: RevealVariant;
+    /** False skips the entrance, for items far down a long list. */
+    isActive?: boolean;
 };
 
 /**
@@ -16,9 +18,12 @@ type RevealProps = ComponentProps<typeof AnimatedView> & {
  * The entrance is built once: a new one on each render would, on the web, cancel an entrance still running
  * when data arrives mid-way, and leave the content stuck invisible.
  */
-export const Reveal = ({index = 0, variant = "rise", ...props}: RevealProps) => {
+export const Reveal = ({index = 0, variant = "rise", isActive = true, ...props}: RevealProps) => {
     const reduced = useReducedMotion();
     const isEntranceOn = useContext(EntranceContext);
-    const entering = useMemo(() => (reduced || !isEntranceOn ? undefined : enteringFor(variant, index)), [reduced, isEntranceOn, variant, index]);
+    const entering = useMemo(
+        () => (reduced || !isEntranceOn || !isActive ? undefined : enteringFor(variant, index)),
+        [reduced, isEntranceOn, isActive, variant, index],
+    );
     return <AnimatedView entering={entering} {...props}/>;
 };

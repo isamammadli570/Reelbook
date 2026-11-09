@@ -3,8 +3,13 @@ import {View} from "react-native";
 import {Skeleton} from "@/components/ui/skeleton";
 import {PosterCard} from "@/widgets/PosterCard";
 import {POSTER_GAP, usePosterWidth} from "@/hooks/usePosterWidth";
+import {useProgressiveCount} from "@/hooks/useProgressiveCount";
 import {POSTER_COLUMNS} from "@/constants/other";
 import type {MediaSummary} from "@/api/media.api";
+
+/** Posters drawn at once, and added per step after that, so a long grid never blocks the page opening. */
+const FIRST_POSTERS = 12;
+const POSTERS_PER_STEP = 12;
 
 type PosterGridProps = {
     items: MediaSummary[];
@@ -23,6 +28,7 @@ type PosterGridProps = {
 /** Four posters per row on a phone by default, the app's main building block for lists of titles. */
 export const PosterGrid = ({items, isLoading, placeholderCount, isRanked, columns = POSTER_COLUMNS, renderFooter, isCompact, onPress}: PosterGridProps) => {
     const width = usePosterWidth(columns);
+    const shown = useProgressiveCount(items.length, FIRST_POSTERS, POSTERS_PER_STEP);
 
     return (
         <View className="flex-row flex-wrap" style={{columnGap: POSTER_GAP, rowGap: 16}}>
@@ -34,7 +40,7 @@ export const PosterGrid = ({items, isLoading, placeholderCount, isRanked, column
                         <Skeleton className="h-2.5 w-1/2"/>
                     </View>
                 ))
-                : items.map((media, index) => (
+                : items.slice(0, shown).map((media, index) => (
                     <PosterCard
                         key={`${media.media_type}-${media.id}`}
                         media={media}

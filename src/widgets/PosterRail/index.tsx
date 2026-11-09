@@ -3,12 +3,16 @@ import {router} from "expo-router";
 import {Skeleton} from "@/components/ui/skeleton";
 import {PosterCard} from "@/widgets/PosterCard";
 import {Section} from "@/widgets/Section";
+import {useProgressiveCount} from "@/hooks/useProgressiveCount";
 import {buildRoute} from "@/constants/routes";
 import type {MediaSummary} from "@/api/media.api";
 
 /** Posters a little narrower than a three-column grid, so the next one peeks in and invites a swipe. */
 const RAIL_POSTER_WIDTH = 108;
 const RAIL_LIMIT = 15;
+/** Drawn at once; the rest of the row follows in chunks, since most of it starts off-screen. */
+const RAIL_FIRST = 5;
+const RAIL_STEP = 5;
 
 type PosterRailProps = {
     title: string;
@@ -19,6 +23,7 @@ type PosterRailProps = {
 
 /** A titled row of posters that scrolls sideways; hidden once loaded if there is nothing to show. */
 export const PosterRail = ({title, items, isLoading, index = 0}: PosterRailProps) => {
+    const shown = useProgressiveCount(Math.min(items?.length ?? 0, RAIL_LIMIT), RAIL_FIRST, RAIL_STEP);
     if (!isLoading && !items?.length) return null;
 
     return (
@@ -31,7 +36,7 @@ export const PosterRail = ({title, items, isLoading, index = 0}: PosterRailProps
                             <Skeleton className="h-3 w-4/5"/>
                         </View>
                     ))
-                    : items?.slice(0, RAIL_LIMIT).map((media, position) => (
+                    : items?.slice(0, shown).map((media, position) => (
                         <PosterCard
                             key={`${media.media_type}-${media.id}`}
                             media={media}

@@ -8,6 +8,7 @@ import {Skeleton} from "@/components/ui/skeleton";
 import {EmptyState} from "@/widgets/EmptyState";
 import {QueryErrorState} from "@/widgets/QueryErrorState";
 import {Section} from "@/widgets/Section";
+import {EarlierEpisodesSheet} from "@/pages/SeriesPage/widgets/EarlierEpisodesSheet";
 import {EpisodeMap, type EpisodeCell} from "@/pages/SeriesPage/widgets/EpisodeMap";
 import {EpisodeRow} from "@/pages/SeriesPage/widgets/EpisodeRow";
 import {EpisodeSheet} from "@/pages/SeriesPage/widgets/EpisodeSheet";
@@ -16,6 +17,7 @@ import {useRestoreEpisodes, useSetSeasonWatched, useToggleEpisode} from "@/hooks
 import {defaultSeasonNumber, isReleased, orderSeasons} from "@/helpers/details";
 import {episodeKey, isEpisodeWatched, nextEpisode} from "@/helpers/library";
 import {haptics} from "@/lib/haptics";
+import {usePreference} from "@/lib/preferences";
 import {toast} from "@/lib/toast";
 import {cn} from "@/lib/utils";
 import type {LibraryItem, MediaSnapshot} from "@/api/library.api";
@@ -69,10 +71,36 @@ export const SeasonSection = ({seriesId, seasons, snapshot, item}: SeasonSection
     const releasedCells = cells.filter((cell) => cell.isReleased);
     const isSeasonWatched = releasedCells.length > 0 && releasedCells.every((cell) => cell.isWatched);
 
+    const [earlierPolicy, setEarlierPolicy] = usePreference("earlierEpisodes");
+    // The episode being marked while earlier ones are still open, waiting for the answer.
+    const [pending, setPending] = useState<{episode: Episode; earlier: number[]} | null>(null);
+
+    const markWithEarlier = useCallback((episode: Episode, earlier: number[]) => {
+        haptics.success();
+        setSeasonWatched({snapshot, season: episode.season_number, episodes: [...earlier, episode.episode_number], isWatched: true});
+    }, [snapshot, setSeasonWatched]);
+
     const toggle = useCallback((episode: Episode) => {
+        const isWatched = cells.find((cell) => cell.episode.id === episode.id)?.isWatched;
+        // Only marking asks; earlier aired episodes of this season that are still open.
+        const earlier = isWatched || earlierPolicy === "skip"
+            ? []
+            : releasedCells.filter((cell) => !cell.isWatched && cell.episode.episode_number < episode.episode_number).map((cell) => cell.episode.episode_number);
+        if (earlier.length && earlierPolicy === "mark") return markWithEarlier(episode, earlier);
+        if (earlier.length) return setPending({episode, earlier});
         haptics.tap();
         toggleEpisode({snapshot, episode: {season: episode.season_number, episode: episode.episode_number}});
-    }, [snapshot, toggleEpisode]);
+    }, [cells, releasedCells, earlierPolicy, markWithEarlier, snapshot, toggleEpisode]);
+
+    const answerEarlier = (markEarlier: boolean, remember: boolean) => {
+        if (!pending) return;
+        const {episode, earlier} = pending;
+        setPending(null);
+        if (remember) setEarlierPolicy(markEarlier ? "mark" : "skip");
+        if (markEarlier) return markWithEarlier(episode, earlier);
+        haptics.tap();
+        toggleEpisode({snapshot, episode: {season: episode.season_number, episode: episode.episode_number}});
+    };
 
     const toggleSeason = () => {
         if (seasonNumber === null) return;
@@ -147,6 +175,7 @@ export const SeasonSection = ({seriesId, seasons, snapshot, item}: SeasonSection
                 })}
             </ScrollView>
             <View className="gap-2.5">{renderEpisodes()}</View>
+            <EarlierEpisodesSheet isOpen={pending !== null} count={pending?.earlier.length ?? 0} onAnswer={answerEarlier} onClose={() => setPending(null)}/>
             <EpisodeSheet
                 episode={openEpisode}
                 isWatched={Boolean(openCell?.isWatched)}

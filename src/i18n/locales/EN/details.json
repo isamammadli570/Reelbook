@@ -141,5 +141,12 @@
         "homepage": "Official site",
         "open": "Open on {{site}}",
         "openHomepage": "Open the official site"
+    },
+    "earlier": {
+        "title": "Earlier episodes",
+        "description": "{{count}} earlier episodes are not marked yet. Mark them as watched too?",
+        "remember": "Don’t ask again",
+        "onlyThis": "Only this one",
+        "markAll": "Mark all"
     }
 }

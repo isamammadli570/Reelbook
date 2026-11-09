@@ -34,12 +34,18 @@
         "language": "Language",
         "haptics": "Haptic feedback",
         "hideSpoilers": "Hide episode spoilers",
-        "hideSpoilersHint": "Blur stills and hide titles of episodes you haven't watched."
+        "hideSpoilersHint": "Blur stills and hide titles of episodes you haven't watched.",
+        "earlierEpisodes": "Ask about earlier episodes",
+        "earlierEpisodesHint": "When you mark an episode, offers to mark the unwatched ones before it too. Turned off, only the episode you pick is marked."
     },
     "data": {
         "export": "Export my data",
         "import": "Restore from backup",
-        "hint": "Keep your diary, ratings and profile in one file, then restore them on any device."
+        "hint": "Keep your diary, ratings, lists and profile in one file, then restore them on any device.",
+        "restoreTitle": "Restore this backup?",
+        "restoreWithLists": "Backup from {{date}}: {{titles}} titles and {{lists}} lists. Your current library and lists will be replaced with it, on all your devices. This can't be undone.",
+        "restoreLibraryOnly": "Backup from {{date}}: {{titles}} titles. Your current library will be replaced with it, on all your devices; your lists stay as they are. This can't be undone.",
+        "restoreConfirm": "Yes, restore"
     },
     "common": {
         "cancel": "Cancel"

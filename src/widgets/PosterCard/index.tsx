@@ -8,6 +8,9 @@ import {imageUrl, mediaTitle, mediaYear} from "@/helpers/media";
 import {IMAGE_SIZE} from "@/constants/other";
 import type {MediaSummary} from "@/api/media.api";
 
+/** Only the first posters animate in; later ones mount while scrolling or in chunks, where it only costs frames. */
+const ENTRANCE_POSTERS = 8;
+
 type PosterCardProps = {
     media: MediaSummary;
     width: number;
@@ -29,7 +32,7 @@ export const PosterCard = memo(({media, width, rank, index = 0, footer, isCompac
 
     return (
         // The entrance lives on a wrapper: an entering transform would overwrite the press scale on the card itself.
-        <Reveal variant="rise" index={index} style={{width}}>
+        <Reveal variant="rise" index={index} isActive={index < ENTRANCE_POSTERS} style={{width}}>
         <PressScale onPress={() => onPress?.(media)} aria-label={title} className="gap-1.5">
             <View className="aspect-[2/3] w-full overflow-hidden rounded-[10px] border border-border bg-surface">
                 {poster ? (

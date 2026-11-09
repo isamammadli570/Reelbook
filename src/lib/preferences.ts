@@ -8,9 +8,11 @@ export type Preferences = {
     haptics: boolean;
     /** Blur stills and hide titles of episodes the user has not watched yet. */
     hideSpoilers: boolean;
+    /** What to do with earlier unwatched episodes when a later one is marked: ask each time, or always/never mark them. */
+    earlierEpisodes: "ask" | "mark" | "skip";
 };
 
-const DEFAULTS: Preferences = {haptics: true, hideSpoilers: false};
+const DEFAULTS: Preferences = {haptics: true, hideSpoilers: false, earlierEpisodes: "ask"};
 
 let current: Preferences = DEFAULTS;
 const listeners = new Set<() => void>();

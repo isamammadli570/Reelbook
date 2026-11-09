@@ -44,6 +44,6 @@ describe("preferences", () => {
         const {getPreference, setPreference} = await load();
         setPreference("haptics", false);
         expect(getPreference("haptics")).toBe(false);
-        expect(stored.writes.at(-1)).toEqual({haptics: false, hideSpoilers: false});
+        expect(stored.writes.at(-1)).toEqual({haptics: false, hideSpoilers: false, earlierEpisodes: "ask"});
     });
 });

@@ -141,5 +141,12 @@
         "homepage": "Rəsmi sayt",
         "open": "{{site}} saytında aç",
         "openHomepage": "Rəsmi saytı aç"
+    },
+    "earlier": {
+        "title": "Əvvəlki epizodlar",
+        "description": "Bu epizoddan əvvəl izləmədiyin {{count}} epizod var. Onları da izlənmiş kimi işarələyim?",
+        "remember": "Bir daha soruşma",
+        "onlyThis": "Yalnız bunu",
+        "markAll": "Hamısını işarələ"
     }
 }

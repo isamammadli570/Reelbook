@@ -34,12 +34,18 @@
         "language": "Dil",
         "haptics": "Vibrasiya",
         "hideSpoilers": "Spoylerləri gizlət",
-        "hideSpoilersHint": "İzləmədiyin epizodların şəkli bulanıq olur, adı gizlənir."
+        "hideSpoilersHint": "İzləmədiyin epizodların şəkli bulanıq olur, adı gizlənir.",
+        "earlierEpisodes": "Əvvəlki epizodlar barədə soruş",
+        "earlierEpisodesHint": "Epizod işarələyəndə əvvəlki izlənməmiş epizodları da işarələməyi təklif edir. Söndürəndə yalnız seçdiyin epizod işarələnir."
     },
     "data": {
         "export": "Məlumatları ixrac et",
         "import": "Backup-dan bərpa et",
-        "hint": "Gündəliyini, reytinqlərini və profilini bir faylda saxla, sonra istənilən cihazda bərpa et."
+        "hint": "Gündəliyini, qiymətlərini, siyahılarını və profilini bir faylda saxla, sonra istənilən cihazda bərpa et.",
+        "restoreTitle": "Bu yedək bərpa edilsin?",
+        "restoreWithLists": "{{date}} tarixli yedək: {{titles}} başlıq və {{lists}} siyahı. Hazırkı kitabxana və siyahıların bununla əvəz olunacaq, bütün cihazlarında. Geri qaytarmaq olmur.",
+        "restoreLibraryOnly": "{{date}} tarixli yedək: {{titles}} başlıq. Hazırkı kitabxanan bununla əvəz olunacaq, bütün cihazlarında; siyahıların olduğu kimi qalacaq. Geri qaytarmaq olmur.",
+        "restoreConfirm": "Bəli, bərpa et"
     },
     "common": {
         "cancel": "Ləğv et"

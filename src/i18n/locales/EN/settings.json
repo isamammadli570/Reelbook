@@ -27,8 +27,7 @@
         "you": "You",
         "app": "App",
         "data": "Your data",
-        "about": "About",
-        "friends": "Friends"
+        "about": "About"
     },
     "app": {
         "language": "Language",
@@ -96,8 +95,8 @@
                 "body": "Reelbook has no ads, analytics or tracking tools. Your data is never sold or shared with third parties."
             },
             {
-                "title": "Friends and sharing",
-                "body": "Other people with an account can find you by your @username or name, see your profile (name, @username, photo, cover, bio) and follow you. While “Share my activity” is on they also see the viewings in your diary, the stars you gave them, your reviews and how many episodes you watched. Your lists, watchlist and email are never shown. Turn sharing off in Settings and your activity is hidden at once and removed from the server."
+                "title": "Public profiles",
+                "body": "Profiles are public, as on Letterboxd. Anyone with your profile link, with or without an account, can see your name, @username, photo, cover and bio, your watch time and counts, favourites, diary with the stars you gave, your shelves (movies, series, watchlist), reviews and lists. People with an account can find you by @username or name and follow you. Your email is never shown. Accounts that had turned sharing off earlier stay hidden until their owner makes the profile public."
             },
             {
                 "title": "Notifications",
@@ -157,10 +156,6 @@
         },
         "listsFound": "Plus {{count}} lists ({{entries}} films) will be added to your lists.",
         "doneLists": "{{count}} lists are now in Lists too."
-    },
-    "sharing": {
-        "label": "Share my activity",
-        "hint": "People who follow you see what you watch, your stars and reviews in their feed. Turning it off hides all of it at once. Your profile (name, @username, photo, bio) shows in search either way."
     },
     "trakt": {
         "row": "Import from Trakt",

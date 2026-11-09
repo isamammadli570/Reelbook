@@ -9,12 +9,15 @@ import {PosterGrid} from "@/widgets/PosterGrid";
 import {RowHeader} from "@/pages/ProfilePage/widgets/RowHeader";
 import {POSTER_GAP, usePosterWidth} from "@/hooks/usePosterWidth";
 import {toMediaSummary} from "@/helpers/library";
-import {buildRoute, ROUTES} from "@/constants/routes";
+import {buildRoute, ROUTES, type ProfileRoutes} from "@/constants/routes";
 import {SHELF, SHELF_PREVIEW} from "@/constants/other";
 import type {LibraryItem} from "@/api/library.api";
 
 type FavoritesRowProps = {
     items: LibraryItem[];
+    routes: ProfileRoutes;
+    /** On your own profile the empty places invite adding a favourite; on someone else's they stay plain. */
+    isOwn: boolean;
     index?: number;
 };
 
@@ -22,7 +25,7 @@ type FavoritesRowProps = {
  * Four favourite posters, always four places: empty ones invite adding a favourite, so the row never looks
  * half-built. The count opens the full list once there are more than fit.
  */
-export const FavoritesRow = ({items, index = 0}: FavoritesRowProps) => {
+export const FavoritesRow = ({items, routes, isOwn, index = 0}: FavoritesRowProps) => {
     const {t} = useTranslation("profile");
     const muted = String(useCSSVariable("--color-subtle-foreground"));
     const width = usePosterWidth();
@@ -34,7 +37,7 @@ export const FavoritesRow = ({items, index = 0}: FavoritesRowProps) => {
             <RowHeader
                 title={t("shelves.favorites")}
                 aside={items.length > SHELF_PREVIEW ? String(items.length) : undefined}
-                onPress={items.length > SHELF_PREVIEW ? () => router.push(buildRoute.shelf(SHELF.FAVORITES)) : undefined}
+                onPress={items.length > SHELF_PREVIEW ? () => router.push(routes.shelf(SHELF.FAVORITES)) : undefined}
             />
             <View className="flex-row" style={{columnGap: POSTER_GAP}}>
                 {preview.length > 0 && (
@@ -44,12 +47,13 @@ export const FavoritesRow = ({items, index = 0}: FavoritesRowProps) => {
                     // The entrance sits on a wrapper so that its transform does not overwrite the press scale.
                     <Reveal key={slot} variant="pop" index={preview.length + slot}>
                         <PressScale
-                            onPress={() => router.push(ROUTES.DISCOVER)}
-                            aria-label={t("favorites.add")}
+                            onPress={isOwn ? () => router.push(ROUTES.DISCOVER) : undefined}
+                            disabled={!isOwn}
+                            aria-label={isOwn ? t("favorites.add") : undefined}
                             className="aspect-[2/3] items-center justify-center rounded-[10px] border border-dashed border-border"
                             style={{width}}
                         >
-                            <Plus size={22} strokeWidth={1.8} color={muted}/>
+                            {isOwn && <Plus size={22} strokeWidth={1.8} color={muted}/>}
                         </PressScale>
                     </Reveal>
                 ))}

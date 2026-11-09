@@ -1,36 +1,34 @@
+import {useMemo} from "react";
 import {useTranslation} from "react-i18next";
-import {AccountRequired} from "@/widgets/AccountRequired";
 import {BackButton} from "@/widgets/BackButton";
 import {CreateListButton} from "@/widgets/CreateListButton";
 import {EmptyState} from "@/widgets/EmptyState";
 import {ListGrid} from "@/widgets/ListGrid";
 import {PageTitle} from "@/widgets/PageTitle";
+import {ProfileSourceState} from "@/widgets/ProfileSourceState";
 import {Screen} from "@/widgets/Screen";
-import {useSession} from "@/hooks/auth/useSession";
-import {useUserLists} from "@/hooks/lists";
-import {hasSupabase} from "@/lib/env";
+import {useProfileSource} from "@/hooks/social";
+import {sortedLists} from "@/helpers/lists";
+import {ownerEyebrow} from "@/helpers/social";
 
-/** Every list the user has made, two to a row, with a button to start a new one. */
+/** Every list someone has made, two to a row; on your own, with a button to start a new one. */
 export const ListsPage = () => {
     const {t} = useTranslation("lists");
-    const {session, isLoading: isSessionLoading} = useSession();
-    const {lists} = useUserLists();
+    const {t: tProfile} = useTranslation("profile");
+    const source = useProfileSource();
+    const {isOwn, routes} = source;
+    const lists = useMemo(() => sortedLists(source.lists), [source.lists]);
 
-    if (hasSupabase && !session && !isSessionLoading) {
-        return (
-            <Screen>
-                <BackButton className="self-start"/>
-                <AccountRequired description={t("guestDescription")}/>
-            </Screen>
-        );
-    }
+    if (source.status !== "ready") return <ProfileSourceState source={source} guestDescription={t("guestDescription")}/>;
 
     return (
         <Screen>
             <BackButton className="self-start"/>
-            <PageTitle title={t("title")} eyebrow={t("listCount", {count: lists.length})}/>
-            <CreateListButton/>
-            {lists.length ? <ListGrid lists={lists}/> : <EmptyState title={t("emptyTitle")} description={t("empty")}/>}
+            <PageTitle title={t("title")} eyebrow={ownerEyebrow(source.username, isOwn, t("listCount", {count: lists.length}))}/>
+            {isOwn && <CreateListButton/>}
+            {lists.length
+                ? <ListGrid lists={lists} listHref={isOwn ? undefined : routes.list}/>
+                : isOwn ? <EmptyState title={t("emptyTitle")} description={t("empty")}/> : <EmptyState title={tProfile("others.empty")}/>}
         </Screen>
     );
 };

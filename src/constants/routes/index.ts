@@ -3,6 +3,7 @@ export const ROUTES = {
     DISCOVER: "/discover",
     CALENDAR: "/calendar",
     STATS: "/stats",
+    RECAP: "/recap",
     PROFILE: "/profile",
     MOVIE: "/movie/[id]",
     SERIES: "/series/[id]",
@@ -26,7 +27,21 @@ export const ROUTES = {
     FRIENDS: "/friends",
     FEED: "/feed",
     USER: "/user/[username]",
+    USER_SHELF: "/user/[username]/list/[kind]",
+    USER_LISTS: "/user/[username]/lists",
+    USER_LIST_OF: "/user/[username]/lists/[id]",
+    USER_DIARY: "/user/[username]/diary",
 } as const;
+
+/** Where one profile's pages open: your own, or the same pages under someone's @username. */
+export type ProfileRoutes = {
+    shelf: (shelf: string) => string;
+    lists: string;
+    list: (listId: string) => string;
+    diary: string;
+};
+
+const userPath = (username: string) => `/user/${encodeURIComponent(username)}`;
 
 export const buildRoute = {
     movie: (movieId: number) => `/movie/${movieId}`,
@@ -35,6 +50,15 @@ export const buildRoute = {
     userList: (listId: string) => `/lists/${listId}`,
     person: (personId: number) => `/person/${personId}`,
     collection: (collectionId: number) => `/collection/${collectionId}`,
-    user: (username: string) => `/user/${encodeURIComponent(username)}`,
+    user: userPath,
+    /** `null` is your own profile. */
+    profile: (username: string | null): ProfileRoutes => username
+        ? {
+            shelf: (shelf) => `${userPath(username)}/list/${shelf}`,
+            lists: `${userPath(username)}/lists`,
+            list: (listId) => `${userPath(username)}/lists/${listId}`,
+            diary: `${userPath(username)}/diary`,
+        }
+        : {shelf: (shelf) => `/list/${shelf}`, lists: ROUTES.LISTS, list: (listId) => `/lists/${listId}`, diary: ROUTES.DIARY},
     media: (media: {id: number; media_type: "movie" | "tv"}) => (media.media_type === "tv" ? buildRoute.series(media.id) : buildRoute.movie(media.id)),
 };

@@ -38,6 +38,17 @@
         "bar": "{{stars}}: {{count}}",
         "mostGiven": "Given most: {{stars}} ({{count}} times)"
     },
+    "recap": {
+        "open": "Share your year",
+        "title": "Your year in review",
+        "eyebrow": "{{year}} in review",
+        "topGenres": "Top genres",
+        "busiest": "Busiest month",
+        "share": "Share as picture",
+        "shareTitle": "My {{year}} on Reelbook",
+        "downloaded": "Picture saved to your downloads.",
+        "shareFailed": "Couldn't make the picture. Try again."
+    },
     "people": {
         "directors": "Directors you watch most",
         "actors": "Actors you watch most",

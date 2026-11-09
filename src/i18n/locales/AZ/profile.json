@@ -26,7 +26,8 @@
         "edit": "Profili redaktə et",
         "settings": "Ayarlar",
         "signOut": "Çıxış et",
-        "signingOut": "Çıxış edilir…"
+        "signingOut": "Çıxış edilir…",
+        "share": "Profili paylaş"
     },
     "cards": {
         "watchTime": "İzləmə vaxtı",
@@ -105,5 +106,18 @@
         "diary": "Gündəlik",
         "diaryTitle": "Gündəlik",
         "empty": "İzlədiyin filmlər və epizodlar burada görünəcək."
+    },
+    "share": {
+        "title": "@{{username}} Reelbook-da",
+        "copied": "Profil linki kopyalandı",
+        "failed": "Profili paylaşmaq alınmadı. Bir daha cəhd et."
+    },
+    "others": {
+        "empty": "Hələ burada heç nə yoxdur."
+    },
+    "public": {
+        "title": "Profilin gizlidir",
+        "body": "Profillər artıq Letterboxd-da olduğu kimi açıqdır: linki olan hər kəs statistikanı, gündəliyini, rəflərini, rəylərini və siyahılarını görür. Səninki sən açana qədər gizli qalır.",
+        "action": "Profilimi aç"
     }
 }

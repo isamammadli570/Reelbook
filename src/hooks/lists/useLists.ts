@@ -32,11 +32,6 @@ export const useUserLists = () => {
     return {...query, lists};
 };
 
-export const useUserList = (id: string) => {
-    const {data, ...query} = useGetLists();
-    return {...query, list: data?.lists[id]};
-};
-
 /** The lists that already hold a title, for the ticks in the "add to list" sheet. */
 export const useListIdsContaining = (key: string) => {
     const {data} = useGetLists();

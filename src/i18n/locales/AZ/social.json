@@ -6,6 +6,10 @@
     "someone": "Kimsə",
     "stars_one": "{{count}} ulduz",
     "stars_other": "{{count}} ulduz",
+    "onTitle": {
+        "movie": "Bu filmi izləyən dostların",
+        "tv": "Bu serialı izləyən dostların"
+    },
     "did": {
         "watch": "izlədi",
         "review": "rəy yazdı",
@@ -57,11 +61,9 @@
         "findFriends": "Dost tap"
     },
     "user": {
-        "activity": "Son aktivlik",
         "notFound": "İstifadəçi tapılmadı",
         "notFoundHint": "@{{username}} adlı hesab yoxdur.",
-        "private": "Aktivlik gizlidir",
-        "privateHint": "Bu istifadəçi nə izlədiyini paylaşmır.",
-        "noActivity": "Hələ heç nə izləməyib"
+        "hidden": "Bu profil hələ açıq deyil",
+        "hiddenHint": "@{{username}} profilini hələ açmayıb."
     }
 }

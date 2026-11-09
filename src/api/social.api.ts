@@ -1,6 +1,7 @@
 import {supabase} from "@/lib/supabase";
 import type {Library, LibraryItem} from "@/api/library.api";
-import {eventsOf, type ActivityEvent, type ActivityKind} from "@/helpers/social";
+import type {ListsStore, UserList} from "@/api/lists.api";
+import {eventsOf, libraryFromRows, listsFromRows, type ActivityEvent, type ActivityKind, type StoredRow} from "@/helpers/social";
 import {DEFAULT_AVATAR_COLOR, type MediaType} from "@/constants/other";
 
 const client = () => {
@@ -235,10 +236,51 @@ export const getFeedPage = async (ids: string[], page: number): Promise<FeedEven
     return withAuthors(data as ActivityRow[]);
 };
 
-/** One page of a single person's activity, for their profile. */
-export const getUserActivityPage = async (userId: string, page: number): Promise<FeedEvent[]> => {
-    const from = page * FEED_PAGE_SIZE;
-    const {data, error} = await client().from("activity").select("*").eq("user_id", userId).order("happened_at", {ascending: false}).range(from, from + FEED_PAGE_SIZE - 1);
+/** Most people asked about at once, keeping the filter's address short; the newest follows come first. */
+const FRIENDS_ON_TITLE_PEOPLE = 100;
+/** Events read for one title: a few per person at most is all the card needs. */
+const FRIENDS_ON_TITLE_EVENTS = 300;
+
+/** Everything the given people did with one title (`movie:27205`), newest first. */
+export const getFriendsOnTitle = async (ids: string[], itemKey: string): Promise<FeedEvent[]> => {
+    if (!ids.length) return [];
+    const {data, error} = await client()
+        .from("activity")
+        .select("*")
+        .in("user_id", ids.slice(0, FRIENDS_ON_TITLE_PEOPLE))
+        .eq("item_key", itemKey)
+        .order("happened_at", {ascending: false})
+        .limit(FRIENDS_ON_TITLE_EVENTS);
     if (error) throw error;
     return withAuthors(data as ActivityRow[]);
 };
+
+/* ---------------------------- public profiles ---------------------------- */
+
+/** Supabase answers at most this many rows per request, so a big library is read in pages of it. */
+const ROWS_PER_READ = 1000;
+
+/** Every synced row of one person's table, page by page. */
+const readAllRows = async <T>(table: "library_items" | "user_lists", keyColumn: "item_key" | "list_id", userId: string): Promise<StoredRow<T>[]> => {
+    const rows: StoredRow<T>[] = [];
+    for (let from = 0; ; from += ROWS_PER_READ) {
+        const {data, error} = await client()
+            .from(table)
+            .select(`${keyColumn}, data`)
+            .eq("user_id", userId)
+            .order(keyColumn)
+            .range(from, from + ROWS_PER_READ - 1);
+        if (error) throw error;
+        const page = data as unknown as (Record<typeof keyColumn, string> & {data: StoredRow<T>["data"]})[];
+        page.forEach((row) => rows.push({key: row[keyColumn], data: row.data}));
+        if (page.length < ROWS_PER_READ) return rows;
+    }
+};
+
+/** Another person's library, for their profile page; empty while their profile is not public. */
+export const getUserLibrary = async (userId: string): Promise<Library> =>
+    libraryFromRows(await readAllRows<LibraryItem>("library_items", "item_key", userId));
+
+/** Another person's lists, for their profile page; empty while their profile is not public. */
+export const getUserLists = async (userId: string): Promise<ListsStore> =>
+    listsFromRows(await readAllRows<UserList>("user_lists", "list_id", userId));

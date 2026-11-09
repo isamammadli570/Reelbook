@@ -5,6 +5,8 @@ export const ENV = {
     tmdbToken: readEnv(process.env.EXPO_PUBLIC_TMDB_TOKEN),
     supabaseUrl: readEnv(process.env.EXPO_PUBLIC_SUPABASE_URL),
     supabaseKey: readEnv(process.env.EXPO_PUBLIC_SUPABASE_KEY),
+    /** The web app's address (https://…), for links shared from the phone apps; the web uses its own. */
+    siteUrl: readEnv(process.env.EXPO_PUBLIC_SITE_URL).replace(/\/+$/, ""),
 } as const;
 
 export const hasTmdbToken = ENV.tmdbToken.length > 0;

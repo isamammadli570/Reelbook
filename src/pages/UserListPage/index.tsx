@@ -6,20 +6,20 @@ import {Pencil, Trash2} from "lucide-react-native";
 import {useCSSVariable} from "uniwind";
 import {PressScale} from "@/components/motion/PressScale";
 import {Reveal} from "@/components/motion/Reveal";
-import {AccountRequired} from "@/widgets/AccountRequired";
 import {BackButton} from "@/widgets/BackButton";
 import {ConfirmSheet} from "@/widgets/ConfirmSheet";
 import {EmptyState} from "@/widgets/EmptyState";
 import {ListFormSheet} from "@/widgets/ListFormSheet";
 import {ListScreen} from "@/widgets/ListScreen";
 import {PosterGrid} from "@/widgets/PosterGrid";
+import {ProfileSourceState} from "@/widgets/ProfileSourceState";
 import {Screen} from "@/widgets/Screen";
-import {useSession} from "@/hooks/auth/useSession";
-import {useDeleteList, useRemoveFromList, useRestoreToList, useUpdateList, useUserList} from "@/hooks/lists";
+import {useDeleteList, useRemoveFromList, useRestoreToList, useUpdateList} from "@/hooks/lists";
+import {useProfileSource} from "@/hooks/social";
 import {entryToMediaSummary} from "@/helpers/lists";
 import {itemKey} from "@/helpers/library";
 import {chunk} from "@/helpers/shelves";
-import {hasSupabase} from "@/lib/env";
+import {ownerEyebrow} from "@/helpers/social";
 import {toast} from "@/lib/toast";
 import {cn} from "@/lib/utils";
 import {buildRoute} from "@/constants/routes";
@@ -30,15 +30,17 @@ const GRID_COLUMNS = 3;
 const openMedia = (media: MediaSummary) => router.push(buildRoute.media(media));
 
 /**
- * One list: its name and description, its titles three across, and editing, removing titles and deleting it.
+ * One list: its name and description and its titles three across; on your own, editing, removing titles and
+ * deleting it. Someone else's lists open read-only under `/user/[username]`.
  * Only the rows near the screen are drawn, so a long list scrolls as smoothly as a short one.
  */
 export const UserListPage = () => {
     const {id} = useLocalSearchParams<{id: string}>();
     const {t} = useTranslation("lists");
     const foreground = String(useCSSVariable("--color-foreground"));
-    const {session, isLoading: isSessionLoading} = useSession();
-    const {list} = useUserList(id ?? "");
+    const source = useProfileSource();
+    const {isOwn} = source;
+    const list = source.lists.lists[id ?? ""];
     const {mutateAsync: updateList} = useUpdateList();
     const {mutateAsync: deleteList, isPending: isDeleting} = useDeleteList();
     const {mutate: removeFromList} = useRemoveFromList();
@@ -49,14 +51,7 @@ export const UserListPage = () => {
     // Rows of three for a virtual list: a list imported from Letterboxd can hold hundreds of films.
     const rows = useMemo(() => chunk((list?.entries ?? []).map(entryToMediaSummary), GRID_COLUMNS), [list]);
 
-    if (hasSupabase && !session && !isSessionLoading) {
-        return (
-            <Screen>
-                <BackButton className="self-start"/>
-                <AccountRequired description={t("guestDescription")}/>
-            </Screen>
-        );
-    }
+    if (source.status !== "ready") return <ProfileSourceState source={source} guestDescription={t("guestDescription")}/>;
 
     if (!list) {
         return (
@@ -102,23 +97,23 @@ export const UserListPage = () => {
         <>
             <View className="flex-row items-center justify-between">
                 <BackButton/>
-                <View className="flex-row gap-2">
+                {isOwn && <View className="flex-row gap-2">
                     <PressScale scaleTo={0.98} onPress={() => setIsEditingDetails(true)} aria-label={t("edit")} className="h-11 w-11 items-center justify-center rounded-full bg-surface">
                         <Pencil size={18} strokeWidth={2} color={foreground}/>
                     </PressScale>
                     <PressScale scaleTo={0.98} onPress={() => setIsConfirmingDelete(true)} aria-label={t("delete.title")} className="h-11 w-11 items-center justify-center rounded-full bg-surface">
                         <Trash2 size={18} strokeWidth={2} color={foreground}/>
                     </PressScale>
-                </View>
+                </View>}
             </View>
 
             <Reveal variant="rise" className="gap-2">
-                <Text className="font-sans-semibold text-xs uppercase tracking-wider text-muted-foreground">{t("count", {count: list.entries.length})}</Text>
+                <Text className="font-sans-semibold text-xs uppercase tracking-wider text-muted-foreground">{ownerEyebrow(source.username, isOwn, t("count", {count: list.entries.length}))}</Text>
                 <Text role="heading" aria-level={1} className="font-serif text-[38px] leading-[40px] text-foreground">{list.name}</Text>
                 {list.description ? <Text className="font-sans text-[15px] leading-[22px] text-muted-foreground">{list.description}</Text> : null}
             </Reveal>
 
-            {list.entries.length > 0 && (
+            {isOwn && list.entries.length > 0 && (
                 <PressScale scaleTo={0.98} onPress={() => setIsManaging((value) => !value)} aria-pressed={isManaging} className={cn("self-start rounded-full border px-4 py-2", isManaging ? "border-foreground bg-foreground" : "border-border")}>
                     <Text className={cn("font-sans-medium text-[13px]", isManaging ? "text-background" : "text-foreground")}>{isManaging ? t("manage.done") : t("manage.start")}</Text>
                 </PressScale>
@@ -132,7 +127,7 @@ export const UserListPage = () => {
             rows={rows}
             extraData={isManaging}
             rowKey={(row) => row.map((media) => `${media.media_type}:${media.id}`).join(",")}
-            empty={<EmptyState title={t("emptyListTitle")} description={t("emptyList")}/>}
+            empty={<EmptyState title={t("emptyListTitle")} description={isOwn ? t("emptyList") : undefined}/>}
             renderRow={(row) => (
                 <PosterGrid columns={GRID_COLUMNS} items={row} onPress={openMedia} renderFooter={renderFooter}/>
             )}

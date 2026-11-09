@@ -26,7 +26,8 @@
         "edit": "Edit profile",
         "settings": "Settings",
         "signOut": "Sign out",
-        "signingOut": "Signing out…"
+        "signingOut": "Signing out…",
+        "share": "Share profile"
     },
     "cards": {
         "watchTime": "Watch time",
@@ -105,5 +106,18 @@
         "diary": "Diary",
         "diaryTitle": "Diary",
         "empty": "Movies and episodes you watch will show up here."
+    },
+    "share": {
+        "title": "@{{username}} on Reelbook",
+        "copied": "Profile link copied",
+        "failed": "Couldn't share the profile. Try again."
+    },
+    "others": {
+        "empty": "Nothing here yet."
+    },
+    "public": {
+        "title": "Your profile is hidden",
+        "body": "Profiles are now public, as on Letterboxd: anyone with the link sees your stats, diary, shelves, reviews and lists. Yours stays hidden until you open it.",
+        "action": "Make my profile public"
     }
 }

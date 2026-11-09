@@ -1,6 +1,10 @@
 import {useMemo, useState} from "react";
 import {Text, View} from "react-native";
+import {router} from "expo-router";
 import {useTranslation} from "react-i18next";
+import {Share2} from "lucide-react-native";
+import {Button} from "@/components/ui/button";
+import {ROUTES} from "@/constants/routes";
 import {SegmentedControl} from "@/components/ui/segmented-control";
 import {EmptyState} from "@/widgets/EmptyState";
 import {PageTitle} from "@/widgets/PageTitle";
@@ -83,6 +87,7 @@ export const StatsPage = () => {
             </View>
 
             <SegmentedControl options={periods} value={period} onChange={setPeriod} label={t("title")}/>
+            <Button variant="outline" icon={Share2} label={t("recap.open")} onPress={() => router.push(ROUTES.RECAP)}/>
 
             {period === PERIOD.YEAR && <MonthlyChart year={year} minutes={months}/>}
 

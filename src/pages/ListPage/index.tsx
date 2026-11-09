@@ -15,12 +15,11 @@ import {ReviewList} from "@/widgets/ReviewList";
 import {Screen} from "@/widgets/Screen";
 import {ShelfFooter} from "@/widgets/ShelfFooter";
 import {SortMenu} from "@/pages/ListPage/widgets/SortMenu";
-import {useShelf} from "@/hooks/library";
-import {useSession} from "@/hooks/auth/useSession";
-import {hasSupabase} from "@/lib/env";
-import {AccountRequired} from "@/widgets/AccountRequired";
+import {ProfileSourceState} from "@/widgets/ProfileSourceState";
+import {useProfileSource} from "@/hooks/social";
 import {toMediaSummary} from "@/helpers/library";
-import {DEFAULT_SHELF_SORT, shelfRows, shelfSorts} from "@/helpers/shelves";
+import {ownerEyebrow} from "@/helpers/social";
+import {DEFAULT_SHELF_SORT, shelfItems, shelfRows, shelfSorts, sortShelf} from "@/helpers/shelves";
 import {buildRoute} from "@/constants/routes";
 import {SHELF, type Shelf, type ShelfSort} from "@/constants/other";
 
@@ -30,6 +29,7 @@ const isShelf = (value: string | undefined): value is Shelf => Object.values(SHE
 
 /**
  * Every title of one profile row, three across, with a sort menu; series can be grouped by watch status.
+ * Your own shelves, or someone else's under `/user/[username]`.
  * The grid is a virtual list, so only the rows on screen are drawn however long the shelf grows.
  */
 export const ListPage = () => {
@@ -40,9 +40,9 @@ export const ListPage = () => {
     const [sort, setSort] = useState<ShelfSort>(DEFAULT_SHELF_SORT[shelf]);
     const [isGrouped, setIsGrouped] = useState(false);
     const [isSortOpen, setIsSortOpen] = useState(false);
-    const {items} = useShelf(shelf, sort);
-    const {session, isLoading: isSessionLoading} = useSession();
-    const isGuest = hasSupabase && !session && !isSessionLoading;
+    const source = useProfileSource();
+    const {library, isOwn} = source;
+    const items = useMemo(() => sortShelf(shelfItems(library, shelf), sort), [library, shelf, sort]);
 
     const isSeries = shelf === SHELF.SERIES;
     const isReviews = shelf === SHELF.REVIEWS;
@@ -50,14 +50,7 @@ export const ListPage = () => {
     const byKey = useMemo(() => new Map(items.map((item) => [`${item.mediaType}-${item.id}`, item])), [items]);
     const rows = useMemo(() => shelfRows(items, GRID_COLUMNS, isSeries && isGrouped), [items, isSeries, isGrouped]);
 
-    if (isGuest) {
-        return (
-            <Screen>
-                <BackButton className="self-start"/>
-                <AccountRequired description={t("guestDescription")}/>
-            </Screen>
-        );
-    }
+    if (source.status !== "ready") return <ProfileSourceState source={source} guestDescription={t("guestDescription")}/>;
 
     if (!isShelf(kind)) {
         return (
@@ -78,7 +71,7 @@ export const ListPage = () => {
                     </PressScale>
                 )}
             </View>
-            <PageTitle title={t(`shelves.${shelf}`)} eyebrow={t("list.count", {count: items.length})}/>
+            <PageTitle title={t(`shelves.${shelf}`)} eyebrow={ownerEyebrow(source.username, isOwn, t("list.count", {count: items.length}))}/>
         </>
     );
 
@@ -87,7 +80,7 @@ export const ListPage = () => {
         return (
             <Screen>
                 {header}
-                {items.length ? <ReviewList items={items}/> : <EmptyState title={t("empty.reviews")}/>}
+                {items.length ? <ReviewList items={items}/> : <EmptyState title={isOwn ? t("empty.reviews") : t("others.empty")}/>}
             </Screen>
         );
     }
@@ -98,7 +91,7 @@ export const ListPage = () => {
             rows={rows}
             extraData={byKey}
             rowKey={(row) => row.key}
-            empty={<EmptyState title={t(`empty.${shelf}`)}/>}
+            empty={<EmptyState title={isOwn ? t(`empty.${shelf}`) : t("others.empty")}/>}
             renderRow={(row) => row.kind === "title"
                 ? (
                     <Reveal variant="fade" className="pt-2">

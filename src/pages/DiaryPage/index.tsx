@@ -7,26 +7,28 @@ import {useCSSVariable} from "uniwind";
 import {PressScale} from "@/components/motion/PressScale";
 import {Reveal} from "@/components/motion/Reveal";
 import {Image} from "@/components/ui/image";
-import {AccountRequired} from "@/widgets/AccountRequired";
 import {BackButton} from "@/widgets/BackButton";
 import {EmptyState} from "@/widgets/EmptyState";
 import {ListScreen} from "@/widgets/ListScreen";
 import {DiaryActions} from "@/pages/DiaryPage/widgets/DiaryActions";
 import {PageTitle} from "@/widgets/PageTitle";
-import {useSession} from "@/hooks/auth/useSession";
-import {useWatches} from "@/hooks/library";
+import {ProfileSourceState} from "@/widgets/ProfileSourceState";
+import {useProfileSource} from "@/hooks/social";
 import {useDateFormat} from "@/hooks/useDateFormat";
 import {diaryRows, watchRating} from "@/helpers/activity";
 import {formatStars} from "@/helpers/library";
 import {imageUrl} from "@/helpers/media";
-import {hasSupabase} from "@/lib/env";
+import {collectWatches} from "@/helpers/stats";
 import {haptics} from "@/lib/haptics";
 import {buildRoute} from "@/constants/routes";
 import {IMAGE_SIZE, MEDIA_TYPE} from "@/constants/other";
 import type {Watch} from "@/helpers/stats";
 
-/** The day only shows on the first viewing of that day, so a busy day reads as one block. */
-type DiaryRowProps = {watch: Watch; isFirstOfDay: boolean; onOpenActions: (watch: Watch) => void};
+/**
+ * The day only shows on the first viewing of that day, so a busy day reads as one block. Without
+ * `onOpenActions` (someone else's diary) the row only opens the title.
+ */
+type DiaryRowProps = {watch: Watch; isFirstOfDay: boolean; onOpenActions?: (watch: Watch) => void};
 
 /**
  * One viewing: the day, a small poster, the title and its stars or episode. A tap opens the title;
@@ -48,10 +50,10 @@ const DiaryRow = ({watch, isFirstOfDay, onOpenActions}: DiaryRowProps) => {
             role="link"
             aria-label={item.title}
             onPress={() => router.push(buildRoute.media({id: item.id, media_type: item.mediaType}))}
-            onLongPress={() => {
+            onLongPress={onOpenActions ? () => {
                 haptics.tap();
                 onOpenActions(watch);
-            }}
+            } : undefined}
             delayLongPress={350}
             className="flex-row items-center gap-3.5 py-2"
         >
@@ -66,52 +68,54 @@ const DiaryRow = ({watch, isFirstOfDay, onOpenActions}: DiaryRowProps) => {
                 <Text className="font-sans-semibold text-[15px] text-foreground" numberOfLines={1}>{item.title}</Text>
                 {detail ? <Text className={watch.kind === MEDIA_TYPE.TV ? "font-sans text-[13px] text-muted-foreground" : "font-sans text-[13px] text-brand"}>{detail}</Text> : null}
             </View>
-            <PressScale
+            {onOpenActions && <PressScale
                 onPress={() => onOpenActions(watch)}
                 aria-label={t("diary.actions", {title: item.title})}
                 hitSlop={6}
                 className="h-10 w-10 items-center justify-center rounded-full"
             >
                 <Ellipsis size={20} strokeWidth={2} color={muted}/>
-            </PressScale>
+            </PressScale>}
         </PressScale>
     );
 };
 
 /**
- * Everything watched, newest first, a month at a time: the full history behind "Recently watched".
+ * Everything watched, newest first, a month at a time: the full history behind "Recently watched". Your own,
+ * where each viewing can be changed, or someone else's, read-only, under `/user/[username]`.
  * A virtual list, so years of viewings scroll as smoothly as a week.
  */
 export const DiaryPage = () => {
     const {t} = useTranslation("profile");
     const {monthYear} = useDateFormat();
-    const {session, isLoading: isSessionLoading} = useSession();
-    const {watches} = useWatches();
-    const isGuest = hasSupabase && !session && !isSessionLoading;
-    const rows = useMemo(() => (isGuest ? [] : diaryRows(watches)), [watches, isGuest]);
+    const source = useProfileSource();
+    const {library, isOwn} = source;
+    const rows = useMemo(() => diaryRows(collectWatches(library)), [library]);
     const [selected, setSelected] = useState<Watch | null>(null);
+
+    if (source.status !== "ready") return <ProfileSourceState source={source} guestDescription={t("guestDescription")}/>;
 
     return (
         <ListScreen
             header={(
                 <>
                     <BackButton className="self-start"/>
-                    <PageTitle title={t("recent.diaryTitle")}/>
+                    <PageTitle title={t("recent.diaryTitle")} eyebrow={isOwn || !source.username ? undefined : `@${source.username}`}/>
                 </>
             )}
             rows={rows}
             rowKey={(row) => row.key}
             rowGap={0}
-            empty={isGuest ? <AccountRequired description={t("guestDescription")}/> : <EmptyState title={t("recent.empty")}/>}
+            empty={<EmptyState title={isOwn ? t("recent.empty") : t("others.empty")}/>}
             renderRow={(row) => row.kind === "month"
                 ? (
                     <Reveal variant="fade" className="pb-1 pt-4">
                         <Text role="heading" className="font-serif text-[26px] text-foreground">{monthYear(`${row.month}-01`) ?? row.month}</Text>
                     </Reveal>
                 )
-                : <DiaryRow watch={row.watch} isFirstOfDay={row.isFirstOfDay} onOpenActions={setSelected}/>}
+                : <DiaryRow watch={row.watch} isFirstOfDay={row.isFirstOfDay} onOpenActions={isOwn ? setSelected : undefined}/>}
         >
-            <DiaryActions watch={selected} onClose={() => setSelected(null)}/>
+            {isOwn && <DiaryActions watch={selected} onClose={() => setSelected(null)}/>}
         </ListScreen>
     );
 };

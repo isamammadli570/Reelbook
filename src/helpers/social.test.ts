@@ -1,6 +1,6 @@
 import {describe, expect, it} from "vitest";
 import type {LibraryItem} from "@/api/library.api";
-import {cleanUserQuery, eventsOf, relativeTime} from "@/helpers/social";
+import {cleanUserQuery, eventsOf, friendsOnTitle, libraryFromRows, listsFromRows, ownerEyebrow, relativeTime, type ActivityEvent} from "@/helpers/social";
 
 const base: LibraryItem = {
     id: 27205,
@@ -69,5 +69,73 @@ describe("relativeTime", () => {
         expect(relativeTime("2026-10-20T12:00:00.000Z", now)).toEqual({unit: "weeks", count: 2});
         expect(relativeTime("2026-08-01T12:00:00.000Z", now)).toEqual({unit: "date", count: 0});
         expect(relativeTime("2026-11-07T12:00:00.000Z", now)).toEqual({unit: "now", count: 0});
+    });
+});
+
+describe("friendsOnTitle", () => {
+    const event = (userId: string, overrides: Partial<ActivityEvent>): ActivityEvent & {userId: string} => ({
+        userId,
+        eventKey: "watch:x",
+        itemKey: "movie:1",
+        kind: "watch",
+        mediaType: "movie",
+        mediaId: 1,
+        title: "Inception",
+        posterPath: null,
+        year: "2010",
+        rating: null,
+        review: null,
+        episodeCount: null,
+        happenedAt: "2026-01-01T00:00:00.000Z",
+        ...overrides,
+    });
+
+    it("makes one entry per person, newest first", () => {
+        const result = friendsOnTitle([
+            event("a", {happenedAt: "2026-01-01T00:00:00.000Z"}),
+            event("b", {happenedAt: "2026-03-01T00:00:00.000Z"}),
+            event("a", {happenedAt: "2026-02-01T00:00:00.000Z"}),
+        ]);
+        expect(result.map((friend) => friend.userId)).toEqual(["b", "a"]);
+        expect(result[1].happenedAt).toBe("2026-02-01T00:00:00.000Z");
+    });
+
+    it("takes the newest stars and the review, and never lets an older viewing override a newer one", () => {
+        const [friend] = friendsOnTitle([
+            event("a", {kind: "watch", rating: 3, happenedAt: "2026-01-01T00:00:00.000Z"}),
+            event("a", {kind: "watch", rating: 4.5, happenedAt: "2026-03-01T00:00:00.000Z"}),
+            event("a", {kind: "review", rating: null, review: "Dreams.", happenedAt: "2026-02-01T00:00:00.000Z"}),
+        ]);
+        expect(friend).toMatchObject({rating: 4.5, review: "Dreams."});
+    });
+
+    it("is empty when nobody did anything", () => {
+        expect(friendsOnTitle([])).toEqual([]);
+    });
+});
+
+describe("libraryFromRows", () => {
+    it("keeps live titles under their keys and leaves deleted ones out", () => {
+        const library = libraryFromRows([
+            {key: "movie:27205", data: base},
+            {key: "movie:1", data: {deleted: true}},
+        ]);
+        expect(Object.keys(library.items)).toEqual(["movie:27205"]);
+        expect(library.items["movie:27205"]?.title).toBe("Inception");
+    });
+});
+
+describe("listsFromRows", () => {
+    it("leaves deleted lists out", () => {
+        const list = {id: "a", name: "Noir", description: "", entries: [], createdAt: "", updatedAt: ""};
+        expect(listsFromRows([{key: "a", data: list}, {key: "b", data: {deleted: true}}])).toEqual({lists: {a: list}});
+    });
+});
+
+describe("ownerEyebrow", () => {
+    it("names the owner only on someone else's pages", () => {
+        expect(ownerEyebrow(null, true, "4 titles")).toBe("4 titles");
+        expect(ownerEyebrow("isa", true, "4 titles")).toBe("4 titles");
+        expect(ownerEyebrow("isa", false, "4 titles")).toBe("@isa  ·  4 titles");
     });
 });

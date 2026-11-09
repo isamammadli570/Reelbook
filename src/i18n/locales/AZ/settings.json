@@ -27,8 +27,7 @@
         "you": "Sən",
         "app": "Tətbiq",
         "data": "Məlumatların",
-        "about": "Haqqında",
-        "friends": "Dostlar"
+        "about": "Haqqında"
     },
     "app": {
         "language": "Dil",
@@ -96,8 +95,8 @@
                 "body": "Reelbook-da reklam, analitika və ya izləmə alətləri yoxdur. Məlumatların satılmır və üçüncü tərəflərlə paylaşılmır."
             },
             {
-                "title": "Dostlar və paylaşım",
-                "body": "Hesabı olan digər istifadəçilər səni @adınla və ya adınla tapa, profilinə (ad, @ad, şəkil, örtük, bio) baxa və səni izləyə bilər. “Aktivliyimi paylaş” açıq olanda gündəliyindəki baxışlar, onlara verdiyin ulduzlar, rəylərin və izlədiyin epizodların sayı da göstərilir. Siyahıların, watchlist-in və e-poçtun heç vaxt göstərilmir. Paylaşımı Ayarlarda söndürsən, aktivliyin dərhal gizlənir və serverdən silinir."
+                "title": "Açıq profillər",
+                "body": "Profillər Letterboxd-da olduğu kimi açıqdır. Profil linkin olan hər kəs, hesabı olsa da, olmasa da, adını, @adını, şəklini, örtüyünü və bio-nu, baxış vaxtını və saylarını, favorilərini, verdiyin ulduzlarla gündəliyini, rəflərini (filmlər, seriallar, watchlist), rəylərini və siyahılarını görə bilər. Hesabı olanlar səni @adınla və ya adınla tapıb izləyə bilər. E-poçtun heç vaxt göstərilmir. Əvvəllər paylaşımı söndürmüş hesablar sahibi profili açana qədər gizli qalır."
             },
             {
                 "title": "Bildirişlər",
@@ -157,10 +156,6 @@
         },
         "listsFound": "Üstəlik {{count}} siyahı ({{entries}} film) sənin siyahılarına əlavə olunacaq.",
         "doneLists": "{{count}} siyahı da Siyahılar bölməsindədir."
-    },
-    "sharing": {
-        "label": "Aktivliyimi paylaş",
-        "hint": "Səni izləyənlər nə izlədiyini, ulduzlarını və rəylərini lentdə görür. Söndürəndə hamısı dərhal gizlənir. Profilin (ad, @ad, şəkil, bio) hər halda axtarışda görünür."
     },
     "trakt": {
         "row": "Trakt-dan köçür",

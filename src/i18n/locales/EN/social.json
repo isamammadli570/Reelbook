@@ -6,6 +6,10 @@
     "someone": "Someone",
     "stars_one": "{{count}} star",
     "stars_other": "{{count}} stars",
+    "onTitle": {
+        "movie": "Friends who watched this film",
+        "tv": "Friends who watched this series"
+    },
     "did": {
         "watch": "watched",
         "review": "wrote a review",
@@ -57,11 +61,9 @@
         "findFriends": "Find friends"
     },
     "user": {
-        "activity": "Recent activity",
         "notFound": "User not found",
         "notFoundHint": "There is no account called @{{username}}.",
-        "private": "Activity is private",
-        "privateHint": "This person doesn't share what they watch.",
-        "noActivity": "Nothing watched yet"
+        "hidden": "This profile isn't public yet",
+        "hiddenHint": "@{{username}} hasn't opened their profile yet."
     }
 }

@@ -7,6 +7,9 @@
     "verbatimModuleSyntax": true,
     "erasableSyntaxOnly": true,
     "paths": {
+      "react-native-view-shot": [
+        "./src/types/react-native-view-shot.d.ts"
+      ],
       "@/*": [
         "./src/*"
       ]

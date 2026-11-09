@@ -16,6 +16,7 @@ import {StatStrip} from "@/widgets/StatStrip";
 import {TrailerButton} from "@/widgets/TrailerButton";
 import {WhereToWatch} from "@/widgets/WhereToWatch";
 import {ExternalLinks} from "@/widgets/ExternalLinks";
+import {FriendsWatched} from "@/widgets/FriendsWatched";
 import {SeasonSection} from "@/pages/SeriesPage/widgets/SeasonSection";
 import {SeriesActions} from "@/pages/SeriesPage/widgets/SeriesActions";
 import {SeriesProgress} from "@/pages/SeriesPage/widgets/SeriesProgress";
@@ -90,6 +91,7 @@ export const SeriesPage = () => {
                 </Section>
                 <WhereToWatch results={series["watch/providers"].results}/>
                 <ReviewSection snapshot={snapshot} item={item}/>
+                <FriendsWatched mediaType={MEDIA_TYPE.TV} id={seriesId}/>
                 <SeasonSection seriesId={seriesId} seasons={series.seasons} snapshot={snapshot} item={item}/>
                 {/* Every season's cast, with episode counts, rather than only the latest season's. */}
                 {cast.length > 0 && (

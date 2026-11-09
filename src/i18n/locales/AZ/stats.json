@@ -38,6 +38,17 @@
         "bar": "{{stars}}: {{count}}",
         "mostGiven": "Ən çox verdiyin: {{stars}} ({{count}} dəfə)"
     },
+    "recap": {
+        "open": "İlini paylaş",
+        "title": "İlin xülasəsi",
+        "eyebrow": "{{year}} xülasəsi",
+        "topGenres": "Sevimli janrlar",
+        "busiest": "Ən aktiv ay",
+        "share": "Şəkil kimi paylaş",
+        "shareTitle": "Reelbook-da {{year}} ilim",
+        "downloaded": "Şəkil yükləmələrə saxlanıldı.",
+        "shareFailed": "Şəkil hazırlanmadı. Bir daha cəhd et."
+    },
     "people": {
         "directors": "Ən çox izlədiyin rejissorlar",
         "actors": "Ən çox izlədiyin aktyorlar",

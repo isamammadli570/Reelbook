@@ -1,4 +1,5 @@
-import type {LibraryItem} from "@/api/library.api";
+import type {Library, LibraryItem} from "@/api/library.api";
+import type {ListsStore, UserList} from "@/api/lists.api";
 import {toIsoDay} from "@/helpers/calendar";
 import {itemKey} from "@/helpers/library";
 import {MEDIA_TYPE, type MediaType} from "@/constants/other";
@@ -78,6 +79,36 @@ export const eventsOf = (item: LibraryItem): ActivityEvent[] => {
     return events;
 };
 
+/** What one friend did with a title: when they last did anything, the stars they gave last and their review. */
+export type FriendOnTitle<E extends ActivityEvent & {userId: string}> = {
+    userId: string;
+    /** Their newest event for the title, which carries the author for display. */
+    latest: E;
+    rating: number | null;
+    review: string | null;
+    happenedAt: string;
+};
+
+/**
+ * Folds the events of one title into one entry per person, newest first: every viewing, episode day and
+ * review of the same person becomes a single card. The stars come from the newest event that has any.
+ */
+export const friendsOnTitle = <E extends ActivityEvent & {userId: string}>(events: E[]): FriendOnTitle<E>[] => {
+    const byTime = [...events].sort((a, b) => b.happenedAt.localeCompare(a.happenedAt));
+    const people = new Map<string, FriendOnTitle<E>>();
+    byTime.forEach((event) => {
+        const current = people.get(event.userId);
+        if (!current) {
+            people.set(event.userId, {userId: event.userId, latest: event, rating: event.rating, review: event.review, happenedAt: event.happenedAt});
+            return;
+        }
+        // Events arrive newest first, so only gaps are filled: an older viewing never overrides a newer one.
+        current.rating ??= event.rating;
+        current.review ??= event.review;
+    });
+    return [...people.values()];
+};
+
 /** Text for a search box safe to put in a database filter: letters, digits, spaces, "_" and "."; "@" dropped. */
 export const cleanUserQuery = (query: string): string =>
     query.trim().replace(/^@+/, "").replace(/[^\p{L}\p{N}_. ]+/gu, "").slice(0, 40);
@@ -99,3 +130,22 @@ export const relativeTime = (iso: string, now: Date): RelativeTime => {
     const weeks = Math.floor(days / 7);
     return weeks < 5 ? {unit: "weeks", count: weeks} : {unit: "date", count: 0};
 };
+
+/** A synced row: the value, or a tombstone left where something was deleted. */
+export type StoredRow<T> = {key: string; data: T | {deleted: true}};
+
+const isTombstone = <T>(data: T | {deleted: true}): data is {deleted: true} =>
+    typeof data === "object" && data !== null && "deleted" in data && data.deleted === true;
+
+const liveRows = <T>(rows: StoredRow<T>[]): Record<string, T> =>
+    Object.fromEntries(rows.flatMap((row) => (isTombstone(row.data) ? [] : [[row.key, row.data] as const])));
+
+/** Someone else's library as their synced rows describe it; deleted titles are left out. */
+export const libraryFromRows = (rows: StoredRow<LibraryItem>[]): Library => ({items: liveRows(rows)});
+
+/** Someone else's lists as their synced rows describe them; deleted lists are left out. */
+export const listsFromRows = (rows: StoredRow<UserList>[]): ListsStore => ({lists: liveRows(rows)});
+
+/** On someone else's pages the small line above the title says whose they are. */
+export const ownerEyebrow = (username: string | null, isOwn: boolean, detail: string): string =>
+    isOwn || !username ? detail : `@${username}  ·  ${detail}`;

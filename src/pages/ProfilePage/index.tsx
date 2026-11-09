@@ -1,72 +1,134 @@
-import {useMemo, useState} from "react";
-import {View} from "react-native";
+import {useEffect, useMemo, useState} from "react";
+import {ActivityIndicator, Text, View} from "react-native";
 import {router} from "expo-router";
 import {useTranslation} from "react-i18next";
+import {EllipsisVertical, Share2} from "lucide-react-native";
+import {useCSSVariable} from "uniwind";
+import {Reveal} from "@/components/motion/Reveal";
 import {AccountRequired} from "@/widgets/AccountRequired";
+import {BackButton} from "@/widgets/BackButton";
+import {EmptyState} from "@/widgets/EmptyState";
+import {FollowButton} from "@/widgets/FollowButton";
+import {QueryErrorState} from "@/widgets/QueryErrorState";
 import {Screen} from "@/widgets/Screen";
 import {FavoritesRow} from "@/pages/ProfilePage/widgets/FavoritesRow";
 import {FriendsRow} from "@/pages/ProfilePage/widgets/FriendsRow";
-import {ProfileCover} from "@/pages/ProfilePage/widgets/ProfileCover";
+import {CoverButton, ProfileCover} from "@/pages/ProfilePage/widgets/ProfileCover";
 import {ProfileMenu} from "@/pages/ProfilePage/widgets/ProfileMenu";
+import {PublicProfileNotice} from "@/pages/ProfilePage/widgets/PublicProfileNotice";
 import {RecentRow} from "@/pages/ProfilePage/widgets/RecentRow";
 import {ShelfMenu, type ShelfLink} from "@/pages/ProfilePage/widgets/ShelfMenu";
 import {WatchStats} from "@/pages/ProfilePage/widgets/WatchStats";
-import {useSession} from "@/hooks/auth/useSession";
-import {useShelf, useWatches} from "@/hooks/library";
-import {useUserLists} from "@/hooks/lists";
+import {useFollowCounts, useProfileSource} from "@/hooks/social";
 import {useGetProfile} from "@/hooks/profile";
-import {summarize} from "@/helpers/stats";
-import {hasSupabase} from "@/lib/env";
-import {buildRoute, ROUTES} from "@/constants/routes";
+import {useShareProfile} from "@/hooks/profile/useShareProfile";
+import {summarize, collectWatches} from "@/helpers/stats";
+import {sortedLists} from "@/helpers/lists";
+import {DEFAULT_SHELF_SORT, shelfItems, sortShelf} from "@/helpers/shelves";
+import {ROUTES} from "@/constants/routes";
 import {SHELF} from "@/constants/other";
 import {EMPTY_PROFILE} from "@/api/profile.api";
 
-/** The user's page: cover and avatar, watch time, four favourites, what they watched last, then everything else by count. */
+/**
+ * A profile: cover and avatar, watch time, four favourites, what was watched last, then everything else by
+ * count. Your own on the profile tab, read from the device and editable; anyone's under `/user/[username]`,
+ * read from the server, with a follow button, and the same rows and pages as your own.
+ */
 export const ProfilePage = () => {
     const {t} = useTranslation("profile");
-    const {session, isLoading: isSessionLoading} = useSession();
-    const isGuest = hasSupabase && !session && !isSessionLoading;
-    const {data: profile = EMPTY_PROFILE} = useGetProfile();
+    const {t: tSocial} = useTranslation("social");
+    const muted = String(useCSSVariable("--color-muted-foreground"));
+    const source = useProfileSource();
+    const {isOwn, user, library, routes} = source;
+    const {data: ownProfile = EMPTY_PROFILE} = useGetProfile();
+    const counts = useFollowCounts(isOwn ? null : user?.userId);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const share = useShareProfile();
 
-    const {watches} = useWatches();
+    // Your own @username opens your own profile tab, with editing and the menu.
+    useEffect(() => {
+        if (source.username && isOwn && user) router.replace(ROUTES.PROFILE);
+    }, [source.username, isOwn, user]);
+
+    const watches = useMemo(() => collectWatches(library), [library]);
     const summary = useMemo(() => summarize(watches), [watches]);
-    const {items: favorites} = useShelf(SHELF.FAVORITES);
-    const {items: movies} = useShelf(SHELF.MOVIES);
-    const {items: series} = useShelf(SHELF.SERIES);
-    const {items: watchlist} = useShelf(SHELF.WATCHLIST);
-    const {items: reviews} = useShelf(SHELF.REVIEWS);
-    const {lists} = useUserLists();
+    const favorites = useMemo(() => sortShelf(shelfItems(library, SHELF.FAVORITES), DEFAULT_SHELF_SORT[SHELF.FAVORITES]), [library]);
+    const lists = useMemo(() => sortedLists(source.lists), [source.lists]);
 
-    // A guest has nothing to edit or sign out of, so the ⋮ button goes straight to settings.
-    const openMenu = () => (isGuest ? router.push(ROUTES.SETTINGS) : setIsMenuOpen(true));
-    const shelfLinks: ShelfLink[] = [
-        {key: SHELF.MOVIES, label: t("shelves.movies"), count: movies.length, href: buildRoute.shelf(SHELF.MOVIES)},
-        {key: SHELF.SERIES, label: t("shelves.series"), count: series.length, href: buildRoute.shelf(SHELF.SERIES)},
-        {key: SHELF.WATCHLIST, label: t("shelves.watchlist"), count: watchlist.length, href: buildRoute.shelf(SHELF.WATCHLIST)},
-        {key: SHELF.REVIEWS, label: t("shelves.reviews"), count: reviews.length, href: buildRoute.shelf(SHELF.REVIEWS)},
-        {key: "lists", label: t("shelves.lists"), count: lists.length, href: ROUTES.LISTS},
-    ];
+    const coverProfile = isOwn ? ownProfile : user;
+    const username = isOwn ? ownProfile.username : user?.username ?? "";
+    const isGuest = source.status === "guest";
+    const canShare = Boolean(username) && !isGuest;
+    const shareButton = canShare ? <CoverButton icon={Share2} label={t("menu.share")} onPress={() => share(username)}/> : null;
+
+    if (!coverProfile) {
+        // Someone else's profile before it arrives, or nobody by that name: there is no cover to draw yet.
+        const body = source.status === "loading"
+            ? <ActivityIndicator color={muted}/>
+            : source.status === "error"
+                ? <QueryErrorState error={source.error} onRetry={source.retry}/>
+                : <EmptyState title={tSocial("user.notFound")} description={tSocial("user.notFoundHint", {username: source.username ?? ""})}/>;
+        return (
+            <Screen>
+                <BackButton className="self-start"/>
+                {body}
+            </Screen>
+        );
+    }
+
+    const shelfLinks: ShelfLink[] = [SHELF.MOVIES, SHELF.SERIES, SHELF.WATCHLIST, SHELF.REVIEWS].map((kind) => ({
+        key: kind,
+        label: t(`shelves.${kind}`),
+        count: shelfItems(library, kind).length,
+        href: routes.shelf(kind),
+    }));
+    shelfLinks.push({key: "lists", label: t("shelves.lists"), count: lists.length, href: routes.lists});
+
+    const renderBody = () => {
+        if (isGuest) return <AccountRequired description={t("guestDescription")}/>;
+        if (source.status === "hidden") return <EmptyState title={tSocial("user.hidden")} description={tSocial("user.hiddenHint", {username})}/>;
+        if (source.status === "error") return <QueryErrorState error={source.error} onRetry={source.retry}/>;
+        if (source.status === "loading") return <ActivityIndicator color={muted}/>;
+        return (
+            <>
+                {isOwn && !ownProfile.shareActivity && <PublicProfileNotice/>}
+                <WatchStats summary={summary}/>
+                {isOwn && <FriendsRow/>}
+                {(isOwn || favorites.length > 0) && <FavoritesRow index={0} items={favorites} routes={routes} isOwn={isOwn}/>}
+                <RecentRow index={1} watches={watches} diaryHref={routes.diary} emptyText={isOwn ? t("recent.empty") : t("others.empty")}/>
+                <ShelfMenu index={2} links={shelfLinks}/>
+            </>
+        );
+    };
 
     return (
         <Screen isEdgeToEdge>
-            <ProfileCover profile={profile} onOpenMenu={openMenu}/>
-
-            <View className="gap-8 px-5">
-                {isGuest ? (
-                    <AccountRequired description={t("guestDescription")}/>
-                ) : (
-                    <>
-                        <WatchStats summary={summary}/>
-                        <FriendsRow/>
-                        <FavoritesRow index={0} items={favorites}/>
-                        <RecentRow index={1} watches={watches}/>
-                        <ShelfMenu index={2} links={shelfLinks}/>
-                    </>
+            <ProfileCover
+                profile={coverProfile}
+                leading={isOwn ? null : <BackButton/>}
+                actions={isOwn
+                    ? (
+                        <>
+                            {shareButton}
+                            {/* A guest has nothing to edit or sign out of, so ⋮ goes straight to settings. */}
+                            <CoverButton icon={EllipsisVertical} label={t("menu.open")} onPress={() => (isGuest ? router.push(ROUTES.SETTINGS) : setIsMenuOpen(true))}/>
+                        </>
+                    )
+                    : shareButton}
+            >
+                {!isOwn && user && (
+                    <Reveal variant="rise" index={3} className="gap-3">
+                        <Text className="font-sans text-[13px] text-muted-foreground">
+                            {`${tSocial("counts.followers", {count: counts.data?.followers ?? 0})}  ·  ${tSocial("counts.following", {count: counts.data?.following ?? 0})}`}
+                        </Text>
+                        <FollowButton userId={user.userId} className="self-start min-w-[160px]"/>
+                    </Reveal>
                 )}
-            </View>
+            </ProfileCover>
 
-            <ProfileMenu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)}/>
+            <View className="gap-8 px-5">{renderBody()}</View>
+
+            {isOwn && <ProfileMenu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)}/>}
         </Screen>
     );
 };

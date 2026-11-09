@@ -2,9 +2,11 @@ import {useInfiniteQuery, useMutation, useQuery, useQueryClient} from "@tanstack
 import {
     FEED_PAGE_SIZE,
     getFeedPage,
+    getFriendsOnTitle,
     getFollowCounts,
     getFollowList,
-    getUserActivityPage,
+    getUserLibrary,
+    getUserLists,
     getFollowingIds,
     getUserByUsername,
     searchUsers,
@@ -12,12 +14,13 @@ import {
 } from "@/api/social.api";
 import {useSession} from "@/hooks/auth/useSession";
 import {useDebouncedValue} from "@/hooks/useDebouncedValue";
-import {cleanUserQuery} from "@/helpers/social";
+import {itemKey} from "@/helpers/library";
+import {cleanUserQuery, friendsOnTitle} from "@/helpers/social";
 import {hasSupabase} from "@/lib/env";
 import {applyActivitySharing} from "@/services/sync";
 import {toast} from "@/lib/toast";
 import i18n from "@/i18n";
-import {QUERY_KEYS, SEARCH_DEBOUNCE_MS} from "@/constants/other";
+import {QUERY_KEYS, SEARCH_DEBOUNCE_MS, type MediaType} from "@/constants/other";
 
 /** Other people's data changes while the app is open; a minute of freshness is plenty. */
 const SOCIAL_STALE_MS = 60_000;
@@ -127,15 +130,39 @@ export const useFeed = () => {
     });
 };
 
-/** One person's activity, for their profile page. */
-export const useUserActivity = (userId: string | null | undefined) =>
-    useInfiniteQuery({
-        queryKey: [QUERY_KEYS.SOCIAL, "activity", userId],
-        queryFn: ({pageParam}) => getUserActivityPage(userId ?? "", pageParam),
-        initialPageParam: 0,
-        getNextPageParam: (lastPage, pages) => (lastPage.length === FEED_PAGE_SIZE ? pages.length : undefined),
-        enabled: Boolean(userId),
+/** Which of the people you follow watched or reviewed this title, one entry each, newest first. */
+export const useFriendsOnTitle = (mediaType: MediaType, id: number) => {
+    const selfId = useSelfId();
+    const {data: followingIds} = useFollowingIds();
+    return useQuery({
+        // The ids are part of the key: following someone new brings their viewing in at once.
+        queryKey: [QUERY_KEYS.SOCIAL, "title", itemKey(mediaType, id), followingIds],
+        queryFn: () => getFriendsOnTitle(followingIds ?? [], itemKey(mediaType, id)),
+        select: friendsOnTitle,
+        enabled: Boolean(selfId && followingIds?.length),
         staleTime: SOCIAL_STALE_MS,
+    });
+};
+
+/** Someone else's data barely moves while you look at it; a few minutes keeps their pages instant on return. */
+const PROFILE_STALE_MS = 5 * 60_000;
+
+/** Another person's whole library, read for their profile page and its shelves. */
+export const useUserLibrary = (userId: string | null | undefined) =>
+    useQuery({
+        queryKey: [QUERY_KEYS.SOCIAL, "library", userId],
+        queryFn: () => getUserLibrary(userId ?? ""),
+        enabled: Boolean(userId),
+        staleTime: PROFILE_STALE_MS,
+    });
+
+/** Another person's lists, read for their profile page. */
+export const useUserListsOf = (userId: string | null | undefined) =>
+    useQuery({
+        queryKey: [QUERY_KEYS.SOCIAL, "lists", userId],
+        queryFn: () => getUserLists(userId ?? ""),
+        enabled: Boolean(userId),
+        staleTime: PROFILE_STALE_MS,
     });
 
 /** Publishes or takes down your activity after the sharing setting changes. */

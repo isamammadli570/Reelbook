@@ -15,6 +15,7 @@ import {StatStrip} from "@/widgets/StatStrip";
 import {TrailerButton} from "@/widgets/TrailerButton";
 import {WhereToWatch} from "@/widgets/WhereToWatch";
 import {ExternalLinks} from "@/widgets/ExternalLinks";
+import {FriendsWatched} from "@/widgets/FriendsWatched";
 import {MovieActions} from "@/pages/MoviePage/widgets/MovieActions";
 import {MovieDiary} from "@/pages/MoviePage/widgets/MovieDiary";
 import {CollectionCard} from "@/pages/MoviePage/widgets/CollectionCard";
@@ -76,6 +77,7 @@ export const MoviePage = () => {
                 </Section>
                 <WhereToWatch results={movie["watch/providers"].results}/>
                 <ReviewSection snapshot={snapshot} item={item}/>
+                <FriendsWatched mediaType={MEDIA_TYPE.MOVIE} id={movieId}/>
                 <MovieDiary snapshot={snapshot} item={item}/>
                 {movie.credits.cast.length > 0 && (
                     <Section title={t("cast")}>

@@ -15,11 +15,13 @@ const STACK_SIZE = 4;
 type ListCardProps = {
     list: UserList;
     width: number;
+    /** Where the card opens; your own list page unless given. */
+    href?: string;
     index?: number;
 };
 
 /** A list as a fanned stack of its first posters, with its name and how many titles it holds. */
-export const ListCard = memo(({list, width, index = 0}: ListCardProps) => {
+export const ListCard = memo(({list, width, href, index = 0}: ListCardProps) => {
     const {t} = useTranslation("lists");
     // Four posters overlap by a third of their width, so the stack fills the card edge to edge.
     const posterWidth = Math.floor((width - 20) / (1 + (STACK_SIZE - 1) * 0.66));
@@ -27,7 +29,7 @@ export const ListCard = memo(({list, width, index = 0}: ListCardProps) => {
 
     return (
         <Reveal variant="rise" index={index} style={{width}}>
-            <PressScale onPress={() => router.push(buildRoute.userList(list.id))} aria-label={list.name} className="gap-2.5 rounded-2xl bg-surface p-2.5">
+            <PressScale onPress={() => router.push(href ?? buildRoute.userList(list.id))} aria-label={list.name} className="gap-2.5 rounded-2xl bg-surface p-2.5">
                 <View className="flex-row" style={{height: posterWidth * 1.5}}>
                     {Array.from({length: STACK_SIZE}, (_, slot) => {
                         const entry = covers[slot];

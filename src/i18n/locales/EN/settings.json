@@ -33,6 +33,11 @@
     "app": {
         "language": "Language",
         "haptics": "Haptic feedback",
+        "install": "Install the app",
+        "installHint": "Add Reelbook to your home screen to open it full screen, like an app.",
+        "installIosTitle": "Add to Home Screen",
+        "installIosSteps": "1. Open this page in Safari.\n2. Tap the Share button.\n3. Choose “Add to Home Screen”.",
+        "installGotIt": "Got it",
         "hideSpoilers": "Hide episode spoilers",
         "hideSpoilersHint": "Blur stills and hide titles of episodes you haven't watched.",
         "earlierEpisodes": "Ask about earlier episodes",

@@ -33,6 +33,11 @@
     "app": {
         "language": "Dil",
         "haptics": "Vibrasiya",
+        "install": "Tətbiqi quraşdır",
+        "installHint": "Reelbook-u ana ekrana əlavə et, tətbiq kimi tam ekranda açılsın.",
+        "installIosTitle": "Ana ekrana əlavə et",
+        "installIosSteps": "1. Bu səhifəni Safari-də aç.\n2. “Paylaş” düyməsinə bas.\n3. “Ana ekrana əlavə et” seç.",
+        "installGotIt": "Aydındır",
         "hideSpoilers": "Spoylerləri gizlət",
         "hideSpoilersHint": "İzləmədiyin epizodların şəkli bulanıq olur, adı gizlənir.",
         "earlierEpisodes": "Əvvəlki epizodlar barədə soruş",

@@ -3,13 +3,16 @@ import {Alert, Linking, Platform, Text, View} from "react-native";
 import Constants from "expo-constants";
 import {router} from "expo-router";
 import {useTranslation} from "react-i18next";
-import {Bell, CircleUserRound, Download, EyeOff, FileUp, Globe, Link2, ListChecks, LogOut, ShieldCheck, Upload, Users, Vibrate} from "lucide-react-native";
+import {Bell, CircleUserRound, Download, EyeOff, Smartphone, FileUp, Globe, Link2, ListChecks, LogOut, ShieldCheck, Upload, Users, Vibrate} from "lucide-react-native";
 import {AccountRequired} from "@/widgets/AccountRequired";
 import {BackButton} from "@/widgets/BackButton";
 import {PageTitle} from "@/widgets/PageTitle";
 import {Screen} from "@/widgets/Screen";
 import {SettingsGroup, SettingsRow} from "@/widgets/SettingsList";
 import {BusyOverlay} from "@/widgets/BusyOverlay";
+import {BottomSheet} from "@/widgets/BottomSheet";
+import {Button} from "@/components/ui/button";
+import {useInstallApp} from "@/hooks/useInstallApp";
 import {ConfirmSheet} from "@/widgets/ConfirmSheet";
 import {LanguageSheet} from "@/pages/SettingsPage/widgets/LanguageSheet";
 import {useSession} from "@/hooks/auth/useSession";
@@ -54,6 +57,8 @@ export const SettingsPage = () => {
     const [isHidingSpoilers, setHidingSpoilers] = usePreference("hideSpoilers");
     const [earlierPolicy, setEarlierPolicy] = usePreference("earlierEpisodes");
     const [isLanguageOpen, setIsLanguageOpen] = useState(false);
+    const [isInstallHelpOpen, setIsInstallHelpOpen] = useState(false);
+    const {mode: installMode, install} = useInstallApp();
     const isSignedIn = Boolean(session);
 
     const toggleReminders = (value: boolean) => {
@@ -79,6 +84,17 @@ export const SettingsPage = () => {
             {isSignedIn && (
                 <SettingsGroup title={t("groups.you")} index={0}>
                     <SettingsRow icon={CircleUserRound} tint="blue" label={t("account.title")} value={session?.user.email} onPress={() => router.push(ROUTES.ACCOUNT)}/>
+                </SettingsGroup>
+            )}
+
+            {installMode !== "hidden" && (
+                <SettingsGroup footer={t("app.installHint")} index={1}>
+                    <SettingsRow
+                        icon={Smartphone}
+                        tint="green"
+                        label={t("app.install")}
+                        onPress={() => (installMode === "prompt" ? void install() : setIsInstallHelpOpen(true))}
+                    />
                 </SettingsGroup>
             )}
 
@@ -174,6 +190,10 @@ export const SettingsPage = () => {
             </View>
 
             <LanguageSheet isOpen={isLanguageOpen} onClose={() => setIsLanguageOpen(false)}/>
+            <BottomSheet isOpen={isInstallHelpOpen} onClose={() => setIsInstallHelpOpen(false)} title={t("app.installIosTitle")}>
+                <Text className="font-sans text-sm leading-6 text-muted-foreground">{t("app.installIosSteps")}</Text>
+                <Button variant="primary" label={t("app.installGotIt")} onPress={() => setIsInstallHelpOpen(false)}/>
+            </BottomSheet>
             <ConfirmSheet
                 isOpen={pending !== null}
                 onClose={cancelImport}

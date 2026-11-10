@@ -277,10 +277,29 @@ const readAllRows = async <T>(table: "library_items" | "user_lists", keyColumn: 
     }
 };
 
+/** PostgREST's "no such function" and Postgres's own, as long as migration 009 has not been run. */
+const isMissingFunction = (error: {code?: string} | null): boolean => error?.code === "PGRST202" || error?.code === "42883";
+
+/**
+ * One person's whole library or lists in a single request, from the functions of migration 009: deleted
+ * entries left out, and a library without the people of each title, which their pages never show. `null`
+ * while the migration has not run, so the caller reads the tables instead.
+ */
+const readProfileData = async <T>(fn: "get_profile_library" | "get_profile_lists", userId: string): Promise<Record<string, T> | null> => {
+    const {data, error} = await client().rpc(fn, {owner: userId});
+    if (isMissingFunction(error)) return null;
+    if (error) throw error;
+    return (data ?? {}) as Record<string, T>;
+};
+
 /** Another person's library, for their profile page; empty while their profile is not public. */
-export const getUserLibrary = async (userId: string): Promise<Library> =>
-    libraryFromRows(await readAllRows<LibraryItem>("library_items", "item_key", userId));
+export const getUserLibrary = async (userId: string): Promise<Library> => {
+    const items = await readProfileData<LibraryItem>("get_profile_library", userId);
+    return items ? {items} : libraryFromRows(await readAllRows<LibraryItem>("library_items", "item_key", userId));
+};
 
 /** Another person's lists, for their profile page; empty while their profile is not public. */
-export const getUserLists = async (userId: string): Promise<ListsStore> =>
-    listsFromRows(await readAllRows<UserList>("user_lists", "list_id", userId));
+export const getUserLists = async (userId: string): Promise<ListsStore> => {
+    const lists = await readProfileData<UserList>("get_profile_lists", userId);
+    return lists ? {lists} : listsFromRows(await readAllRows<UserList>("user_lists", "list_id", userId));
+};

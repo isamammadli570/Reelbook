@@ -1,6 +1,17 @@
 import {useEffect, useState, type ReactNode} from "react";
-import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
+import {AppState, Platform} from "react-native";
+import {focusManager, QueryClient, QueryClientProvider} from "@tanstack/react-query";
 import i18n from "@/i18n";
+
+/**
+ * The browser tells React Query when the page is shown again; a phone app does not, so without this a query
+ * asking to refresh on focus never did. Coming back to the app now counts as focus.
+ */
+const followAppState = () => {
+    if (Platform.OS === "web") return () => undefined;
+    const subscription = AppState.addEventListener("change", (state) => focusManager.setFocused(state === "active"));
+    return () => subscription.remove();
+};
 
 const createQueryClient = (): QueryClient =>
     new QueryClient({
@@ -24,6 +35,8 @@ type QueryProviderProps = {children: ReactNode};
 /** Owns the app's QueryClient; errors are shown in place by `QueryErrorState`, not as global toasts. */
 export const QueryProvider = ({children}: QueryProviderProps) => {
     const [queryClient] = useState(createQueryClient);
+
+    useEffect(followAppState, []);
 
     // Cached responses were fetched in the previous language and do not translate themselves.
     useEffect(() => {

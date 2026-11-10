@@ -98,9 +98,17 @@ export const signInWithGoogle = async (): Promise<GoogleResult> => {
     return {error: session.error ? mapError(session.error.message) : null};
 };
 
+/**
+ * Signs out everywhere. When that request fails (offline, a server error), Supabase keeps the session and only
+ * returns the error, which left the device emptied but still signed in; this device is then signed out on
+ * its own, which never needs the network.
+ */
 export const signOut = async (): Promise<void> => {
     if (!supabase) return;
-    await supabase.auth.signOut();
+    const {error} = await supabase.auth.signOut();
+    if (!error) return;
+    if (__DEV__) console.warn("[auth] sign-out", error.message);
+    await supabase.auth.signOut({scope: "local"});
 };
 
 /**

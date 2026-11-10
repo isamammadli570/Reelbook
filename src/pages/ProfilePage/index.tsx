@@ -29,6 +29,9 @@ import {ROUTES} from "@/constants/routes";
 import {SHELF} from "@/constants/other";
 import {EMPTY_PROFILE} from "@/api/profile.api";
 
+/** The shelves listed under the rows, each with its count. */
+const SHELF_LINKS = [SHELF.MOVIES, SHELF.SERIES, SHELF.WATCHLIST, SHELF.REVIEWS] as const;
+
 /**
  * A profile: cover and avatar, watch time, four favourites, what was watched last, then everything else by
  * count. Your own on the profile tab, read from the device and editable; anyone's under `/user/[username]`,
@@ -54,6 +57,11 @@ export const ProfilePage = () => {
     const summary = useMemo(() => summarize(watches), [watches]);
     const favorites = useMemo(() => sortShelf(shelfItems(library, SHELF.FAVORITES), DEFAULT_SHELF_SORT[SHELF.FAVORITES]), [library]);
     const lists = useMemo(() => sortedLists(source.lists), [source.lists]);
+    // Counted once per library rather than on every render: each count walks the whole library.
+    const shelfCounts = useMemo(
+        () => Object.fromEntries(SHELF_LINKS.map((kind) => [kind, shelfItems(library, kind).length])) as Record<(typeof SHELF_LINKS)[number], number>,
+        [library],
+    );
 
     const coverProfile = isOwn ? ownProfile : user;
     const username = isOwn ? ownProfile.username : user?.username ?? "";
@@ -76,10 +84,10 @@ export const ProfilePage = () => {
         );
     }
 
-    const shelfLinks: ShelfLink[] = [SHELF.MOVIES, SHELF.SERIES, SHELF.WATCHLIST, SHELF.REVIEWS].map((kind) => ({
+    const shelfLinks: ShelfLink[] = SHELF_LINKS.map((kind) => ({
         key: kind,
         label: t(`shelves.${kind}`),
-        count: shelfItems(library, kind).length,
+        count: shelfCounts[kind],
         href: routes.shelf(kind),
     }));
     shelfLinks.push({key: "lists", label: t("shelves.lists"), count: lists.length, href: routes.lists});

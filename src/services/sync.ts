@@ -1,7 +1,8 @@
 import {getLibrary, replaceLibrary, type LibraryItem} from "@/api/library.api";
 import {getLists, replaceLists} from "@/api/lists.api";
-import {getCurrentSession} from "@/api/auth.api";
+import {getCurrentSession, signOut} from "@/api/auth.api";
 import {EMPTY_PROFILE, getProfile, saveProfile} from "@/api/profile.api";
+import {createExclusiveQueue} from "@/lib/exclusive";
 import {mergeProfile, type AccountDetails} from "@/helpers/profileSync";
 import {
     pullRemoteLibraryEntries,
@@ -21,12 +22,27 @@ import {publishActivity, publishAllActivity, unpublishActivity} from "@/api/soci
 import {STORAGE_KEYS} from "@/constants/other";
 
 /**
+ * Every sync, profile upload and sign-out runs through this one queue. Signing out used to run beside it, so a
+ * sync still waiting on the network could write the old account's library or profile back after the device
+ * had been emptied. Tasks queued here must not queue another task and wait for it: that would wait forever.
+ */
+export const runExclusive = createExclusiveQueue();
+
+/**
+ * A task queued for one account can run after that account has signed out (a pause before uploading, coming
+ * back to the app). It then must not touch this device, which may already belong to a guest or someone else.
+ */
+const isSignedInAs = async (userId: string): Promise<boolean> =>
+    (await getCurrentSession().catch(() => null))?.user.id === userId;
+
+/**
  * Merges the device's library with the server's copy. Returns `true` when the device's library changed,
  * so callers refresh what is on screen only then.
  * It runs after every edit, so it first asks only when each title last changed, then downloads just the titles
  * newer on the server: a star given in a library of a thousand films moves a few kilobytes, not all of them.
  */
 export const syncLibrary = async (userId: string): Promise<boolean> => {
+    if (!(await isSignedInAs(userId))) return false;
     const local = await getLibrary();
     const versions = await pullRemoteLibraryVersions(userId);
     const fetched = await pullRemoteLibraryEntries(userId, staleKeys(local.items, local.removed ?? {}, versions));
@@ -62,6 +78,7 @@ const shareChanges = async (userId: string, changed: Record<string, LibraryItem 
 
 /** Publishes the whole library once per account and device, so friends see the history from before sharing existed. */
 export const ensureActivityPublished = async (userId: string): Promise<void> => {
+    if (!(await isSignedInAs(userId))) return;
     if (!(await getProfile()).shareActivity || (await storage.get<boolean>(publishedKey(userId)))) return;
     try {
         await publishAllActivity(userId, await getLibrary());
@@ -72,7 +89,8 @@ export const ensureActivityPublished = async (userId: string): Promise<void> => 
 };
 
 /** Turning sharing on publishes everything; turning it off takes everything down. */
-export const applyActivitySharing = async (userId: string, share: boolean): Promise<void> => {
+export const applyActivitySharing = (userId: string, share: boolean): Promise<void> => runExclusive(async () => {
+    if (!(await isSignedInAs(userId))) return;
     if (share) {
         await publishAllActivity(userId, await getLibrary());
         await storage.set(publishedKey(userId), true);
@@ -80,10 +98,11 @@ export const applyActivitySharing = async (userId: string, share: boolean): Prom
         await unpublishActivity(userId);
         await storage.remove(publishedKey(userId));
     }
-};
+});
 
 /** The same merge for the user's lists. Returns `true` when the device's lists changed. */
 export const syncLists = async (userId: string): Promise<boolean> => {
+    if (!(await isSignedInAs(userId))) return false;
     const local = await getLists();
     const remote = await pullRemoteLists(userId);
     const {values, removed, outbox, changed} = mergeVersioned(local.lists, local.removed ?? {}, remote);
@@ -97,6 +116,7 @@ export const syncLists = async (userId: string): Promise<boolean> => {
  * Runs on sign-in and whenever the app comes back to the front. Returns `true` when this device's profile changed.
  */
 export const syncProfile = async (userId: string, account: AccountDetails = {username: null, name: null, avatarUrl: null}): Promise<boolean> => {
+    if (!(await isSignedInAs(userId))) return false;
     const local = await getProfile();
     const remote = await pullRemoteProfile(userId);
     const {profile, shouldPush, changed} = mergeProfile(local, remote, account, new Date().toISOString());
@@ -105,23 +125,32 @@ export const syncProfile = async (userId: string, account: AccountDetails = {use
     return changed;
 };
 
-/** Sends a profile edit right away when signed in; a failure is left for the next sync to retry. */
-export const pushProfileNow = async (): Promise<void> => {
+/**
+ * Sends a profile edit right away when signed in; a failure is left for the next sync to retry. Queued, so it
+ * never reads the profile after a sign-out has emptied it and uploads that blank profile to the old account.
+ */
+export const pushProfileNow = (): Promise<void> => runExclusive(async () => {
     const session = await getCurrentSession().catch(() => null);
     if (!session) return;
     await pushRemoteProfile(session.user.id, await getProfile()).catch(() => undefined);
-};
+});
 
 /**
- * Uploads anything not yet synced, then empties this device, so the next person to sign in here
- * does not see the previous account. Throws if the upload fails, and then nothing is removed.
+ * Uploads anything not yet synced, empties this device, then signs out, so the next person to sign in here
+ * does not see the previous account. Throws if the upload fails, and then nothing is removed and the
+ * account stays signed in. It waits its turn behind any sync already running.
  */
-export const flushAndClearDevice = async (userId: string): Promise<void> => {
-    await syncLibrary(userId);
-    await syncLists(userId);
-    await syncProfile(userId);
+export const signOutAndClearDevice = (): Promise<void> => runExclusive(async () => {
+    const session = await getCurrentSession();
+    if (session) {
+        const userId = session.user.id;
+        await syncLibrary(userId);
+        await syncLists(userId);
+        await syncProfile(userId);
+    }
     await clearDevice();
-};
+    await signOut();
+});
 
 /** Empties the library, lists, profile and recent searches kept on this device; device preferences such as language stay. */
 export const clearDevice = async (): Promise<void> => {

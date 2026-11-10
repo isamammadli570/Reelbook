@@ -10,7 +10,7 @@ import {useGetLibrary} from "@/hooks/library";
 import {useGetLists} from "@/hooks/lists";
 import {supabase} from "@/lib/supabase";
 import {toast} from "@/lib/toast";
-import {ensureActivityPublished, syncLibrary, syncLists, syncProfile} from "@/services/sync";
+import {ensureActivityPublished, runExclusive, syncLibrary, syncLists, syncProfile} from "@/services/sync";
 import {QUERY_KEYS} from "@/constants/other";
 
 /** Changes are uploaded a moment after the user stops editing, so a burst of taps makes one sync. */
@@ -32,13 +32,13 @@ export const SyncProvider = ({children}: SyncProviderProps) => {
     const {data: library} = useGetLibrary();
     const {data: lists} = useGetLists();
     const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-    // Runs syncs one at a time so two of them never read and write the library at once.
-    const queue = useRef<Promise<unknown>>(Promise.resolve());
     // A failed sync is reported once; the next success clears it, so being offline does not repeat the message.
     const hasReportedFailure = useRef(false);
 
+    // Runs syncs one at a time, in the app-wide queue that signing out also waits in, so two of them never
+    // read and write the library at once.
     const enqueue = (task: () => Promise<void>) => {
-        queue.current = queue.current.then(task, task).then(
+        void runExclusive(task).then(
             () => {
                 hasReportedFailure.current = false;
             },
@@ -63,11 +63,23 @@ export const SyncProvider = ({children}: SyncProviderProps) => {
         };
     }, []);
 
+    // Whenever the account on this device changes (signed out here, signed out by another device, or someone
+    // else signed in), what was read about other people for the previous account goes. Only from an account,
+    // not from the guest start: its social queries had nothing to read.
+    const previousUserId = useRef<string | null>(null);
+    useEffect(() => {
+        const previous = previousUserId.current;
+        previousUserId.current = userId;
+        if (previous && previous !== userId) void queryClient.resetQueries({queryKey: [QUERY_KEYS.SOCIAL]});
+    }, [userId, queryClient]);
+
     // Signing in: fetch the profile and merge the library once.
     useEffect(() => {
         if (!userId) return;
         enqueue(async () => {
             const session = await getCurrentSession();
+            // Signed out again before this task's turn came: the device is not this account's any more.
+            if (session?.user.id !== userId) return;
             // A handle from the sign-up form; a name and photo from Google, which calls them differently.
             const metadata: Record<string, unknown> = session?.user.user_metadata ?? {};
             const text = (...keys: string[]) => keys.map((key) => metadata[key]).find((value): value is string => typeof value === "string" && value.trim() !== "") ?? null;

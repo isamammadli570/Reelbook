@@ -68,7 +68,7 @@ export const UpNextHero = ({item, next}: UpNextHeroProps) => {
                                 toggleEpisode({snapshot: item, episode: next});
                             }}
                         />
-                        <Button label={t("upNext.details")} className="flex-1 bg-white/10" onPress={() => router.push(buildRoute.series(item.id))}/>
+                        <Button label={t("upNext.details")} className="flex-1 bg-[rgba(255,255,255,0.14)]" onPress={() => router.push(buildRoute.series(item.id))}/>
                     </View>
                 </View>
             </View>
